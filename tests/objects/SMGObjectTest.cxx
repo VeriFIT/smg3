@@ -28,63 +28,34 @@
  */
 
 #include <gtest/gtest.h>
-// #include <SMGObject.h>
+#include <SMGObject.h>
 
 int SIZE8 = 8;
 int SIZE12 = 12;
 
-class SMGObject {
-	static SMGObject SMGObject::getNullObject() {
-		return nullptr;
-	}
-	bool notNull() {
-		return false;
-	}
-	bool isAbstract() {
-		return false;
-	}
-	bool isMoreGeneral(SMGObject* pOther) {
-		return false;
-	}
-	SMGObject join(SMGObject pOther) {
-		return nullptr;
-	}
-	int getSize() {
-		return 0;
-	}
-	const std::string& getLabel() {
-		return nullptr;
-	}
-};
-
-class TestingObject : private SMGObject {
-	private:
-		int size;
-		std::string label;
+class TestingObject : public SMGObject {
 	public:
-	TestingObject(int pSize, std::string pLabel) {
-		this->size = pSize;
-		this->label = pLabel;
-	}
-	TestingObject(const TestingObject&) = default;
-
-	const std::string& getLabel() {
-		return this->label;
-	}
+		TestingObject(const int pSize, const std::string pLabel): SMGObject(pSize, pLabel) {}
+		~TestingObject() {};
+		TestingObject(const TestingObject&) = default;
+		virtual bool isAbstract() const override { return false; }
+		virtual bool isMoreGeneral(const SMGObject &) const override { return false; };
+		virtual const SMGObject &join(const SMGObject &) const override { return *this; }
+		virtual bool notNull() const {return true;}
 };
 
-TestingObject *object8 = new TestingObject(8, "label");
-TestingObject *object12 = new TestingObject(12, "another label");
+TestingObject object8 = TestingObject(8, "label");
+TestingObject object12 = TestingObject(12, "another label");
 
 TEST(SMGObject, getNullObjectTest) {
-	SMGObject *nullObject = SMGObject::getNullObject();
-	EXPECT_FALSE(nullObject->notNull());
-	EXPECT_TRUE(object8->notNull());
-	EXPECT_FALSE(nullObject->isAbstract());
-	EXPECT_FALSE(nullObject->isMoreGeneral(object8));
-	EXPECT_FALSE(nullObject->isMoreGeneral(nullObject));
-	EXPECT_EQ(nullObject, nullObject->join(*nullObject));
-	EXPECT_EQ(*object8, nullObject->join(*object8));
+	const SMGObject &nullObject = SMGObject::getNullObject();
+	EXPECT_FALSE(nullObject.notNull());
+	EXPECT_TRUE(object8.notNull());
+	EXPECT_FALSE(nullObject.isAbstract());
+	EXPECT_FALSE(nullObject.isMoreGeneral(object8));
+	EXPECT_FALSE(nullObject.isMoreGeneral(nullObject));
+	EXPECT_EQ(&nullObject, &nullObject.join(nullObject));
+	EXPECT_EQ(&object8, &nullObject.join(object8));
 }
 
 //	public final void testSMGObjectIntString() {
@@ -98,10 +69,10 @@ TEST(SMGObject, getNullObjectTest) {
 //  }
 
 TEST(SMGObject, PropertySanity){
-	EXPECT_EQ(SIZE8, object8->getSize());
-	EXPECT_STREQ("label", object8->getLabel().c_str());
-	EXPECT_EQ(SIZE12, object12->getSize());
-	EXPECT_STREQ("another label", object12->getLabel().c_str());
+	EXPECT_EQ(SIZE8, object8.getSize());
+	EXPECT_STREQ("label", object8.getLabel().c_str());
+	EXPECT_EQ(SIZE12, object12.getSize());
+	EXPECT_STREQ("another label", object12.getLabel().c_str());
 	SMGObject* object12Copy = new TestingObject(object12);
 	EXPECT_EQ(SIZE12, object12Copy->getSize());
 	EXPECT_STREQ("another label", object12Copy->getLabel().c_str());

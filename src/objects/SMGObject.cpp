@@ -18,3 +18,11 @@ const int SMGObject::getSize()
 {
    return size;
 }
+
+bool SMGObject::notNull() const{
+	return true;
+}
+
+bool SMGNullObject::notNull() const{
+	return false;
+}

@@ -8,14 +8,15 @@ private:
 
 public:
    SMGObject(const int, const std::string);
-
-   static const SMGObject &getNullObject();
+   virtual ~SMGObject() {};
+   static const SMGObject& getNullObject();
    const std::string getLabel();
    const int getSize();
+   virtual bool notNull() const = 0;
 
-   virtual bool isAbstract() = 0;
-   virtual bool isMoreGeneral(SMGObject &) = 0;
-   virtual SMGObject &join(SMGObject &) = 0;
+   virtual bool isAbstract() const = 0;
+   virtual bool isMoreGeneral(const SMGObject &) const = 0;
+   virtual const SMGObject &join(const SMGObject &) const = 0;
 };
 
 class SMGNullObject : public SMGObject
@@ -23,7 +24,8 @@ class SMGNullObject : public SMGObject
 public:
    SMGNullObject() : SMGObject(0, "NULL") {}
 
-   bool isAbstract() {return false;}
-   bool isMoreGeneral(SMGObject &) {return false;}
-   SMGObject &join(SMGObject &pOther) {return pOther;}
+   virtual bool isAbstract() const override {return false;}
+   virtual bool isMoreGeneral(const SMGObject &) const override {return false;}
+   virtual const SMGObject &join(const SMGObject &pOther) const override {return pOther;}
+   virtual bool notNull() const override;
 };

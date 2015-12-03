@@ -1,9 +1,12 @@
 #include "UnsupportedOperationException.hh"
 
-UnsupportedOperationException::UnsupportedOperationException(char const* const _Message)
+UnsupportedOperationException::UnsupportedOperationException(char const* const _Message) noexcept
+  :std::exception()
 {
+  msg = _Message;
 }
 
-char const* UnsupportedOperationException::what() const
+const char * UnsupportedOperationException::what() const noexcept
 {
+  return msg;
 }

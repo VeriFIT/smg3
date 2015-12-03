@@ -44,9 +44,9 @@ const SMGObject& SMGRegion::join(const SMGObject& pOther) const
     return pOther.join(*this);
   }
   else if (getSize() == pOther.getSize()) {
-    return SMGRegion(*this);
+    return *this; //odstranen copy-like-konstruktor
   }
-  throw new UnsupportedOperationException("join() called on incompatible SMGObjects");
+  throw UnsupportedOperationException("join() called on incompatible SMGObjects");
 }
 
 bool SMGRegion::isMoreGeneral(const SMGObject&) const

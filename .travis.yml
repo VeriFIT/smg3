@@ -1,15 +1,19 @@
-sudo: false
+sudo: true
 language: cpp
 script: make && make tests
 compiler:
   - gcc
-
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+
+before_install:
+  - "cd /usr/src/gtest && sudo rm -f Makefile; sudo cmake . -Dgtest_disable_pthreads=ON  && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
+
 addons:
   apt:
-  sources:
+    sources:
     - ubuntu-toolchain-r-test
-  packages:
+    packages:
     - gcc-4.8
     - g++-4.8
+    - libgtest-dev

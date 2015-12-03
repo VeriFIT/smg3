@@ -30,5 +30,5 @@ public:
    bool isAbstract() const override {return false;}
    bool isMoreGeneral(const SMGObject &) const override {return false;}
    const SMGObject & join(const SMGObject & pOther) const override {return pOther;}
-   bool notNull() const;
+   bool notNull() const override;
 };

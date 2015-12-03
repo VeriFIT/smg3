@@ -20,9 +20,9 @@ int SMGObject::getSize() const
 }
 
 bool SMGObject::notNull() const{
-	return true;
+  return true;
 }
 
 bool SMGNullObject::notNull() const{
-	return false;
+  return false;
 }

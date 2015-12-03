@@ -7,7 +7,7 @@ install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 
 before_install:
-  - "cd /usr/src/gtest && sudo cmake . -Dgtest_disable_pthreads=ON  && sudo cmake -Dgtest_disable_pthreads=ON --build . && sudo mv libg* /usr/local/lib/ ; cd -"
+  - "cd /usr/src/gtest && sudo rm -f Makefile; sudo cmake . -Dgtest_disable_pthreads=ON  && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
 
 addons:
   apt:

@@ -28,7 +28,7 @@
  */
 
 #include <gtest/gtest.h>
-#include <SMGObject.h>
+#include <SMGObject.hh>
 
 int SIZE8 = 8;
 int SIZE12 = 12;

@@ -19,6 +19,7 @@ public:
    virtual bool isAbstract() const = 0;
    virtual bool isMoreGeneral(const SMGObject &) const = 0;
    virtual const SMGObject & join(const SMGObject & pOther) const = 0;
+   virtual bool notNull() const;
 };
 
 class SMGNullObject : public SMGObject
@@ -29,4 +30,5 @@ public:
    bool isAbstract() const override {return false;}
    bool isMoreGeneral(const SMGObject &) const override {return false;}
    const SMGObject & join(const SMGObject & pOther) const override {return pOther;}
+   bool notNull() const;
 };

@@ -3,6 +3,8 @@
 *.lo
 *.o
 *.obj
+*.d
+obj/
 
 # Precompiled Headers
 *.gch
@@ -23,3 +25,10 @@
 *.exe
 *.out
 *.app
+bin/
+
+# VS
+.vs
+*.sdf
+*.opensdf
+*.vcxproj.user

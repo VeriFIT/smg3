@@ -3,6 +3,12 @@
 SMGObject::SMGObject(const int pSize, const std::string pLabel)
    : size(pSize), label(pLabel) {}
 
+// ReSharper disable once CppMemberFunctionMayBeStatic
+std::string SMGObject::getClassName() const
+{
+  return std::string("SMGObject");
+}
+
 const SMGObject & SMGObject::getNullObject()
 {
    static SMGNullObject nullObject;

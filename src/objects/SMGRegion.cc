@@ -1,6 +1,5 @@
-#include <string>
-
 #include "SMGRegion.hh"
+#include "SMGObjectVisitor.hh"
 #include <UnsupportedOperationException.hh>
 
 SMGRegion::SMGRegion(const int pSize, std::string pLabel)
@@ -10,6 +9,11 @@ SMGRegion::SMGRegion(const int pSize, std::string pLabel)
 std::string SMGRegion::toString() const
 {
   return "REGION( " + getLabel() + ", " + std::to_string(getSize()) + "b)";
+}
+
+std::string SMGRegion::getClassName() const
+{
+  return std::string("SMGRegion");
 }
 
 bool SMGRegion::propertiesEqual(const SMGRegion & pOther) const
@@ -36,6 +40,11 @@ bool SMGRegion::isAbstract() const
   return false;
 }
 
+void SMGRegion::accept(SMGObjectVisitor& visitor) const
+{
+  visitor.visit(*this);
+}
+
 const SMGObject& SMGRegion::join(const SMGObject& pOther) const
 {
   if (pOther.isAbstract()) {
@@ -53,9 +62,3 @@ bool SMGRegion::isMoreGeneral(const SMGObject&) const
 {
   return false;
 }
-
-//void SMGRegion::accept(const SMGObjectVisitor visitor)
-//{
-//	visitor.visit
-//}
-//

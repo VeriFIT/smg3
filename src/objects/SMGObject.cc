@@ -1,20 +1,20 @@
-#include "SMGObject.h"
+#include "SMGObject.hh"
 
 SMGObject::SMGObject(const int pSize, const std::string pLabel)
    : size(pSize), label(pLabel) {}
 
-const SMGObject &SMGObject::getNullObject()
+const SMGObject & SMGObject::getNullObject()
 {
    static SMGNullObject nullObject;
    return nullObject;
 }
 
-const std::string SMGObject::getLabel()
+std::string SMGObject::getLabel() const
 {
    return label;
 }
 
-const int SMGObject::getSize()
+int SMGObject::getSize() const
 {
    return size;
 }

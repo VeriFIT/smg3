@@ -2,18 +2,22 @@
 
 #include "SMGObject.hh"
 
-class SMGRegion : SMGObject
+class SMGRegion : public SMGObject
 {
 public:
-	SMGRegion(const int pSize, const std::string pLabel);
+  SMGRegion(const int pSize, const std::string pLabel);
 
-	std::string toString();
+  std::string toString();
 
-	bool propertiesEqual(const SMGRegion & pOther) const;
+  bool propertiesEqual(const SMGRegion & pOther) const;
 
-	bool isAbstract() const override;
+  bool isAbstract() const override;
 
-	//void accept(const SMGObjectVisitor visitor);
+  //void accept(const SMGObjectVisitor visitor);
+
+  const SMGObject& join(const SMGObject & pOther) const override;
+
+  bool isMoreGeneral(const SMGObject&) const override;
 
 };
 

@@ -6,8 +6,7 @@ class SMGRegion : public SMGObject
 {
 public:
   SMGRegion(const int pSize, const std::string pLabel);
-
-  std::string toString();
+  std::string toString() const;
 
   bool propertiesEqual(const SMGRegion & pOther) const;
 

@@ -7,7 +7,7 @@ SMGRegion::SMGRegion(const int pSize, std::string pLabel)
   :SMGObject(pSize, pLabel)
 {}
 
-std::string SMGRegion::toString()
+std::string SMGRegion::toString() const
 {
   return "REGION( " + getLabel() + ", " + std::to_string(getSize()) + "b)";
 }

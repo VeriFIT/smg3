@@ -1,5 +1,5 @@
 # smg3
-Symbolic Memory Graphs library, this time in C++!
+Symbolic Memory Graphs library, this time in C++11!
 
 ## Tests
 

@@ -21,12 +21,24 @@
     <ClInclude Include="..\src\objects\SMGRegion.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\exceptions\UnsupportedOperationException.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\objects\SMGObjectVisitor.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\objects\SMGRegion.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\objects\SMGObject.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\exceptions\UnsupportedOperationException.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\objects\SMGObjectVisitor.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

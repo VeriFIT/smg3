@@ -19,11 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\exceptions\UnsupportedOperationException.hh" />
     <ClInclude Include="..\src\objects\SMGObject.hh" />
+    <ClInclude Include="..\src\objects\SMGObjectVisitor.hh" />
     <ClInclude Include="..\src\objects\SMGRegion.hh" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\exceptions\UnsupportedOperationException.cc" />
     <ClCompile Include="..\src\objects\SMGObject.cc" />
+    <ClCompile Include="..\src\objects\SMGObjectVisitor.cc" />
     <ClCompile Include="..\src\objects\SMGRegion.cc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

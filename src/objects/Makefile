@@ -1,4 +1,4 @@
-OBJFILES := SMGObject.o
+OBJFILES := SMGObject.o SMGRegion.o SMGObjectVisitor.o
 
 all: ${OBJFILES}
 

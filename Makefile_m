@@ -1,5 +1,15 @@
 #genericky makefile for projects of Michal Kotoun <xkotou04@stud.fit.vutbr.cz>
 
+#functions
+
+SRC_DIR_TO_FILES        = $(wildcard $(addsuffix /*,$(shell find $(1) -type d)))
+SRC_DIR_TO_C_CODEFILES   = $(filter %.c,$(call SRC_DIR_TO_FILES, $(1) ) ) 
+SRC_DIR_TO_CXX_CODEFILES = $(filter %.cc,$(call SRC_DIR_TO_FILES, $(1) ) )
+SRC_DIR_TO_OBJFILES      = $(subst $(SRC_DIR),$(OBJ_DIR),$(patsubst %.c, %.o, $(call SRC_DIR_TO_C_CODEFILES, $(1)) )) $(subst $(SRC_DIR),$(OBJ_DIR),$(patsubst %.cc, %.o, $(call SRC_DIR_TO_CXX_CODEFILES, $(1)) ))
+SRC_DIR_TO_DEPFILES      = $(subst $(SRC_DIR),$(OBJ_DIR),$(patsubst %.o, %.d, $(call SRC_DIR_TO_OBJFILES, $(1)) ))
+
+#functions end
+
 #-----------
 #config me here
 #look for  dependencies  sector too
@@ -18,13 +28,16 @@ LIBRARIES_CXX := smg
 #-----------
 # to be created before build
 BIN_DIR := bin
-SRC_DIR := src
-SRC_DIRS := $(shell find $(SRC_DIR) -type d)
-SRC_TESTS_DIR := tests
-SRC_TESTS_DIRS := $(shell find $(SRC_TESTS_DIR) -type d)
 OBJ_DIR := obj
+
+SRC_DIR := src
+SRC_TESTS_DIR := tests
+
+#also as include dirs
+SRC_DIRS := $(shell find $(SRC_DIR) -type d)
 # to be created before build
-OBJ_DIRS := $(subst $(SRC_DIR),$(OBJ_DIR),$(SRC_DIRS)) $(subst $(SRC_DIR),$(OBJ_DIR),$(SRC_TESTS_DIRS))
+SRC_TESTS_DIRS := $(shell find $(SRC_TESTS_DIR) -type d)
+OBJ_DIRS := $(subst $(SRC_DIR),$(OBJ_DIR),$(SRC_DIRS) $(SRC_TESTS_DIRS))
 #-----------
 ifeq ($(OS),Windows_NT)
 	SHARED_SUFFIX=.dll
@@ -40,38 +53,21 @@ endif
 print-%  : ; @echo $* = $($*)
 #dependencies
 smglib := smg
-#everything from src into program
-SRC_DIRS_TO_FILES = $(wildcard $(addsuffix /*,$(shell find $(1) -type d)))
-SRC_DIRS_TO_C_FILES = $(filter %.c,$(call SRC_DIRS_TO_FILES, $(1) ) )
-SRC_DIRS_TO_CXX_FILES = $(filter %.cc,$(call SRC_DIRS_TO_FILES, $(1) ) )
-SRC_DIR_TO_OBJECT_FILES = $(subst $(SRC_DIR),$(OBJ_DIR),$(smglib_SRCFILES_C:%.c=%.o)) $(subst $(SRC_DIR),$(OBJ_DIR),$(smglib_SRCFILES_CXX:%.cc=%.o))
-
-$(info $(call SRC_DIRS_TO_C_FILES, $(SRC_DIRS)))
-
-exit
-
-smglib_CODEFILES    := $(addsuffix /*,$(SRC_DIRS))
-smglib_CODEFILES    := $(wildcard $(smglib_CODEFILES))
-smglib_SRCFILES_C   := $(filter %.c,$(smglib_CODEFILES))
-smglib_SRCFILES_CXX := $(filter %.cc,$(smglib_CODEFILES))
-smglib_OBJFILES     := $(subst $(SRC_DIR),$(OBJ_DIR),$(smglib_SRCFILES_C:%.c=%.o)) $(subst $(SRC_DIR),$(OBJ_DIR),$(smglib_SRCFILES_CXX:%.cc=%.o))
-smglib_DEPFILES     := $(subst $(SRC_DIR),$(OBJ_DIR),$(smglib_OBJFILES:%.o=%.d))
+smglib_OBJFILES     := $(call SRC_DIR_TO_OBJFILES, $(SRC_DIR))
+smglib_DEPFILES     := $(call SRC_DIR_TO_DEPFILES, $(SRC_DIR))
 
 program := tests
-#everything from src into program
-program_CODEFILES   := $(addsuffix /*,$(SRC_TESTS_DIRS))
-program_CODEFILES   := $(wildcard $(program_CODEFILES))
-program_SRCFILES_C   := $(filter %.c,$(program_CODEFILES))
-program_SRCFILES_CXX := $(filter %.cc,$(program_CODEFILES))
-program_OBJFILES     := $(subst $(SRC_TESTS_DIR),$(OBJ_DIR),$(program_SRCFILES_C:%.c=%.o)) $(subst $(SRC_TESTS_DIR),$(OBJ_DIR),$(program_SRCFILES_CXX:%.cc=%.o))
-program_DEPFILES     := $(subst $(SRC_TESTS_DIR),$(OBJ_DIR),$(program_OBJFILES:%.o=%.d))
+program_OBJFILES     := $(call SRC_DIR_TO_OBJFILES, $(SRC_TESTS_DIR))
+program_DEPFILES     := $(call SRC_DIR_TO_DEPFILES, $(SRC_TESTS_DIR))
 #-----------
-# -fPIC
 NDEBUG = -DNDEBUG
 CC = cc
 INCLUDEFLAGS = $(addprefix -I,$(SRC_DIRS))
-CFLAGS_B = $(CFLAGS) -std=c11 -Wall -pedantic -Wextra -Wconversion $(NDEBUG) $(INCLUDEFLAGS)
-CXXFLAGS_B = $(CXXFLAGS) -std=c++11 -Wall -pedantic -Wextra -Wconversion $(NDEBUG) $(INCLUDEFLAGS)
+# -fPIC
+#GLOBALFLAGS := -fPIC
+CFLAGS_B = $(CFLAGS) $(GLOBALFLAGS) -std=c11 -Wall -pedantic -Wextra -Wconversion $(NDEBUG) $(INCLUDEFLAGS)
+CXXFLAGS_B = $(CXXFLAGS) $(GLOBALFLAGS) -std=c++11 -Wall -pedantic -Wextra -Wconversion $(NDEBUG) $(INCLUDEFLAGS)
+#LDFLAGS += -pthread
 #LDFLAGS += -pthread
 #-----------
 #not needed if we use "shell find"
@@ -91,9 +87,6 @@ LIBRARIES_CXX_SHARED = $(addprefix $(BIN_DIR)/,$(addsuffix $(SHARED_SUFFIX),$(LI
 LIBRARIES_CXX_STATIC = $(addprefix $(BIN_DIR)/,$(addsuffix $(STATIC_SUFIX),$(LIBRARIES_CXX)))
 LIBRARIES_ALL = 		$(LIBRARIES_C_SHARED) $(LIBRARIES_C_STATIC) $(LIBRARIES_CXX_SHARED) $(LIBRARIES_CXX_STATIC)
 #-----------
-
-$(info $(program_OBJFILES))
-$(info $(TESTS_BINS_ALL))
 
 .PHONY: all build release debug clean pack run makerun exportrun r mr er dmakerun dmr
 
@@ -115,6 +108,7 @@ derr: build
 
 build: dirs $(BINARIES_ALL) $(LIBRARIES_ALL)
 
+tests: LDFLAGS := $(LDFLAGS) -lgtest -lgtest_main
 tests: CFLAGS := $(CFLAGS_B)
 tests: CXXFLAGS := $(CXXFLAGS_B)
 tests: build-tests
@@ -132,7 +126,7 @@ $(BIN_DIR)/$(smglib)$(SHARED_SUFFIX): $(smglib_OBJFILES)
 $(BIN_DIR)/$(LIB_PREFIX)$(smglib)$(STATIC_SUFIX): $(smglib_OBJFILES)
 $(BIN_DIR)/$(program)$(BINARY_SUFFIX): $(program_OBJFILES)
 
--include $(smglib_DEPFILES)
+-include $(smglib_DEPFILES) $(program_DEPFILES)
 
 #------------
 
@@ -152,17 +146,14 @@ $(BINARIES_C_LIST):
 $(BINARIES_CXX_LIST):
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
+$(LIBRARIES_STATIC):
+	ar rcs $(LIB_PREFIX)$@ $^
+	
 $(LIBRARIES_C_SHARED):
 	$(CC) -shared $(CFLAGS) -o $(LIB_PREFIX)$@ $^
 
-$(LIBRARIES_C_STATIC):
-	ar rcs $(LIB_PREFIX)$@ $^
-
 $(LIBRARIES_CXX_SHARED):
 	$(CXX) -shared $(CXXFLAGS) -o $(LIB_PREFIX)$@ $^
-
-$(LIBRARIES_CXX_STATIC):
-	ar rcs $(LIB_PREFIX)$@ $^
 
 #-----------
 

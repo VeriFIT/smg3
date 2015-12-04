@@ -64,9 +64,6 @@ smglib_DEPFILES     := $(call SRC_DIR_TO_DEPFILES, $(SRC_DIR))
 program := tests
 program_OBJFILES     := $(call SRC_DIR_TO_OBJFILES, $(SRC_TESTS_DIR))
 program_DEPFILES     := $(call SRC_DIR_TO_DEPFILES, $(SRC_TESTS_DIR))
-
-$(info $(program_OBJFILES))
-
 #-----------
 NDEBUG = -DNDEBUG
 CC = cc
@@ -109,7 +106,9 @@ build: dirs $(BINARIES_ALL) $(LIBRARIES_ALL)
 tests: LDFLAGS := $(LDFLAGS) -lgtest -lgtest_main
 tests: CFLAGS := $(CFLAGS_B)
 tests: CXXFLAGS := $(CXXFLAGS_B)
+tests: $(info Building tests $(TESTS_BINS_ALL))
 tests: build-tests
+tests: $(info Running tests $(TESTS_BINS_ALL))
 tests: run-tests
 
 build-tests: dirs $(TESTS_BINS_ALL)
@@ -153,7 +152,7 @@ $(OBJ_DIR)/%.o: $(SRC_TESTS_DIR)/%.cc
 #-----------
 
 #TODO: which flags use for linking?
-$(BINARIES_LIST):
+$(BINARIES_ALL) $(TESTS_BINS_ALL):
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
 #TODO: which flags use for linking?
@@ -175,11 +174,10 @@ r run:
 	$(BIN_DIR)/$(BINARY_RUN)$(BINARY_SUFFIX) || echo $$?
 
 er exportrun:
-	export LD_LIBRARY_PATH="." ; $(BIN_DIR)/$(BINARY_RUN)$(BINARY_SUFFIX) || echo $$?
+	export LD_LIBRARY_PATH=$(shell pwd)/$(BIN_DIR) ; $(BIN_DIR)/$(BINARY_RUN)$(BINARY_SUFFIX) || echo $$?
 
 clean:
 	$(RM) -rf $(BIN_DIR)/* $(OBJ_DIR)/*
-#rm -f *.o *.out $(BINARIES_ALL) $(LIBRARIES_C_SHARED) $(LIBRARIES_C_STATIC)
 
 cd: clean debug
 

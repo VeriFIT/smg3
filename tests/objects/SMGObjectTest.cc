@@ -1,5 +1,5 @@
 /*
- * SMGObjectTest.cxx
+ * SMGObjectTest.cc
  *
  *  Created on: Dec 3, 2015
  *      Author: pmuller

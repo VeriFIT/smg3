@@ -1,5 +1,11 @@
 #genericky makefile for projects of Michal Kotoun <xkotou04@stud.fit.vutbr.cz>
 
+#default target + phony targets
+
+.PHONY: all build release debug clean pack run makerun exportrun r mr er dmakerun dmr
+
+all: release
+
 #functions
 
 SRC_DIR_TO_FILES        = $(wildcard $(addsuffix /*,$(shell find $(1) -type d)))
@@ -17,14 +23,11 @@ SRC_DIR_TO_DEPFILES      = $(subst $(SRC_DIR),$(OBJ_DIR),$(patsubst %.o, %.d, $(
 #binary to run using run targets
 BINARY_RUN := tests
 #binaries to make
-BINARIES_C :=
-BINARIES_CXX :=
+BINARIES :=
 #tests to make
-TESTS_BINS_C :=
-TESTS_BINS_CXX := tests
+TESTS_BINS := tests
 #libraries to make
-LIBRARIES_C :=
-LIBRARIES_CXX := smg
+LIBRARIES := smg
 #-----------
 # to be created before build
 BIN_DIR := bin
@@ -68,32 +71,21 @@ INCLUDEFLAGS = $(addprefix -I,$(SRC_DIRS))
 CFLAGS_B = $(CFLAGS) $(GLOBALFLAGS) -std=c11 -Wall -pedantic -Wextra -Wconversion $(NDEBUG) $(INCLUDEFLAGS)
 CXXFLAGS_B = $(CXXFLAGS) $(GLOBALFLAGS) -std=c++11 -Wall -pedantic -Wextra -Wconversion $(NDEBUG) $(INCLUDEFLAGS)
 #LDFLAGS += -pthread
-#LDFLAGS += -pthread
 #-----------
 #not needed if we use "shell find"
 # - objectfiles are complete with paths, we reuse them for sourcefiles
 #vpath %.h $(SRC_DIRS)
 #vpath %.c $(SRC_DIRS)
 #-----------
-BINARIES_C_LIST = 	$(addprefix $(BIN_DIR)/,$(addsuffix $(BINARY_SUFFIX),$(BINARIES_C)))
-BINARIES_CXX_LIST = $(addprefix $(BIN_DIR)/,$(addsuffix $(BINARY_SUFFIX),$(BINARIES_CXX)))
-BINARIES_ALL = 		$(BINARIES_C_LIST) $(BINARIES_CXX_LIST)
-TESTS_BINS_C_LIST = 	$(addprefix $(BIN_DIR)/,$(addsuffix $(BINARY_SUFFIX),$(TESTS_BINS_C)))
-TESTS_BINS_CXX_LIST = $(addprefix $(BIN_DIR)/,$(addsuffix $(BINARY_SUFFIX),$(TESTS_BINS_CXX)))
-TESTS_BINS_ALL = 		$(TESTS_BINS_C_LIST) $(TESTS_BINS_CXX_LIST)
-LIBRARIES_C_SHARED = $(addprefix $(BIN_DIR)/,$(addsuffix $(SHARED_SUFFIX),$(LIBRARIES_C)))
-LIBRARIES_C_STATIC = $(addprefix $(BIN_DIR)/,$(addsuffix $(STATIC_SUFIX),$(LIBRARIES_C)))
-LIBRARIES_CXX_SHARED = $(addprefix $(BIN_DIR)/,$(addsuffix $(SHARED_SUFFIX),$(LIBRARIES_CXX)))
-LIBRARIES_CXX_STATIC = $(addprefix $(BIN_DIR)/,$(addsuffix $(STATIC_SUFIX),$(LIBRARIES_CXX)))
-LIBRARIES_ALL = 		$(LIBRARIES_C_SHARED) $(LIBRARIES_C_STATIC) $(LIBRARIES_CXX_SHARED) $(LIBRARIES_CXX_STATIC)
+BINARIES_ALL =      $(addprefix $(BIN_DIR)/,$(addsuffix $(BINARY_SUFFIX),$(BINARIES)))
+TESTS_BINS_ALL =    $(addprefix $(BIN_DIR)/,$(addsuffix $(BINARY_SUFFIX),$(TESTS_BINS)))
+LIBRARIES_SHARED =  $(addprefix $(BIN_DIR)/,$(addsuffix $(SHARED_SUFFIX),$(LIBRARIES)))
+LIBRARIES_STATIC =  $(addprefix $(BIN_DIR)/,$(addsuffix $(STATIC_SUFIX),$(LIBRARIES)))
+LIBRARIES_ALL =     $(LIBRARIES_SHARED) $(LIBRARIES_STATIC)
 #-----------
 
-.PHONY: all build release debug clean pack run makerun exportrun r mr er dmakerun dmr
-
-all: release
-
-release: CFLAGS := $(CFLAGS_B) -o2
-release: CXXFLAGS := $(CXXFLAGS_B) -o2
+release: CFLAGS := $(CFLAGS_B) -o3
+release: CXXFLAGS := $(CXXFLAGS_B) -o3
 release: build
 
 debug: NDEBUG :=
@@ -112,8 +104,12 @@ tests: LDFLAGS := $(LDFLAGS) -lgtest -lgtest_main
 tests: CFLAGS := $(CFLAGS_B)
 tests: CXXFLAGS := $(CXXFLAGS_B)
 tests: build-tests
+tests: run-tests
 
 build-tests: dirs $(TESTS_BINS_ALL)
+
+run-tests: 
+	export LD_LIBRARY_PATH=$(BIN_DIR) ; $(foreach test,$(TESTS_BINS_ALL), $(test) || echo $$? ; ) 
 
 dirs:
 	@mkdir -p $(BIN_DIR) $(OBJ_DIRS)
@@ -140,20 +136,16 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cc
 
 #-----------
 
-$(BINARIES_C_LIST):
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+#TODO: which flags use for linking?
+$(BINARIES_LIST):
+	$(CXX) -o $@ $^ $(LDFLAGS)
 
-$(BINARIES_CXX_LIST):
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+#TODO: which flags use for linking?
+$(LIBRARIES_SHARED):
+	$(CXX) -shared -o $(LIB_PREFIX)$@ $^
 
 $(LIBRARIES_STATIC):
 	ar rcs $(LIB_PREFIX)$@ $^
-	
-$(LIBRARIES_C_SHARED):
-	$(CC) -shared $(CFLAGS) -o $(LIB_PREFIX)$@ $^
-
-$(LIBRARIES_CXX_SHARED):
-	$(CXX) -shared $(CXXFLAGS) -o $(LIB_PREFIX)$@ $^
 
 #-----------
 

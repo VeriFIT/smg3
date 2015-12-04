@@ -72,6 +72,7 @@ INCLUDEFLAGS = $(addprefix -I,$(SRC_DIRS))
 # GLOBALFLAGS := -fPIC #moved to the top, OS-dependent
 CFLAGS_B = $(CFLAGS) $(GLOBALFLAGS) -std=c11 -Wall -pedantic -Wextra -Wconversion $(NDEBUG) $(INCLUDEFLAGS)
 CXXFLAGS_B = $(CXXFLAGS) $(GLOBALFLAGS) -std=c++11 -Wall -pedantic -Wextra -Wconversion $(NDEBUG) $(INCLUDEFLAGS)
+LDFLAGS := -L"$(shell pwd)/$(BIN_DIR)"
 #LDFLAGS += -pthread
 #-----------
 #not needed if we use "shell find"
@@ -157,7 +158,7 @@ $(BINARIES_ALL) $(TESTS_BINS_ALL):
 
 #TODO: which flags use for linking?
 $(LIBRARIES_SHARED):
-	$(CXX) -shared -o $@ $^
+	$(CXX) -shared -o $@ $^ $(LDFLAGS)
 
 $(LIBRARIES_STATIC):
 	ar rcs $@ $^

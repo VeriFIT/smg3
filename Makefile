@@ -79,7 +79,7 @@ CXXFLAGS_B = $(CXXFLAGS) $(GLOBALFLAGS) -std=c++11 -Wall -pedantic -Wextra -Wcon
 #-----------
 BINARIES_ALL =      $(addprefix $(BIN_DIR)/,$(addsuffix $(BINARY_SUFFIX),$(BINARIES)))
 TESTS_BINS_ALL =    $(addprefix $(BIN_DIR)/,$(addsuffix $(BINARY_SUFFIX),$(TESTS_BINS)))
-LIBRARIES_PREFIX =  $(addprefix $(LIB_PREFIX)/,$(LIBRARIES))
+LIBRARIES_PREFIX =  $(addprefix $(LIB_PREFIX),$(LIBRARIES))
 LIBRARIES_SHARED =  $(addprefix $(BIN_DIR)/,$(addsuffix $(SHARED_SUFFIX),$(LIBRARIES_PREFIX)))
 LIBRARIES_STATIC =  $(addprefix $(BIN_DIR)/,$(addsuffix $(STATIC_SUFIX),$(LIBRARIES_PREFIX)))
 LIBRARIES_ALL =     $(LIBRARIES_SHARED) $(LIBRARIES_STATIC)
@@ -119,7 +119,7 @@ dirs:
 
 #for all files in, binaries all, test bins all , libs all create aproperiate program:objects binding
 #dependencies - screws colors in VS Code
-$(BIN_DIR)/$(smglib)$(SHARED_SUFFIX): $(smglib_OBJFILES)
+$(BIN_DIR)/$(LIB_PREFIX)$(smglib)$(SHARED_SUFFIX): $(smglib_OBJFILES)
 $(BIN_DIR)/$(LIB_PREFIX)$(smglib)$(STATIC_SUFIX): $(smglib_OBJFILES)
 $(BIN_DIR)/$(program)$(BINARY_SUFFIX): $(program_OBJFILES)
 

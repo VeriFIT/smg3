@@ -57,9 +57,9 @@ endif
 #-----------
 print-%  : ; @echo $* = $($*)
 #dependencies
-smglib := smg
-smglib_OBJFILES     := $(call SRC_DIR_TO_OBJFILES, $(SRC_DIR))
-smglib_DEPFILES     := $(call SRC_DIR_TO_DEPFILES, $(SRC_DIR))
+library := smg
+library_OBJFILES     := $(call SRC_DIR_TO_OBJFILES, $(SRC_DIR))
+library_DEPFILES     := $(call SRC_DIR_TO_DEPFILES, $(SRC_DIR))
 
 program := tests
 program_OBJFILES     := $(call SRC_DIR_TO_OBJFILES, $(SRC_TESTS_DIR))
@@ -103,7 +103,7 @@ derr: build
 
 build: dirs $(BINARIES_ALL) $(LIBRARIES_ALL)
 
-tests: LDFLAGS := $(LDFLAGS) -lgtest -lgtest_main
+tests: LDFLAGS := $(LDFLAGS) -l$(library) -lgtest -lgtest_main
 tests: CFLAGS := $(CFLAGS_B)
 tests: CXXFLAGS := $(CXXFLAGS_B)
 tests: $(info Building tests $(TESTS_BINS_ALL))
@@ -123,11 +123,11 @@ dirs:
 
 #for all files in, binaries all, test bins all , libs all create aproperiate program:objects binding
 #dependencies - screws colors in VS Code
-$(BIN_DIR)/$(LIB_PREFIX)$(smglib)$(SHARED_SUFFIX): $(smglib_OBJFILES)
-$(BIN_DIR)/$(LIB_PREFIX)$(smglib)$(STATIC_SUFIX): $(smglib_OBJFILES)
+$(BIN_DIR)/$(LIB_PREFIX)$(library)$(SHARED_SUFFIX): $(library_OBJFILES)
+$(BIN_DIR)/$(LIB_PREFIX)$(library)$(STATIC_SUFIX): $(library_OBJFILES)
 $(BIN_DIR)/$(program)$(BINARY_SUFFIX): $(program_OBJFILES)
 
--include $(smglib_DEPFILES) $(program_DEPFILES)
+-include $(library_DEPFILES) $(program_DEPFILES)
 
 #------------
 

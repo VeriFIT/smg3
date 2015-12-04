@@ -79,8 +79,9 @@ CXXFLAGS_B = $(CXXFLAGS) $(GLOBALFLAGS) -std=c++11 -Wall -pedantic -Wextra -Wcon
 #-----------
 BINARIES_ALL =      $(addprefix $(BIN_DIR)/,$(addsuffix $(BINARY_SUFFIX),$(BINARIES)))
 TESTS_BINS_ALL =    $(addprefix $(BIN_DIR)/,$(addsuffix $(BINARY_SUFFIX),$(TESTS_BINS)))
-LIBRARIES_SHARED =  $(addprefix $(BIN_DIR)/,$(addsuffix $(SHARED_SUFFIX),$(LIBRARIES)))
-LIBRARIES_STATIC =  $(addprefix $(BIN_DIR)/,$(addsuffix $(STATIC_SUFIX),$(LIBRARIES)))
+LIBRARIES_PREFIX =  $(addprefix $(LIB_PREFIX)/,$(LIBRARIES))
+LIBRARIES_SHARED =  $(addprefix $(BIN_DIR)/,$(addsuffix $(SHARED_SUFFIX),$(LIBRARIES_PREFIX)))
+LIBRARIES_STATIC =  $(addprefix $(BIN_DIR)/,$(addsuffix $(STATIC_SUFIX),$(LIBRARIES_PREFIX)))
 LIBRARIES_ALL =     $(LIBRARIES_SHARED) $(LIBRARIES_STATIC)
 #-----------
 
@@ -142,10 +143,10 @@ $(BINARIES_LIST):
 
 #TODO: which flags use for linking?
 $(LIBRARIES_SHARED):
-	$(CXX) -shared -o $(LIB_PREFIX)$@ $^
+	$(CXX) -shared -o $@ $^
 
 $(LIBRARIES_STATIC):
-	ar rcs $(LIB_PREFIX)$@ $^
+	ar rcs $@ $^
 
 #-----------
 

@@ -131,8 +131,8 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(INCLUDEFLAGS) -MM -MF $(OBJ_DIR)/$*.d -MT $@ $<
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cc
-	$(CC) $(CXXFLAGS) -c $< -o $@
-	$(CC) $(INCLUDEFLAGS) -MM -MF $(OBJ_DIR)/$*.d -MT $@ $<
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(INCLUDEFLAGS) -MM -MF $(OBJ_DIR)/$*.d -MT $@ $<
 
 #-----------
 

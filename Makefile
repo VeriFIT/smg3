@@ -11,8 +11,8 @@ all: release
 SRC_DIR_TO_FILES        = $(wildcard $(addsuffix /*,$(shell find $(1) -type d)))
 SRC_DIR_TO_C_CODEFILES   = $(filter %.c,$(call SRC_DIR_TO_FILES, $(1) ) ) 
 SRC_DIR_TO_CXX_CODEFILES = $(filter %.cc,$(call SRC_DIR_TO_FILES, $(1) ) )
-SRC_DIR_TO_OBJFILES      = $(subst $(SRC_DIR),$(OBJ_DIR),$(patsubst %.c, %.o, $(call SRC_DIR_TO_C_CODEFILES, $(1)) )) $(subst $(SRC_DIR),$(OBJ_DIR),$(patsubst %.cc, %.o, $(call SRC_DIR_TO_CXX_CODEFILES, $(1)) ))
-SRC_DIR_TO_DEPFILES      = $(subst $(SRC_DIR),$(OBJ_DIR),$(patsubst %.o, %.d, $(call SRC_DIR_TO_OBJFILES, $(1)) ))
+SRC_DIR_TO_OBJFILES      = $(subst $(1),$(OBJ_DIR),$(patsubst %.c, %.o, $(call SRC_DIR_TO_C_CODEFILES, $(1)) )) $(subst $(SRC_DIR),$(OBJ_DIR),$(patsubst %.cc, %.o, $(call SRC_DIR_TO_CXX_CODEFILES, $(1)) ))
+SRC_DIR_TO_DEPFILES      = $(subst $(1),$(OBJ_DIR),$(patsubst %.o, %.d, $(call SRC_DIR_TO_OBJFILES, $(1)) ))
 
 #functions end
 
@@ -109,10 +109,12 @@ tests: CXXFLAGS := $(CXXFLAGS_B)
 tests: build-tests
 tests: run-tests
 
+$(info $(TESTS_BINS_ALL))
+
 build-tests: dirs $(TESTS_BINS_ALL)
 
 run-tests: 
-	export LD_LIBRARY_PATH=$(BIN_DIR) ; $(foreach test,$(TESTS_BINS_ALL), $(test) || echo $$? ; ) 
+	export LD_LIBRARY_PATH=$(shell pwd)/$(BIN_DIR) ; $(foreach test,$(TESTS_BINS_ALL), $(test) || echo $$? ; ) 
 
 dirs:
 	@mkdir -p $(BIN_DIR) $(OBJ_DIRS)

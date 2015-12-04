@@ -11,7 +11,7 @@ all: release
 SRC_DIR_TO_FILES        = $(wildcard $(addsuffix /*,$(shell find $(1) -type d)))
 SRC_DIR_TO_C_CODEFILES   = $(filter %.c,$(call SRC_DIR_TO_FILES, $(1) ) ) 
 SRC_DIR_TO_CXX_CODEFILES = $(filter %.cc,$(call SRC_DIR_TO_FILES, $(1) ) )
-SRC_DIR_TO_OBJFILES      = $(subst $(1),$(OBJ_DIR),$(patsubst %.c, %.o, $(call SRC_DIR_TO_C_CODEFILES, $(1)) )) $(subst $(SRC_DIR),$(OBJ_DIR),$(patsubst %.cc, %.o, $(call SRC_DIR_TO_CXX_CODEFILES, $(1)) ))
+SRC_DIR_TO_OBJFILES      = $(subst $(1),$(OBJ_DIR),$(patsubst %.c, %.o, $(call SRC_DIR_TO_C_CODEFILES, $(1)) ) $(patsubst %.cc, %.o, $(call SRC_DIR_TO_CXX_CODEFILES, $(1)) ) )
 SRC_DIR_TO_DEPFILES      = $(subst $(1),$(OBJ_DIR),$(patsubst %.o, %.d, $(call SRC_DIR_TO_OBJFILES, $(1)) ))
 
 #functions end

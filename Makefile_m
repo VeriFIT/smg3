@@ -1,0 +1,208 @@
+#genericky makefile for projects of Michal Kotoun <xkotou04@stud.fit.vutbr.cz>
+
+#-----------
+#config me here
+#look for  dependencies  sector too
+
+#binary to run using run targets
+BINARY_RUN := tests
+#binaries to make
+BINARIES_C :=
+BINARIES_CXX :=
+#tests to make
+TESTS_BINS_C :=
+TESTS_BINS_CXX := tests
+#libraries to make
+LIBRARIES_C :=
+LIBRARIES_CXX := smg
+#-----------
+# to be created before build
+BIN_DIR := bin
+SRC_DIR := src
+SRC_DIRS := $(shell find $(SRC_DIR) -type d)
+SRC_TESTS_DIR := tests
+SRC_TESTS_DIRS := $(shell find $(SRC_TESTS_DIR) -type d)
+OBJ_DIR := obj
+# to be created before build
+OBJ_DIRS := $(subst $(SRC_DIR),$(OBJ_DIR),$(SRC_DIRS)) $(subst $(SRC_DIR),$(OBJ_DIR),$(SRC_TESTS_DIRS))
+#-----------
+ifeq ($(OS),Windows_NT)
+	SHARED_SUFFIX=.dll
+	STATIC_SUFIX=.lib
+	BINARY_SUFFIX=.exe
+	else
+	LIB_PREFIX=lib
+	SHARED_SUFFIX=.so
+	STATIC_SUFIX=.a
+	BINARY_SUFFIX=
+endif
+#-----------
+print-%  : ; @echo $* = $($*)
+#dependencies
+smglib := smg
+#everything from src into program
+SRC_DIRS_TO_FILES = $(wildcard $(addsuffix /*,$(shell find $(1) -type d)))
+SRC_DIRS_TO_C_FILES = $(filter %.c,$(call SRC_DIRS_TO_FILES, $(1) ) )
+SRC_DIRS_TO_CXX_FILES = $(filter %.cc,$(call SRC_DIRS_TO_FILES, $(1) ) )
+SRC_DIR_TO_OBJECT_FILES = $(subst $(SRC_DIR),$(OBJ_DIR),$(smglib_SRCFILES_C:%.c=%.o)) $(subst $(SRC_DIR),$(OBJ_DIR),$(smglib_SRCFILES_CXX:%.cc=%.o))
+
+$(info $(call SRC_DIRS_TO_C_FILES, $(SRC_DIRS)))
+
+exit
+
+smglib_CODEFILES    := $(addsuffix /*,$(SRC_DIRS))
+smglib_CODEFILES    := $(wildcard $(smglib_CODEFILES))
+smglib_SRCFILES_C   := $(filter %.c,$(smglib_CODEFILES))
+smglib_SRCFILES_CXX := $(filter %.cc,$(smglib_CODEFILES))
+smglib_OBJFILES     := $(subst $(SRC_DIR),$(OBJ_DIR),$(smglib_SRCFILES_C:%.c=%.o)) $(subst $(SRC_DIR),$(OBJ_DIR),$(smglib_SRCFILES_CXX:%.cc=%.o))
+smglib_DEPFILES     := $(subst $(SRC_DIR),$(OBJ_DIR),$(smglib_OBJFILES:%.o=%.d))
+
+program := tests
+#everything from src into program
+program_CODEFILES   := $(addsuffix /*,$(SRC_TESTS_DIRS))
+program_CODEFILES   := $(wildcard $(program_CODEFILES))
+program_SRCFILES_C   := $(filter %.c,$(program_CODEFILES))
+program_SRCFILES_CXX := $(filter %.cc,$(program_CODEFILES))
+program_OBJFILES     := $(subst $(SRC_TESTS_DIR),$(OBJ_DIR),$(program_SRCFILES_C:%.c=%.o)) $(subst $(SRC_TESTS_DIR),$(OBJ_DIR),$(program_SRCFILES_CXX:%.cc=%.o))
+program_DEPFILES     := $(subst $(SRC_TESTS_DIR),$(OBJ_DIR),$(program_OBJFILES:%.o=%.d))
+#-----------
+# -fPIC
+NDEBUG = -DNDEBUG
+CC = cc
+INCLUDEFLAGS = $(addprefix -I,$(SRC_DIRS))
+CFLAGS_B = $(CFLAGS) -std=c11 -Wall -pedantic -Wextra -Wconversion $(NDEBUG) $(INCLUDEFLAGS)
+CXXFLAGS_B = $(CXXFLAGS) -std=c++11 -Wall -pedantic -Wextra -Wconversion $(NDEBUG) $(INCLUDEFLAGS)
+#LDFLAGS += -pthread
+#-----------
+#not needed if we use "shell find"
+# - objectfiles are complete with paths, we reuse them for sourcefiles
+#vpath %.h $(SRC_DIRS)
+#vpath %.c $(SRC_DIRS)
+#-----------
+BINARIES_C_LIST = 	$(addprefix $(BIN_DIR)/,$(addsuffix $(BINARY_SUFFIX),$(BINARIES_C)))
+BINARIES_CXX_LIST = $(addprefix $(BIN_DIR)/,$(addsuffix $(BINARY_SUFFIX),$(BINARIES_CXX)))
+BINARIES_ALL = 		$(BINARIES_C_LIST) $(BINARIES_CXX_LIST)
+TESTS_BINS_C_LIST = 	$(addprefix $(BIN_DIR)/,$(addsuffix $(BINARY_SUFFIX),$(TESTS_BINS_C)))
+TESTS_BINS_CXX_LIST = $(addprefix $(BIN_DIR)/,$(addsuffix $(BINARY_SUFFIX),$(TESTS_BINS_CXX)))
+TESTS_BINS_ALL = 		$(TESTS_BINS_C_LIST) $(TESTS_BINS_CXX_LIST)
+LIBRARIES_C_SHARED = $(addprefix $(BIN_DIR)/,$(addsuffix $(SHARED_SUFFIX),$(LIBRARIES_C)))
+LIBRARIES_C_STATIC = $(addprefix $(BIN_DIR)/,$(addsuffix $(STATIC_SUFIX),$(LIBRARIES_C)))
+LIBRARIES_CXX_SHARED = $(addprefix $(BIN_DIR)/,$(addsuffix $(SHARED_SUFFIX),$(LIBRARIES_CXX)))
+LIBRARIES_CXX_STATIC = $(addprefix $(BIN_DIR)/,$(addsuffix $(STATIC_SUFIX),$(LIBRARIES_CXX)))
+LIBRARIES_ALL = 		$(LIBRARIES_C_SHARED) $(LIBRARIES_C_STATIC) $(LIBRARIES_CXX_SHARED) $(LIBRARIES_CXX_STATIC)
+#-----------
+
+$(info $(program_OBJFILES))
+$(info $(TESTS_BINS_ALL))
+
+.PHONY: all build release debug clean pack run makerun exportrun r mr er dmakerun dmr
+
+all: release
+
+release: CFLAGS := $(CFLAGS_B) -o2
+release: CXXFLAGS := $(CXXFLAGS_B) -o2
+release: build
+
+debug: NDEBUG :=
+debug: CFLAGS := $(CFLAGS_B) -g
+debug: CXXFLAGS := $(CXXFLAGS_B) -g
+debug: build
+
+derr: NDEBUG :=
+derr: CFLAGS := $(CFLAGS_B) -Werror -g
+derr: CXXFLAGS := $(CXXFLAGS_B) -Werror -g
+derr: build
+
+build: dirs $(BINARIES_ALL) $(LIBRARIES_ALL)
+
+tests: CFLAGS := $(CFLAGS_B)
+tests: CXXFLAGS := $(CXXFLAGS_B)
+tests: build-tests
+
+build-tests: dirs $(TESTS_BINS_ALL)
+
+dirs:
+	@mkdir -p $(BIN_DIR) $(OBJ_DIRS)
+
+#------------
+
+#for all files in, binaries all, test bins all , libs all create aproperiate program:objects binding
+#dependencies - screws colors in VS Code
+$(BIN_DIR)/$(smglib)$(SHARED_SUFFIX): $(smglib_OBJFILES)
+$(BIN_DIR)/$(LIB_PREFIX)$(smglib)$(STATIC_SUFIX): $(smglib_OBJFILES)
+$(BIN_DIR)/$(program)$(BINARY_SUFFIX): $(program_OBJFILES)
+
+-include $(smglib_DEPFILES)
+
+#------------
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(INCLUDEFLAGS) -MM -MF $(OBJ_DIR)/$*.d -MT $@ $<
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cc
+	$(CC) $(CXXFLAGS) -c $< -o $@
+	$(CC) $(INCLUDEFLAGS) -MM -MF $(OBJ_DIR)/$*.d -MT $@ $<
+
+#-----------
+
+$(BINARIES_C_LIST):
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+$(BINARIES_CXX_LIST):
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+
+$(LIBRARIES_C_SHARED):
+	$(CC) -shared $(CFLAGS) -o $(LIB_PREFIX)$@ $^
+
+$(LIBRARIES_C_STATIC):
+	ar rcs $(LIB_PREFIX)$@ $^
+
+$(LIBRARIES_CXX_SHARED):
+	$(CXX) -shared $(CXXFLAGS) -o $(LIB_PREFIX)$@ $^
+
+$(LIBRARIES_CXX_STATIC):
+	ar rcs $(LIB_PREFIX)$@ $^
+
+#-----------
+
+mr makerun: all
+	$(BIN_DIR)/$(BINARY_RUN)$(BINARY_SUFFIX) || echo $$?
+
+dmr dmakerun: debug
+	$(BIN_DIR)/$(BINARY_RUN)$(BINARY_SUFFIX) || echo $$?
+
+r run:
+	$(BIN_DIR)/$(BINARY_RUN)$(BINARY_SUFFIX) || echo $$?
+
+er exportrun:
+	export LD_LIBRARY_PATH="." ; $(BIN_DIR)/$(BINARY_RUN)$(BINARY_SUFFIX) || echo $$?
+
+clean:
+	$(RM) -rf $(BIN_DIR)/* $(OBJ_DIR)/*
+#rm -f *.o *.out $(BINARIES_ALL) $(LIBRARIES_C_SHARED) $(LIBRARIES_C_STATIC)
+
+cd: clean debug
+
+ce: clean derr
+
+pack: ;
+	rm -f ifj2015-xkotou04.zip && zip -r ifj2015-xkotou04.zip Makefile Doxyfile *.c *.cc *.h README README.*
+
+
+#----------
+#dependencies samples
+
+#h2o_objects = main.o atoms.o utils.o
+#h2o_headers = h2o.h debug_macros.h
+#h2o: $(h2o_objects)
+#$(h2o_objects): $(h2o_headers)
+
+#tail: tail.o rarray.o str.o error.o
+#wordcount: wordcount.c io.o print_function.o error.o $(LIB_PREFIX)htable$(SHARED_SUFFIX)
+##wordcount: LDFLAGS =  -L. -lhtable
+#je mozno linkovat s libhtable primo vypisem do "file listu" pokud je ve stejnem adresari
+#wordcount-static: wordcount.c io.o print_function.o error.o $(LIB_PREFIX)htable$(STATIC_SUFIX)
+#htable$(SHARED_SUFFIX): $(patsubst %.c,%.o,$(wildcard htab_*.c)) hash_function.o
+#htable$(STATIC_SUFIX): $(patsubst %.c,%.o,$(wildcard htab_*.c)) hash_function.o
+#----------

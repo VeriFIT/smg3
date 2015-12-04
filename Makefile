@@ -64,6 +64,9 @@ smglib_DEPFILES     := $(call SRC_DIR_TO_DEPFILES, $(SRC_DIR))
 program := tests
 program_OBJFILES     := $(call SRC_DIR_TO_OBJFILES, $(SRC_TESTS_DIR))
 program_DEPFILES     := $(call SRC_DIR_TO_DEPFILES, $(SRC_TESTS_DIR))
+
+$(info $(program_OBJFILES))
+
 #-----------
 NDEBUG = -DNDEBUG
 CC = cc
@@ -109,8 +112,6 @@ tests: CXXFLAGS := $(CXXFLAGS_B)
 tests: build-tests
 tests: run-tests
 
-$(info $(TESTS_BINS_ALL))
-
 build-tests: dirs $(TESTS_BINS_ALL)
 
 run-tests: 
@@ -136,6 +137,16 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(INCLUDEFLAGS) -MM -MF $(OBJ_DIR)/$*.d -MT $@ $<
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cc
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(INCLUDEFLAGS) -MM -MF $(OBJ_DIR)/$*.d -MT $@ $<
+
+#-----------
+
+$(OBJ_DIR)/%.o: $(SRC_TESTS_DIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(INCLUDEFLAGS) -MM -MF $(OBJ_DIR)/$*.d -MT $@ $<
+	
+$(OBJ_DIR)/%.o: $(SRC_TESTS_DIR)/%.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 	$(CXX) $(INCLUDEFLAGS) -MM -MF $(OBJ_DIR)/$*.d -MT $@ $<
 

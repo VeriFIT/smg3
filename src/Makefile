@@ -1,5 +1,4 @@
-export CXXFLAGS := -fPIC --std=c++11 -I. -I../exceptions
-
+export CXXFLAGS := -fPIC --std=c++11 -I. -I../exceptions -I../objects
 all: libsmg.so
 
 libsmg.so: objects_o exceptions_o graphs_o

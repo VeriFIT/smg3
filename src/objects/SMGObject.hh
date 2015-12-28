@@ -8,8 +8,10 @@ typedef int TObjectSize;
 class SMGObject
 {
 private:
+  static long id_counter;
   int size;
   std::string label;
+  long id;
 
 public:
   SMGObject(const int, const std::string);
@@ -20,6 +22,7 @@ public:
   static const SMGObject & getNullObject();
   std::string getLabel() const;
   TObjectSize getSize() const;
+  const long getId() const;
 
   virtual bool isAbstract() const = 0;
   virtual void accept(SMGObjectVisitor & visitor) const = 0;

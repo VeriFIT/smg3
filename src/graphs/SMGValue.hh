@@ -4,11 +4,11 @@
 
 class SMGValue {
 private:
-	static long id_counter;
-	long id;
-	SMGValue(long id);
+    static long id_counter;
+    long id;
+    SMGValue(long id);
 public:
-	static const SMGValue getNewValue();
-	const long getId() const;
+    static const SMGValue getNewValue();
+    const long getId() const;
 };
 

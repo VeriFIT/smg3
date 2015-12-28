@@ -3,7 +3,7 @@
 all:
 	make -C src all
 
-tests:
+tests: all
 	make -C tests tests
 
 clean:

@@ -1,4 +1,4 @@
-TESTS := SMGValueTest
+TESTS := SMGEdgePointsToTest SMGValueTest
 
 % : %.cc
 	$(CXX) --std=c++11 $^ -I../../src/graphs -I../../src/objects -I../../src/exceptions -L../../src -lsmg -lgtest -lgtest_main -o $@

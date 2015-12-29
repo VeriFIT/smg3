@@ -77,71 +77,56 @@ TEST(SMGEdgeHasValue, overlapsWith) {
     EXPECT_TRUE(at4.overlapsWith(whole));
 }
 
-//public class SMGEdgeHasValueTest {
-//
-//  private static final int OFFSET0 = 0;
-//
-//  private static final int LENGTH12 = 12;
-//
-//    private static final int SIZE12 = 12;
-//
-//  private static final CType MOCKTYPE12 = CType.createTypeWithLength(LENGTH12);
-//
-//
-//
-//
-//  @Test
-//    public final void testIsCompatibleField() {
-//    SMGObject first = new SMGRegion(SIZE12, "object-1");
-//    SMGObject second = new SMGRegion(SIZE12, "object-2");
-//    Integer value = SMGValueFactory.getNewValue();
-//
-//    SMGEdgeHasValue firstAt0 = new SMGEdgeHasValue(MOCKTYPE4, 0, first, value);
-//    SMGEdgeHasValue firstAt2 = new SMGEdgeHasValue(MOCKTYPE4, 2, first, value);
-//    SMGEdgeHasValue firstAt4 = new SMGEdgeHasValue(MOCKTYPE4, OFFSET4, first, value);
-//    SMGEdgeHasValue first12at0 = new SMGEdgeHasValue(MOCKTYPE12, 0, first, value);
-//
-//    SMGEdgeHasValue secondAt0 = new SMGEdgeHasValue(MOCKTYPE4, 0, second, value);
-//    SMGEdgeHasValue secondAt2 = new SMGEdgeHasValue(MOCKTYPE4, 2, second, value);
-//    SMGEdgeHasValue secondAt4 = new SMGEdgeHasValue(MOCKTYPE4, OFFSET4, second, value);
-//    SMGEdgeHasValue second12at0 = new SMGEdgeHasValue(MOCKTYPE12, 0, second, value);
-//
-//    Assert.assertTrue(firstAt0.isCompatibleField(firstAt0));
-//    Assert.assertFalse(firstAt0.isCompatibleField(firstAt2));
-//    Assert.assertFalse(firstAt0.isCompatibleField(firstAt4));
-//    Assert.assertFalse(firstAt0.isCompatibleField(first12at0));
-//    Assert.assertTrue(firstAt0.isCompatibleField(secondAt0));
-//    Assert.assertFalse(firstAt0.isCompatibleField(secondAt2));
-//    Assert.assertFalse(firstAt0.isCompatibleField(secondAt4));
-//    Assert.assertFalse(firstAt0.isCompatibleField(second12at0));
-//  }
-//
-//  @Test
-//    public final void testIsCompatibleFieldOnSameObject() {
-//    SMGObject first = new SMGRegion(SIZE12, "object-1");
-//    SMGObject second = new SMGRegion(SIZE12, "object-2");
-//    Integer value = SMGValueFactory.getNewValue();
-//
-//    final int offset2 = 2;
-//    SMGEdgeHasValue firstAt0 = new SMGEdgeHasValue(MOCKTYPE4, OFFSET0, first, value);
-//    SMGEdgeHasValue firstAt2 = new SMGEdgeHasValue(MOCKTYPE4, offset2, first, value);
-//    SMGEdgeHasValue firstAt4 = new SMGEdgeHasValue(MOCKTYPE4, OFFSET4, first, value);
-//    SMGEdgeHasValue first12At0 = new SMGEdgeHasValue(MOCKTYPE12, OFFSET0, first, value);
-//
-//    SMGEdgeHasValue secondAt0 = new SMGEdgeHasValue(MOCKTYPE4, OFFSET0, second, value);
-//    SMGEdgeHasValue secondAt2 = new SMGEdgeHasValue(MOCKTYPE4, offset2, second, value);
-//    SMGEdgeHasValue secondAt4 = new SMGEdgeHasValue(MOCKTYPE4, OFFSET4, second, value);
-//    SMGEdgeHasValue second12at0 = new SMGEdgeHasValue(MOCKTYPE12, OFFSET0, second, value);
-//
-//    Assert.assertTrue(firstAt0.isCompatibleFieldOnSameObject(firstAt0));
-//    Assert.assertFalse(firstAt0.isCompatibleFieldOnSameObject(firstAt2));
-//    Assert.assertFalse(firstAt0.isCompatibleFieldOnSameObject(firstAt4));
-//    Assert.assertFalse(firstAt0.isCompatibleFieldOnSameObject(first12At0));
-//    Assert.assertFalse(firstAt0.isCompatibleFieldOnSameObject(secondAt0));
-//    Assert.assertFalse(firstAt0.isCompatibleFieldOnSameObject(secondAt2));
-//    Assert.assertFalse(firstAt0.isCompatibleFieldOnSameObject(secondAt4));
-//    Assert.assertFalse(firstAt0.isCompatibleFieldOnSameObject(second12at0));
-//  }
+TEST(SMGEdgeHasValue, isCompatibleField) {
+    const SMGObject& first = SMGRegion(SIZE12, "object-1");
+    const SMGObject& second = SMGRegion(SIZE12, "object-2");
+    const SMGValue& value = SMGValue::getNewValue();
+
+    const SMGEdgeHasValue& firstAt0 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, first, value);
+    const SMGEdgeHasValue& firstAt2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET2, first, value);
+    const SMGEdgeHasValue& firstAt4 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, first, value);
+    const SMGEdgeHasValue& first12At0 = SMGEdgeHasValue(MOCKTYPE12, OFFSET0, first, value);
+
+    const SMGEdgeHasValue& secondAt0 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, second, value);
+    const SMGEdgeHasValue& secondAt2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET2, second, value);
+    const SMGEdgeHasValue& secondAt4 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, second, value);
+    const SMGEdgeHasValue& second12At0 = SMGEdgeHasValue(MOCKTYPE12, OFFSET0, second, value);
+
+    EXPECT_TRUE(firstAt0.isCompatibleField(firstAt0));
+    EXPECT_FALSE(firstAt0.isCompatibleField(firstAt2));
+    EXPECT_FALSE(firstAt0.isCompatibleField(firstAt4));
+    EXPECT_FALSE(firstAt0.isCompatibleField(first12At0));
+
+    EXPECT_TRUE(firstAt0.isCompatibleField(secondAt0));
+    EXPECT_FALSE(firstAt0.isCompatibleField(secondAt2));
+    EXPECT_FALSE(firstAt0.isCompatibleField(secondAt4));
+    EXPECT_FALSE(firstAt0.isCompatibleField(second12At0));
+}
+
+TEST(SMGEdgeHasValue, isCompatibleFieldOnSameObject) {
+    const SMGObject& first = SMGRegion(SIZE12, "object-1");
+    const SMGObject& second = SMGRegion(SIZE12, "object-2");
+    const SMGValue& value = SMGValue::getNewValue();
+
+    const SMGEdgeHasValue firstAt0 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, first, value);
+    const SMGEdgeHasValue firstAt2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET2, first, value);
+    const SMGEdgeHasValue firstAt4 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, first, value);
+    const SMGEdgeHasValue first12At0 = SMGEdgeHasValue(MOCKTYPE12, OFFSET0, first, value);
+
+    const SMGEdgeHasValue secondAt0 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, second, value);
+    const SMGEdgeHasValue secondAt2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET2, second, value);
+    const SMGEdgeHasValue secondAt4 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, second, value);
+    const SMGEdgeHasValue second12At0 = SMGEdgeHasValue(MOCKTYPE12, OFFSET0, second, value);
+
+    EXPECT_TRUE(firstAt0.isCompatibleFieldOnSameObject(firstAt0));
+    EXPECT_FALSE(firstAt0.isCompatibleFieldOnSameObject(firstAt2));
+    EXPECT_FALSE(firstAt0.isCompatibleFieldOnSameObject(firstAt4));
+    EXPECT_FALSE(firstAt0.isCompatibleFieldOnSameObject(first12At0));
+    EXPECT_FALSE(firstAt0.isCompatibleFieldOnSameObject(secondAt0));
+    EXPECT_FALSE(firstAt0.isCompatibleFieldOnSameObject(secondAt2));
+    EXPECT_FALSE(firstAt0.isCompatibleFieldOnSameObject(secondAt4));
+    EXPECT_FALSE(firstAt0.isCompatibleFieldOnSameObject(second12At0));
+}
 //
 //  @Test(expected = IllegalArgumentException.class)
 //    public final void testIllegalOverlapsWith() {

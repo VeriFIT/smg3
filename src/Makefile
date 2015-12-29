@@ -1,4 +1,4 @@
-export CXXFLAGS := -fPIC --std=c++11 -I. -I../exceptions -I../objects -I../types
+export CXXFLAGS := -fPIC --std=c++11 -I. -I../exceptions -I../objects -I../types -fsanitize=address -fsanitize=leak -fsanitize=undefined -fno-sanitize-recover=leak,undefined,address
 all: libsmg.so
 
 libsmg.so: objects_o exceptions_o graphs_o types_o

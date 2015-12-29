@@ -1,7 +1,7 @@
 TESTS := SMGObjectTest SMGRegionTest
 
 % : %.cxx
-	$(CXX) --std=c++11 $^ -I../../src/objects -I../../src/exceptions -L../../src -lsmg -lgtest -lgtest_main -o $@
+	$(CXX) --std=c++11 $^ -I../../src/objects -I../../src/exceptions -L../../src -lsmg -lgtest -lgtest_main -o $@ -fsanitize=leak -fsanitize=undefined -fsanitize=address -fno-sanitize-recover=leak,undefined,address
 
 tests: export LD_LIBRARY_PATH=../../src
 tests: $(TESTS)

@@ -1,7 +1,7 @@
-TESTS := SMGEdgePointsToTest SMGValueTest
+TESTS := SMGEdgePointsToTest SMGValueTest SMGEdgeHasValueTest
 
 % : %.cc
-	$(CXX) --std=c++11 $^ -I../../src/graphs -I../../src/objects -I../../src/exceptions -L../../src -lsmg -lgtest -lgtest_main -o $@
+	$(CXX) --std=c++11 $^ -I../../src/graphs -I../../src/objects -I../../src/exceptions -I../../src/types -L../../src -lsmg -lgtest -lgtest_main -o $@
 
 tests: export LD_LIBRARY_PATH=../../src
 tests: $(TESTS)

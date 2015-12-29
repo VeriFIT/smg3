@@ -1,4 +1,4 @@
-OBJFILES := SMGValue.o SMGEdge.o SMGEdgePointsTo.o
+OBJFILES := SMGValue.o SMGEdge.o SMGEdgePointsTo.o SMGEdgeHasValue.o
 
 all: ${OBJFILES}
 

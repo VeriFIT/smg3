@@ -29,8 +29,8 @@ const bool SMGEdgeHasValue::isConsistentWith(const SMGEdgeHasValue& pOther) cons
 
 const bool SMGEdgeHasValue::overlapsWith(const SMGEdgeHasValue& pOther) const {
     if (getObject().getId() != pOther.getObject().getId()) {
-        throw IllegalArgumentException(
-                "Call of overlapsWith() on Has-Value edges pair not originating from the same object");
+        std::string message = "Call of overlapsWith() on Has-Value edges pair not originating from the same object";
+        throw IllegalArgumentException(message.c_str());
     }
 
     const int otStart = pOther.getOffset();

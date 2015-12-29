@@ -25,7 +25,6 @@ TEST(SMGEdgeHasValue, sanity) {
 
     EXPECT_EQ(obj.getId(), hv.getObject().getId());
     EXPECT_EQ(OFFSET4, hv.getOffset());
-    std::cout << &hv.getType() << std::endl;
     EXPECT_EQ(&MOCKTYPE4, &hv.getType());
     EXPECT_EQ(SIZE4, hv.getSizeInBytes());
 }

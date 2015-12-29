@@ -1,6 +1,7 @@
 #include "SMGRegion.hh"
 #include "SMGObjectVisitor.hh"
 #include <UnsupportedOperationException.hh>
+#include <string>
 
 SMGRegion::SMGRegion(const int pSize, std::string pLabel)
   :SMGObject(pSize, pLabel)

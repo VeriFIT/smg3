@@ -1,4 +1,5 @@
 #include <SMGEdgeHasValue.hh>
+#include <IllegalArgumentException.hh>
 #include <iostream>
 
 SMGEdgeHasValue::SMGEdgeHasValue(const SMGCType& pType, const int pOffset, const SMGObject& pObject,
@@ -26,10 +27,31 @@ const bool SMGEdgeHasValue::isConsistentWith(const SMGEdgeHasValue& pOther) cons
     return true;
 }
 
-//  @Override
-//  public final boolean isConsistentWith(final SMGEdge other) {
-//
-//  }
+const bool SMGEdgeHasValue::overlapsWith(const SMGEdgeHasValue& pOther) const {
+    if (getObject().getId() != pOther.getObject().getId()) {
+        throw IllegalArgumentException(
+                "Call of overlapsWith() on Has-Value edges pair not originating from the same object");
+    }
+
+    const int otStart = pOther.getOffset();
+    const int otEnd = otStart + pOther.getSizeInBytes();
+
+    return overlapsWith(otStart, otEnd);
+}
+
+const bool SMGEdgeHasValue::overlapsWith(const int pOtherStart, const int pOtherEnd) const {
+    int myStart = offset;
+    int myEnd = myStart + type.getSize();
+
+    if (myStart < pOtherStart) {
+        return (myEnd > pOtherStart);
+    } else if (pOtherStart < myStart) {
+        return (pOtherEnd > myStart);
+    }
+
+    // Start offsets are equal, always overlap
+    return true;
+}
 //
 //  public final boolean overlapsWith(final SMGEdgeHasValue other) {
 //    if (getObject() != other.getObject()) {

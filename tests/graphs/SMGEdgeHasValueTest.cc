@@ -8,11 +8,15 @@
 
 const int SIZE4 = 4;
 const int SIZE8 = 8;
+const int SIZE12 = 12;
 
 const int OFFSET0 = 0;
+const int OFFSET2 = 2;
 const int OFFSET4 = 4;
+const int OFFSET6 = 6;
 
 const SMGCType& MOCKTYPE4 = SMGCType::createTypeWithSize(4);
+const SMGCType& MOCKTYPE12 = SMGCType::createTypeWithSize(12);
 
 TEST(SMGEdgeHasValue, sanity) {
     const SMGObject& obj = SMGRegion(SIZE8, "object");
@@ -44,38 +48,35 @@ TEST(SMGEdgeHasValue, isConsistentWith) {
     EXPECT_TRUE(hv2.isConsistentWith(hv4));
 }
 
-//  @Test
-//    public final void testOverlapsWith() {
-//    SMGObject object = new SMGRegion(SIZE12, "object");
-//    Integer value = SMGValueFactory.getNewValue();
-//
-//    SMGEdgeHasValue at0 = new SMGEdgeHasValue(MOCKTYPE4, 0, object, value);
-//    SMGEdgeHasValue at2 = new SMGEdgeHasValue(MOCKTYPE4, 2, object, value);
-//
-//    final int offset6 = 6;
-//    SMGEdgeHasValue at4 = new SMGEdgeHasValue(MOCKTYPE4, OFFSET4, object, value);
-//    SMGEdgeHasValue at6 = new SMGEdgeHasValue(MOCKTYPE4, offset6, object, value);
-//
-//    Assert.assertTrue(at0.overlapsWith(at2));
-//    Assert.assertTrue(at2.overlapsWith(at0));
-//    Assert.assertTrue(at2.overlapsWith(at4));
-//    Assert.assertTrue(at4.overlapsWith(at2));
-//    Assert.assertTrue(at4.overlapsWith(at6));
-//    Assert.assertTrue(at6.overlapsWith(at4));
-//
-//    Assert.assertTrue(at0.overlapsWith(at0));
-//
-//    Assert.assertFalse(at0.overlapsWith(at4));
-//    Assert.assertFalse(at0.overlapsWith(at6));
-//    Assert.assertFalse(at2.overlapsWith(at6));
-//    Assert.assertFalse(at4.overlapsWith(at0));
-//    Assert.assertFalse(at6.overlapsWith(at0));
-//    Assert.assertFalse(at6.overlapsWith(at2));
-//
-//    SMGEdgeHasValue whole = new SMGEdgeHasValue(MOCKTYPE12, 0, object, value);
-//    Assert.assertTrue(whole.overlapsWith(at4));
-//    Assert.assertTrue(at4.overlapsWith(whole));
-//  }
+TEST(SMGEdgeHasValue, overlapsWith) {
+    const SMGObject& object = SMGRegion(SIZE12, "object");
+    const SMGValue& value = SMGValue(SMGValue::getNewValue());
+
+    const SMGEdgeHasValue& at0 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, object, value);
+    const SMGEdgeHasValue& at2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET2, object, value);
+    const SMGEdgeHasValue& at4 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, object, value);
+    const SMGEdgeHasValue& at6 = SMGEdgeHasValue(MOCKTYPE4, OFFSET6, object, value);
+
+    EXPECT_TRUE(at0.overlapsWith(at2));
+    EXPECT_TRUE(at2.overlapsWith(at0));
+    EXPECT_TRUE(at2.overlapsWith(at4));
+    EXPECT_TRUE(at4.overlapsWith(at2));
+    EXPECT_TRUE(at4.overlapsWith(at6));
+    EXPECT_TRUE(at6.overlapsWith(at4));
+
+    EXPECT_TRUE(at0.overlapsWith(at0));
+
+    EXPECT_FALSE(at0.overlapsWith(at4));
+    EXPECT_FALSE(at0.overlapsWith(at6));
+    EXPECT_FALSE(at2.overlapsWith(at6));
+    EXPECT_FALSE(at4.overlapsWith(at0));
+    EXPECT_FALSE(at6.overlapsWith(at0));
+    EXPECT_FALSE(at6.overlapsWith(at2));
+
+    const SMGEdgeHasValue& whole = SMGEdgeHasValue(MOCKTYPE12, OFFSET0, object, value);
+    EXPECT_TRUE(whole.overlapsWith(at4));
+    EXPECT_TRUE(at4.overlapsWith(whole));
+}
 
 //public class SMGEdgeHasValueTest {
 //

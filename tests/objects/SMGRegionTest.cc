@@ -4,8 +4,8 @@
 #include <string>
 #include <typeinfo>
 
-int SIZE8 = 8;
-int SIZE10 = 10;
+static int SIZE8 = 8;
+static int SIZE10 = 10;
 
 SMGRegion region8 = SMGRegion(8, "region");
 

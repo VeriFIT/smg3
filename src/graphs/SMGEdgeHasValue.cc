@@ -4,10 +4,10 @@
 
 SMGEdgeHasValue::SMGEdgeHasValue(const SMGCType& pType, const int pOffset, const SMGObject& pObject,
         const SMGValue& pValue) :
-        SMGEdge(pValue, pObject), type(pType), offset(pOffset) {
+        SMGEdge(pValue, pObject), offset(pOffset), type(pType) {
 }
 
-const long SMGEdgeHasValue::getOffset() const {
+long SMGEdgeHasValue::getOffset() const {
     return offset;
 }
 
@@ -15,11 +15,11 @@ const SMGCType& SMGEdgeHasValue::getType() const {
     return type;
 }
 
-const int SMGEdgeHasValue::getSizeInBytes() const {
+int SMGEdgeHasValue::getSizeInBytes() const {
     return type.getSize();
 }
 
-const bool SMGEdgeHasValue::isConsistentWith(const SMGEdgeHasValue& pOther) const {
+bool SMGEdgeHasValue::isConsistentWith(const SMGEdgeHasValue& pOther) const {
     if (getObject().getId() == pOther.getObject().getId() && offset == pOther.offset && (&(type) == &(pOther.type))) {
         return getValue().getId() == pOther.getValue().getId();
     }
@@ -27,7 +27,7 @@ const bool SMGEdgeHasValue::isConsistentWith(const SMGEdgeHasValue& pOther) cons
     return true;
 }
 
-const bool SMGEdgeHasValue::overlapsWith(const SMGEdgeHasValue& pOther) const {
+bool SMGEdgeHasValue::overlapsWith(const SMGEdgeHasValue& pOther) const {
     if (getObject().getId() != pOther.getObject().getId()) {
         std::string message = "Call of overlapsWith() on Has-Value edges pair not originating from the same object";
         throw IllegalArgumentException(message.c_str());
@@ -39,7 +39,7 @@ const bool SMGEdgeHasValue::overlapsWith(const SMGEdgeHasValue& pOther) const {
     return overlapsWith(otStart, otEnd);
 }
 
-const bool SMGEdgeHasValue::overlapsWith(const int pOtherStart, const int pOtherEnd) const {
+bool SMGEdgeHasValue::overlapsWith(const int pOtherStart, const int pOtherEnd) const {
     int myStart = offset;
     int myEnd = myStart + type.getSize();
 
@@ -53,10 +53,10 @@ const bool SMGEdgeHasValue::overlapsWith(const int pOtherStart, const int pOther
     return true;
 }
 
-const bool SMGEdgeHasValue::isCompatibleField(const SMGEdgeHasValue& pOther) const {
+bool SMGEdgeHasValue::isCompatibleField(const SMGEdgeHasValue& pOther) const {
     return &type == &(pOther.type) && (offset == pOther.offset);
 }
 
-const bool SMGEdgeHasValue::isCompatibleFieldOnSameObject(const SMGEdgeHasValue& pOther) const {
+bool SMGEdgeHasValue::isCompatibleFieldOnSameObject(const SMGEdgeHasValue& pOther) const {
     return isCompatibleField(pOther) && (getObject().getId() == pOther.getObject().getId());
 }

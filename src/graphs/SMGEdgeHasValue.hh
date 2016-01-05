@@ -12,12 +12,12 @@ private:
     const SMGCType& type;
 public:
     SMGEdgeHasValue(const SMGCType& pType, const int pOffset, const SMGObject& pObject, const SMGValue& pValue);
-    const long getOffset() const;
+    long getOffset() const;
     const SMGCType& getType() const;
-    const int getSizeInBytes() const;
-    const bool isConsistentWith(const SMGEdgeHasValue& pOther) const;
-    const bool overlapsWith(const SMGEdgeHasValue& pOther) const;
-    const bool overlapsWith(const int pOtherStart, const int pOtherEnd) const;
-    const bool isCompatibleField(const SMGEdgeHasValue& pOther) const;
-    const bool isCompatibleFieldOnSameObject(const SMGEdgeHasValue& pOther) const;
+    int getSizeInBytes() const;
+    bool isConsistentWith(const SMGEdgeHasValue& pOther) const;
+    bool overlapsWith(const SMGEdgeHasValue& pOther) const;
+    bool overlapsWith(const int pOtherStart, const int pOtherEnd) const;
+    bool isCompatibleField(const SMGEdgeHasValue& pOther) const;
+    bool isCompatibleFieldOnSameObject(const SMGEdgeHasValue& pOther) const;
 };

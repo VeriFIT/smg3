@@ -9,6 +9,6 @@ private:
     SMGValue(long id);
 public:
     static const SMGValue getNewValue();
-    const long getId() const;
+    long getId() const;
 };
 

@@ -9,7 +9,7 @@ all: release
 #functions
 
 SRC_DIR_TO_FILES        = $(wildcard $(addsuffix /*,$(shell find $(1) -type d)))
-SRC_DIR_TO_C_CODEFILES   = $(filter %.c,$(call SRC_DIR_TO_FILES, $(1) ) ) 
+SRC_DIR_TO_C_CODEFILES   = $(filter %.c,$(call SRC_DIR_TO_FILES, $(1) ) )
 SRC_DIR_TO_CXX_CODEFILES = $(filter %.cc,$(call SRC_DIR_TO_FILES, $(1) ) )
 SRC_DIR_TO_OBJFILES      = $(subst $(1),$(OBJ_DIR),$(patsubst %.c, %.o, $(call SRC_DIR_TO_C_CODEFILES, $(1)) ) $(patsubst %.cc, %.o, $(call SRC_DIR_TO_CXX_CODEFILES, $(1)) ) )
 SRC_DIR_TO_DEPFILES      = $(subst $(1),$(OBJ_DIR),$(patsubst %.o, %.d, $(call SRC_DIR_TO_OBJFILES, $(1)) ))
@@ -46,7 +46,7 @@ ifeq ($(OS),Windows_NT)
 	SHARED_SUFFIX=.dll
 	STATIC_SUFIX=.lib
 	BINARY_SUFFIX=.exe
-	GLOBALFLAGS := 
+	GLOBALFLAGS :=
 	else
 	LIB_PREFIX=lib
 	SHARED_SUFFIX=.so
@@ -93,8 +93,8 @@ release: CXXFLAGS := $(CXXFLAGS_B) -o3
 release: build
 
 debug: NDEBUG :=
-debug: CFLAGS := $(CFLAGS_B) -g
-debug: CXXFLAGS := $(CXXFLAGS_B) -g
+debug: CFLAGS := $(CFLAGS_B) -g -fsanitize=address -fsanitize=leak -fsanitize=undefined
+debug: CXXFLAGS := $(CXXFLAGS_B) -g -fsanitize=address -fsanitize=leak -fsanitize=undefined
 debug: build
 
 derr: NDEBUG :=
@@ -105,8 +105,8 @@ derr: build
 build: dirs $(BINARIES_ALL) $(LIBRARIES_ALL)
 
 tests: LDFLAGS := $(LDFLAGS) -l$(library) -lgtest -lgtest_main
-tests: CFLAGS := $(CFLAGS_B)
-tests: CXXFLAGS := $(CXXFLAGS_B)
+tests: CFLAGS := $(CFLAGS_B) -fsanitize=address -fsanitize=leak -fsanitize=undefined
+tests: CXXFLAGS := $(CXXFLAGS_B) -fsanitize=address -fsanitize=leak -fsanitize=undefined
 tests: $(info Building tests $(TESTS_BINS_ALL))
 tests: build-tests
 tests: $(info Running tests $(TESTS_BINS_ALL))
@@ -114,8 +114,8 @@ tests: run-tests
 
 build-tests: dirs $(TESTS_BINS_ALL)
 
-run-tests: 
-	export LD_LIBRARY_PATH=$(shell pwd)/$(BIN_DIR) ; $(foreach test,$(TESTS_BINS_ALL), $(test) || echo $$? ; ) 
+run-tests:
+	export LD_LIBRARY_PATH=$(shell pwd)/$(BIN_DIR) ; $(foreach test,$(TESTS_BINS_ALL), $(test) || echo $$? ; )
 
 dirs:
 	@mkdir -p $(BIN_DIR) $(OBJ_DIRS)
@@ -145,7 +145,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cc
 $(OBJ_DIR)/%.o: $(SRC_TESTS_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 	$(CC) $(INCLUDEFLAGS) -MM -MF $(OBJ_DIR)/$*.d -MT $@ $<
-	
+
 $(OBJ_DIR)/%.o: $(SRC_TESTS_DIR)/%.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 	$(CXX) $(INCLUDEFLAGS) -MM -MF $(OBJ_DIR)/$*.d -MT $@ $<

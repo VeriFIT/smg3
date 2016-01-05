@@ -154,11 +154,11 @@ $(OBJ_DIR)/%.o: $(SRC_TESTS_DIR)/%.cc
 
 #TODO: which flags use for linking?
 $(BINARIES_ALL) $(TESTS_BINS_ALL):
-	$(CXX) -o $@ $^ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 #TODO: which flags use for linking?
 $(LIBRARIES_SHARED):
-	$(CXX) -shared -o $@ $^ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -shared -o $@ $^ $(LDFLAGS)
 
 $(LIBRARIES_STATIC):
 	ar rcs $@ $^

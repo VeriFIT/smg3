@@ -4,7 +4,7 @@ script: make && make tests
 compiler:
   - gcc
 install:
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
 
 before_install:
   - "cd /usr/src/gtest && sudo rm -f Makefile; sudo cmake . -Dgtest_disable_pthreads=ON  && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
@@ -14,6 +14,6 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    - gcc-4.8
-    - g++-4.8
+    - gcc-4.9
+    - g++-4.9
     - libgtest-dev

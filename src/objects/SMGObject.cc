@@ -1,7 +1,11 @@
 #include "SMGObject.hh"
 
+long SMGObject::id_counter = 0;
+
 SMGObject::SMGObject(const int pSize, const std::string pLabel)
-   : size(pSize), label(pLabel) {}
+   : size(pSize), label(pLabel) {
+	id = SMGObject::id_counter++;
+}
 
 // ReSharper disable once CppMemberFunctionMayBeStatic
 std::string SMGObject::getClassName() const
@@ -31,4 +35,8 @@ bool SMGObject::notNull() const{
 
 bool SMGNullObject::notNull() const{
   return false;
+}
+
+long SMGObject::getId() const {
+	return id;
 }

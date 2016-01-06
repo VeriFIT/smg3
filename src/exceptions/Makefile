@@ -1,4 +1,4 @@
-OBJFILES := UnsupportedOperationException.o
+OBJFILES := UnsupportedOperationException.o IllegalArgumentException.o
 
 all: ${OBJFILES}
 

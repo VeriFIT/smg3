@@ -33,30 +33,45 @@
 int SIZE8 = 8;
 int SIZE12 = 12;
 
-class TestingObject : public SMGObject {
-  public:
-    TestingObject(const int pSize, const std::string pLabel): SMGObject(pSize, pLabel) {}
-    ~TestingObject() {};
+class TestingObject: public SMGObject {
+public:
+    TestingObject(const int pSize, const std::string pLabel) :
+            SMGObject(pSize, pLabel) {
+    }
+    ~TestingObject() {
+    }
+    ;
     TestingObject(const TestingObject&) = default;
-    virtual bool isAbstract() const override { return false; }
-    void accept(SMGObjectVisitor & visitor) const override { (void)visitor; }
-    virtual bool isMoreGeneral(const SMGObject &) const override { return false; };
-    virtual const SMGObject &join(const SMGObject &) const override { return *this; }
-    virtual bool notNull() const {return true;}
+    virtual bool isAbstract() const override {
+        return false;
+    }
+    void accept(SMGObjectVisitor & visitor) const override {
+        (void) visitor;
+    }
+    virtual bool isMoreGeneral(const SMGObject &) const override {
+        return false;
+    }
+    ;
+    virtual const SMGObject &join(const SMGObject &) const override {
+        return *this;
+    }
+    virtual bool notNull() const {
+        return true;
+    }
 };
 
 TestingObject object8 = TestingObject(8, "label");
 TestingObject object12 = TestingObject(12, "another label");
 
 TEST(SMGObject, getNullObjectTest) {
-  const SMGObject &nullObject = SMGObject::getNullObject();
-  EXPECT_FALSE(nullObject.notNull());
-  EXPECT_TRUE(object8.notNull());
-  EXPECT_FALSE(nullObject.isAbstract());
-  EXPECT_FALSE(nullObject.isMoreGeneral(object8));
-  EXPECT_FALSE(nullObject.isMoreGeneral(nullObject));
-  EXPECT_EQ(&nullObject, &nullObject.join(nullObject));
-  EXPECT_EQ(&object8, &nullObject.join(object8));
+    const SMGObject &nullObject = SMGObject::getNullObject();
+    EXPECT_FALSE(nullObject.notNull());
+    EXPECT_TRUE(object8.notNull());
+    EXPECT_FALSE(nullObject.isAbstract());
+    EXPECT_FALSE(nullObject.isMoreGeneral(object8));
+    EXPECT_FALSE(nullObject.isMoreGeneral(nullObject));
+    EXPECT_EQ(&nullObject, &nullObject.join(nullObject));
+    EXPECT_EQ(&object8, &nullObject.join(object8));
 }
 
 //	public final void testSMGObjectIntString() {
@@ -69,16 +84,16 @@ TEST(SMGObject, getNullObjectTest) {
 //    Assert.assertEquals("another label", object12copy.getLabel());
 //  }
 
-TEST(SMGObject, PropertySanity){
-  EXPECT_EQ(SIZE8, object8.getSize());
-  EXPECT_STREQ("label", object8.getLabel().c_str());
-  EXPECT_EQ(SIZE12, object12.getSize());
-  EXPECT_STREQ("another label", object12.getLabel().c_str());
-  SMGObject* object12Copy = new TestingObject(object12);
-  EXPECT_EQ(SIZE12, object12Copy->getSize());
-  EXPECT_STREQ("another label", object12Copy->getLabel().c_str());
+TEST(SMGObject, PropertySanity) {
+    EXPECT_EQ(SIZE8, object8.getSize());
+    EXPECT_STREQ("label", object8.getLabel().c_str());
+    EXPECT_EQ(SIZE12, object12.getSize());
+    EXPECT_STREQ("another label", object12.getLabel().c_str());
+    SMGObject* object12Copy = new TestingObject(object12);
+    EXPECT_EQ(SIZE12, object12Copy->getSize());
+    EXPECT_STREQ("another label", object12Copy->getLabel().c_str());
+    delete object12Copy;
 }
-
 
 //  private static class TestingObject extends SMGObject {
 //

@@ -35,3 +35,9 @@ bin/
 
 #IntelliJ CLion
 .idea/
+
+#Eclipse stuff
+.project
+.checkstyle
+.settings
+.cproject

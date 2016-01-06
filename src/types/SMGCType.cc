@@ -15,6 +15,6 @@ SMGCType::SMGCType(const int pSize) :
         size(pSize) {
 }
 
-const int SMGCType::getSize() const {
+int SMGCType::getSize() const {
     return size;
 }

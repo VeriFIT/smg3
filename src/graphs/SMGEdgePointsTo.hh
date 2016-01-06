@@ -10,6 +10,6 @@ private:
     long offset;
 public:
     SMGEdgePointsTo(const SMGValue& pValue, const SMGObject& pObject, int pOffset);
-    const long getOffset() const;
+    long getOffset() const;
     bool isConsistentWith(const SMGEdgePointsTo &pOtherEdge) const;
 };

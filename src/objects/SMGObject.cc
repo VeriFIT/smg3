@@ -37,6 +37,6 @@ bool SMGNullObject::notNull() const{
   return false;
 }
 
-const long SMGObject::getId() const {
+long SMGObject::getId() const {
 	return id;
 }

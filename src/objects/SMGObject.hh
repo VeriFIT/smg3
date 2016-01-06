@@ -22,7 +22,7 @@ public:
   static const SMGObject & getNullObject();
   std::string getLabel() const;
   TObjectSize getSize() const;
-  const long getId() const;
+  long getId() const;
 
   virtual bool isAbstract() const = 0;
   virtual void accept(SMGObjectVisitor & visitor) const = 0;

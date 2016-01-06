@@ -12,6 +12,6 @@ SMGValue::SMGValue(const long pId) {
     this->id = pId;
 }
 
-const long SMGValue::getId() const {
+long SMGValue::getId() const {
     return this->id;
 }

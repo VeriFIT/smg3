@@ -5,7 +5,7 @@ SMGEdgePointsTo::SMGEdgePointsTo(const SMGValue& pValue, const SMGObject& pObjec
         SMGEdge(pValue, pObject), offset(pOffset) {
 }
 
-const long SMGEdgePointsTo::getOffset() const {
+long SMGEdgePointsTo::getOffset() const {
     return offset;
 }
 

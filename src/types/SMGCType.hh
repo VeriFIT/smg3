@@ -11,5 +11,5 @@ public:
     const static SMGCType getPointerType();
 
     SMGCType(const int pSize);
-    const int getSize() const;
+    int getSize() const;
 };

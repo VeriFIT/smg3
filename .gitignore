@@ -41,3 +41,8 @@ bin/
 .checkstyle
 .settings
 .cproject
+
+#CodeLite stuff
+.codelite
+*.project
+*.workspace

@@ -1,5 +1,5 @@
 /*
- * SMGObjectTest.cxx
+ * SMGObjectTest.cc
  *
  *  Created on: Dec 3, 2015
  *      Author: pmuller
@@ -30,8 +30,8 @@
 #include <gtest/gtest.h>
 #include <SMGObject.hh>
 
-int SIZE8 = 8;
-int SIZE12 = 12;
+static int SIZE8 = 8;
+static int SIZE12 = 12;
 
 class TestingObject: public SMGObject {
 public:

@@ -1,6 +1,6 @@
 sudo: true
 language: cpp
-script: make && make tests
+script: make debug && make tests
 compiler:
   - gcc
 install:

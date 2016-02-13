@@ -3,7 +3,7 @@
 #include <UnsupportedOperationException.hh>
 #include <string>
 
-SMGRegion::SMGRegion(const int pSize, std::string pLabel) :
+SMGRegion::SMGRegion(const int pSize, const std::string &pLabel) :
         SMGObject(pSize, pLabel) {
 }
 
@@ -15,7 +15,7 @@ std::string SMGRegion::getClassName() const {
     return std::string("SMGRegion");
 }
 
-bool SMGRegion::propertiesEqual(const SMGRegion & pOther) const {
+bool SMGRegion::propertiesEqual(const SMGRegion &pOther) const {
     if (&pOther == this) {
         return true;
     }
@@ -41,17 +41,6 @@ void SMGRegion::accept(SMGObjectVisitor& visitor) const {
     visitor.visit(*this);
 }
 
-const SMGObject& SMGRegion::join(const SMGObject& pOther) const {
-    if (pOther.isAbstract()) {
-        // I am concrete, and the other is abstract: the abstraction should
-        // know how to join with me
-        return pOther.join(*this);
-    } else if (getSize() == pOther.getSize()) {
-        return *this; //odstranen copy-like-konstruktor
-    }
-    throw UnsupportedOperationException("join() called on incompatible SMGObjects");
-}
-
-bool SMGRegion::isMoreGeneral(const SMGObject&) const {
+bool SMGRegion::isMoreGeneral(const SMGObject &pOther __attribute__((unused))) const {
     return false;
 }

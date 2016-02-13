@@ -19,21 +19,21 @@ const SMGCType& MOCKTYPE4 = SMGCType::createTypeWithSize(4);
 const SMGCType& MOCKTYPE12 = SMGCType::createTypeWithSize(12);
 
 TEST(SMGEdgeHasValue, sanity) {
-    const SMGObject& obj = SMGRegion(SIZE8, "object");
-    const SMGValue& val = SMGValue::getNewValue();
+    const SMGObjectPtr obj = std::make_shared<SMGRegion>(SIZE8, "object");
+    const SMGValue val = SMGValue::getNewValue();
     const SMGEdgeHasValue& hv = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, obj, val);
 
-    EXPECT_EQ(obj.getId(), hv.getObject().getId());
+    EXPECT_EQ(obj->getId(), hv.getObject()->getId());
     EXPECT_EQ(OFFSET4, hv.getOffset());
     EXPECT_EQ(&MOCKTYPE4, &hv.getType());
     EXPECT_EQ(SIZE4, hv.getSizeInBytes());
 }
 
 TEST(SMGEdgeHasValue, isConsistentWith) {
-    const SMGObject& obj1 = SMGRegion(SIZE8, "object");
-    const SMGObject& obj2 = SMGRegion(SIZE8, "different object");
-    const SMGValue& val1 = SMGValue::getNewValue();
-    const SMGValue& val2 = SMGValue::getNewValue();
+    const SMGObjectPtr obj1 = std::make_shared<SMGRegion>(SIZE8, "object");
+    const SMGObjectPtr obj2 = std::make_shared<SMGRegion>(SIZE8, "different object");
+    const SMGValue val1 = SMGValue::getNewValue();
+    const SMGValue val2 = SMGValue::getNewValue();
 
     const SMGEdgeHasValue& hv1 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, obj1, val1);
     const SMGEdgeHasValue& hv2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, obj1, val2);
@@ -48,8 +48,8 @@ TEST(SMGEdgeHasValue, isConsistentWith) {
 }
 
 TEST(SMGEdgeHasValue, overlapsWith) {
-    const SMGObject& object = SMGRegion(SIZE12, "object");
-    const SMGValue& value = SMGValue(SMGValue::getNewValue());
+    const SMGObjectPtr object = std::make_shared<SMGRegion>(SIZE12, "object");
+    const SMGValue value = SMGValue::getNewValue();
 
     const SMGEdgeHasValue& at0 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, object, value);
     const SMGEdgeHasValue& at2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET2, object, value);
@@ -78,9 +78,9 @@ TEST(SMGEdgeHasValue, overlapsWith) {
 }
 
 TEST(SMGEdgeHasValue, isCompatibleField) {
-    const SMGObject& first = SMGRegion(SIZE12, "object-1");
-    const SMGObject& second = SMGRegion(SIZE12, "object-2");
-    const SMGValue& value = SMGValue::getNewValue();
+    const SMGObjectPtr first = std::make_shared<SMGRegion>(SIZE12, "object-1");
+    const SMGObjectPtr second = std::make_shared<SMGRegion>(SIZE12, "object-2");
+    const SMGValue value = SMGValue::getNewValue();
 
     const SMGEdgeHasValue& firstAt0 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, first, value);
     const SMGEdgeHasValue& firstAt2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET2, first, value);
@@ -104,9 +104,9 @@ TEST(SMGEdgeHasValue, isCompatibleField) {
 }
 
 TEST(SMGEdgeHasValue, isCompatibleFieldOnSameObject) {
-    const SMGObject& first = SMGRegion(SIZE12, "object-1");
-    const SMGObject& second = SMGRegion(SIZE12, "object-2");
-    const SMGValue& value = SMGValue::getNewValue();
+    const SMGObjectPtr first = std::make_shared<SMGRegion>(SIZE12, "object-1");
+    const SMGObjectPtr second = std::make_shared<SMGRegion>(SIZE12, "object-2");
+    const SMGValue value = SMGValue::getNewValue();
 
     const SMGEdgeHasValue firstAt0 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, first, value);
     const SMGEdgeHasValue firstAt2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET2, first, value);

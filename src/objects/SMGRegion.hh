@@ -18,4 +18,5 @@ public:
     bool isAbstract() const override;
     void accept(SMGObjectVisitor &pVisitor) const override;
     bool isMoreGeneral(const SMGObject &pOther) const override;
+    virtual SMGObjectPtr join(const SMGObject &pOther) const override;
 };

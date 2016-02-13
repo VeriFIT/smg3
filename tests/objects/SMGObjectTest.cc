@@ -59,6 +59,10 @@ public:
     virtual bool notNull() const {
         return true;
     }
+
+    virtual SMGObjectPtr join(const SMGObject &pOther __attribute__((__unused__))) const override {
+        return std::make_shared < TestingObject > (*this);
+    }
 };
 
 TestingObject object8 = TestingObject(8, "label");
@@ -71,6 +75,8 @@ TEST(SMGObject, getNullObjectTest) {
     EXPECT_FALSE(nullObject->isAbstract());
     EXPECT_FALSE(nullObject->isMoreGeneral(object8));
     EXPECT_FALSE(nullObject->isMoreGeneral(*nullObject));
+    EXPECT_EQ(*nullObject, *(nullObject->join(*nullObject)));
+    EXPECT_EQ(object8, *(nullObject->join(object8)));
 }
 
 //	public final void testSMGObjectIntString() {

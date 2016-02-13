@@ -6,6 +6,9 @@
 class SMGObjectVisitor;
 typedef int TObjectSize;
 
+class SMGObject;
+typedef std::shared_ptr<const SMGObject> SMGObjectPtr;
+
 class SMGObject {
 private:
     static long id_counter;
@@ -27,9 +30,10 @@ public:
     virtual void accept(SMGObjectVisitor & visitor) const = 0;
     virtual bool isMoreGeneral(const SMGObject& pOther) const = 0;
     virtual bool notNull() const;
+    virtual SMGObjectPtr join(const SMGObject &pOther) const = 0;
+    bool operator==(const SMGObject &pOther) const;
+    bool operator!=(const SMGObject &pOther) const;
 };
-
-typedef std::shared_ptr<const SMGObject> SMGObjectPtr;
 
 class SMGNullObject: public SMGObject {
 private:
@@ -43,4 +47,5 @@ public:
     void accept(SMGObjectVisitor &pVisitor) const override;
     bool isMoreGeneral(const SMGObject &pOther) const override;
     bool notNull() const override;
+    virtual SMGObjectPtr join(const SMGObject &pOther) const override;
 };

@@ -40,6 +40,14 @@ long SMGObject::getId() const {
     return id;
 }
 
+bool SMGObject::operator==(const SMGObject &pOther) const {
+    return id == pOther.id;
+}
+
+bool SMGObject::operator!=(const SMGObject &pOther) const {
+    return !(*this == pOther);
+}
+
 SMGNullObject::SMGNullObject() :
         SMGObject(0, "NULL") {
 }
@@ -53,4 +61,12 @@ void SMGNullObject::accept(SMGObjectVisitor &pVisitor __attribute__((unused))) c
 
 bool SMGNullObject::isMoreGeneral(const SMGObject &pOther __attribute__((unused))) const {
     return false;
+}
+
+SMGObjectPtr SMGNullObject::join(const SMGObject &pOther) const {
+    if (pOther.notNull()) {
+        return pOther.join(*this);
+    } else {
+        return SMGNullObject::getNullObject();
+    }
 }

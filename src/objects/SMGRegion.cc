@@ -44,3 +44,12 @@ void SMGRegion::accept(SMGObjectVisitor& visitor) const {
 bool SMGRegion::isMoreGeneral(const SMGObject &pOther __attribute__((unused))) const {
     return false;
 }
+
+SMGObjectPtr SMGRegion::join(const SMGObject &pOther) const {
+    if (pOther.isAbstract()) {
+        return pOther.join(*this);
+    } else if (getSize() == pOther.getSize() || !pOther.notNull()) {
+        return std::make_shared<const SMGRegion>(*this);
+    }
+    throw UnsupportedOperationException("join() called on incompatible SMGRegions");
+}

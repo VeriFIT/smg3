@@ -93,8 +93,8 @@ release: CXXFLAGS := $(CXXFLAGS_B) -o3
 release: build
 
 debug: NDEBUG :=
-debug: CFLAGS := $(CFLAGS_B) -g -fsanitize=address -fsanitize=leak -fsanitize=undefined
-debug: CXXFLAGS := $(CXXFLAGS_B) -g -fsanitize=address -fsanitize=leak -fsanitize=undefined
+debug: CFLAGS := $(CFLAGS_B) -g -fsanitize=address -fsanitize=leak -fsanitize=undefined -Werror
+debug: CXXFLAGS := $(CXXFLAGS_B) -g -fsanitize=address -fsanitize=leak -fsanitize=undefined -Werror
 debug: build
 
 derr: NDEBUG :=
@@ -105,8 +105,8 @@ derr: build
 build: dirs $(BINARIES_ALL) $(LIBRARIES_ALL)
 
 tests: LDFLAGS := $(LDFLAGS) -l$(library) -lgtest -lgtest_main
-tests: CFLAGS := $(CFLAGS_B) -fsanitize=address -fsanitize=leak -fsanitize=undefined
-tests: CXXFLAGS := $(CXXFLAGS_B) -fsanitize=address -fsanitize=leak -fsanitize=undefined
+tests: CFLAGS := $(CFLAGS_B) -fsanitize=address -fsanitize=leak -fsanitize=undefined -Werror
+tests: CXXFLAGS := $(CXXFLAGS_B) -fsanitize=address -fsanitize=leak -fsanitize=undefined -Werror
 tests: $(info Building tests $(TESTS_BINS_ALL))
 tests: build-tests
 tests: $(info Running tests $(TESTS_BINS_ALL))

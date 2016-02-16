@@ -1,15 +1,19 @@
-﻿#pragma once
+#pragma once
 
-#include <SMGObject.hh>
-#include <SMGRegion.hh>
+#include "objects/SMGObject.hh"
+#include "objects/SMGRegion.hh"
 
-class SMGObjectVisitor
-{
-private:
-  void visitDefault(const SMGObject &);
-public:
-  void visit(const SMGObject & pObject);
-  void visit(const SMGRegion & pObject);
-  //void visit(const SMGSingleLinkedList & pObject);
-  //void visit(const SimpleBinaryTree & pObject);
+namespace smg {
+
+class SMGObjectVisitor {
+ private:
+  void VisitDefault(const SMGObject& object);
+
+ public:
+  void Visit(const SMGObject& object);
+  void Visit(const SMGRegion& object);
+  // void Visit(const SMGSingleLinkedList& object);
+  // void Visit(const SimpleBinaryTree& object);
 };
+
+}  // namespace smg

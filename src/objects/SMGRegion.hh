@@ -1,25 +1,24 @@
 #pragma once
 
 #include <string>
-#include "SMGObject.hh"
+#include "objects/SMGObject.hh"
+
+namespace smg {
 
 class SMGObjectVisitor;
 
-class SMGRegion : public SMGObject
-{
-public:
-  SMGRegion(const int pSize, const std::string pLabel);
-  std::string toString() const;
+class SMGRegion : public SMGObject {
+ public:
+  SMGRegion(const int size, const std::string label);
 
-  std::string getClassName() const override;
+  std::string ToString() const;
+  bool PropertiesEqual(const SMGRegion& other) const;
 
-  bool propertiesEqual(const SMGRegion & pOther) const;
-
-  bool isAbstract() const override;
-
-  void accept(SMGObjectVisitor & visitor) const override;
-
-  const SMGObject& join(const SMGObject & pOther) const override;
-
-  bool isMoreGeneral(const SMGObject &) const override;
+  std::string GetClassName() const override;
+  bool IsAbstract() const override;
+  void Accept(SMGObjectVisitor& visitor) const override;
+  const SMGObject& Join(const SMGObject& other) const override;
+  bool IsMoreGeneral(const SMGObject&) const override;
 };
+
+}  // namespace smg

@@ -1,23 +1,31 @@
 #pragma once
 
 #include <string>
-#include <SMGValue.hh>
-#include <SMGObject.hh>
-#include <SMGEdge.hh>
-#include <SMGCType.hh>
+#include "graphs/SMGEdge.hh"
+#include "graphs/SMGValue.hh"
+#include "objects/SMGObject.hh"
+#include "types/SMGCType.hh"
 
-class SMGEdgeHasValue: public SMGEdge {
-private:
-    const long offset;
-    const SMGCType& type;
-public:
-    SMGEdgeHasValue(const SMGCType& pType, const int pOffset, const SMGObject& pObject, const SMGValue& pValue);
-    long getOffset() const;
-    const SMGCType& getType() const;
-    int getSizeInBytes() const;
-    bool isConsistentWith(const SMGEdgeHasValue& pOther) const;
-    bool overlapsWith(const SMGEdgeHasValue& pOther) const;
-    bool overlapsWith(const int pOtherStart, const int pOtherEnd) const;
-    bool isCompatibleField(const SMGEdgeHasValue& pOther) const;
-    bool isCompatibleFieldOnSameObject(const SMGEdgeHasValue& pOther) const;
+namespace smg {
+
+class SMGEdgeHasValue : public SMGEdge {
+ private:
+  const long offset_;
+  const SMGCType& type_;
+
+ public:
+  SMGEdgeHasValue(const SMGCType& type,
+                  const int offset,
+                  const SMGObject& object,
+                  const SMGValue& value);
+  long GetOffset() const;
+  const SMGCType& GetType() const;
+  int GetSizeInBytes() const;
+  bool IsConsistentWith(const SMGEdgeHasValue& other) const;
+  bool OverlapsWith(const SMGEdgeHasValue& other) const;
+  bool OverlapsWith(const int other_start, const int other_end) const;
+  bool IsCompatibleField(const SMGEdgeHasValue& other) const;
+  bool IsCompatibleFieldOnSameObject(const SMGEdgeHasValue& other) const;
 };
+
+}  // namespace smg

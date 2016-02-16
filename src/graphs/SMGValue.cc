@@ -1,17 +1,17 @@
-#include <string>
 #include "SMGValue.hh"
+#include <string>
 
-long SMGValue::id_counter = 0;
+namespace smg {
 
-const SMGValue SMGValue::getNewValue() {
-    SMGValue::id_counter++;
-    return SMGValue(SMGValue::id_counter);
+long SMGValue::id_counter_ = 0;
+
+const SMGValue SMGValue::GetNewValue() {
+  SMGValue::id_counter_++;
+  return SMGValue(SMGValue::id_counter_);
 }
 
-SMGValue::SMGValue(const long pId) {
-    this->id = pId;
-}
+SMGValue::SMGValue(const long id) : id_(id) {}
 
-long SMGValue::getId() const {
-    return this->id;
-}
+long SMGValue::GetId() const { return id_; }
+
+}  // namespace smg

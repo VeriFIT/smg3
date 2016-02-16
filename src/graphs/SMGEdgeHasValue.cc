@@ -1,62 +1,63 @@
-#include <SMGEdgeHasValue.hh>
-#include <IllegalArgumentException.hh>
+#include "SMGEdgeHasValue.hh"
 #include <iostream>
+#include "exceptions/IllegalArgumentException.hh"
 
-SMGEdgeHasValue::SMGEdgeHasValue(const SMGCType& pType, const int pOffset, const SMGObject& pObject,
-        const SMGValue& pValue) :
-        SMGEdge(pValue, pObject), offset(pOffset), type(pType) {
+namespace smg {
+
+SMGEdgeHasValue::SMGEdgeHasValue(const SMGCType& type,
+                                 const int offset,
+                                 const SMGObject& object,
+                                 const SMGValue& value)
+    : SMGEdge(value, object), offset_(offset), type_(type) {}
+
+long SMGEdgeHasValue::GetOffset() const { return offset_; }
+
+const SMGCType& SMGEdgeHasValue::GetType() const { return type_; }
+
+int SMGEdgeHasValue::GetSizeInBytes() const { return type_.GetSize(); }
+
+bool SMGEdgeHasValue::IsConsistentWith(const SMGEdgeHasValue& other) const {
+  if (GetObject().GetId() == other.GetObject().GetId() && offset_ == other.offset_ &&
+      (&(type_) == &(other.type_))) {
+    return GetValue().GetId() == other.GetValue().GetId();
+  }
+
+  return true;
 }
 
-long SMGEdgeHasValue::getOffset() const {
-    return offset;
+bool SMGEdgeHasValue::OverlapsWith(const SMGEdgeHasValue& other) const {
+  if (GetObject().GetId() != other.GetObject().GetId()) {
+    std::string message =
+        "Call of overlapsWith() on Has-Value edges pair not originating from the same object";
+    throw IllegalArgumentException(message.c_str());
+  }
+
+  const int otStart = other.GetOffset();
+  const int otEnd = otStart + other.GetSizeInBytes();
+
+  return OverlapsWith(otStart, otEnd);
 }
 
-const SMGCType& SMGEdgeHasValue::getType() const {
-    return type;
+bool SMGEdgeHasValue::OverlapsWith(const int other_start, const int other_end) const {
+  int myStart = offset_;
+  int myEnd = myStart + type_.GetSize();
+
+  if (myStart < other_start) {
+    return (myEnd > other_start);
+  } else if (other_start < myStart) {
+    return (other_end > myStart);
+  }
+
+  // Start offsets are equal, always overlap
+  return true;
 }
 
-int SMGEdgeHasValue::getSizeInBytes() const {
-    return type.getSize();
+bool SMGEdgeHasValue::IsCompatibleField(const SMGEdgeHasValue& other) const {
+  return &type_ == &(other.type_) && (offset_ == other.offset_);
 }
 
-bool SMGEdgeHasValue::isConsistentWith(const SMGEdgeHasValue& pOther) const {
-    if (getObject().getId() == pOther.getObject().getId() && offset == pOther.offset && (&(type) == &(pOther.type))) {
-        return getValue().getId() == pOther.getValue().getId();
-    }
-
-    return true;
+bool SMGEdgeHasValue::IsCompatibleFieldOnSameObject(const SMGEdgeHasValue& other) const {
+  return IsCompatibleField(other) && (GetObject().GetId() == other.GetObject().GetId());
 }
 
-bool SMGEdgeHasValue::overlapsWith(const SMGEdgeHasValue& pOther) const {
-    if (getObject().getId() != pOther.getObject().getId()) {
-        std::string message = "Call of overlapsWith() on Has-Value edges pair not originating from the same object";
-        throw IllegalArgumentException(message.c_str());
-    }
-
-    const int otStart = pOther.getOffset();
-    const int otEnd = otStart + pOther.getSizeInBytes();
-
-    return overlapsWith(otStart, otEnd);
-}
-
-bool SMGEdgeHasValue::overlapsWith(const int pOtherStart, const int pOtherEnd) const {
-    int myStart = offset;
-    int myEnd = myStart + type.getSize();
-
-    if (myStart < pOtherStart) {
-        return (myEnd > pOtherStart);
-    } else if (pOtherStart < myStart) {
-        return (pOtherEnd > myStart);
-    }
-
-    // Start offsets are equal, always overlap
-    return true;
-}
-
-bool SMGEdgeHasValue::isCompatibleField(const SMGEdgeHasValue& pOther) const {
-    return &type == &(pOther.type) && (offset == pOther.offset);
-}
-
-bool SMGEdgeHasValue::isCompatibleFieldOnSameObject(const SMGEdgeHasValue& pOther) const {
-    return isCompatibleField(pOther) && (getObject().getId() == pOther.getObject().getId());
-}
+}  // namespace smg

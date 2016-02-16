@@ -1,14 +1,15 @@
-#include <SMGEdge.hh>
-#include <SMGEdgePointsTo.hh>
+#include "SMGEdgePointsTo.hh"
+#include "graphs/SMGEdge.hh"
 
-SMGEdgePointsTo::SMGEdgePointsTo(const SMGValue& pValue, const SMGObject& pObject, int pOffset) :
-        SMGEdge(pValue, pObject), offset(pOffset) {
+namespace smg {
+
+SMGEdgePointsTo::SMGEdgePointsTo(const SMGValue& value, const SMGObject& object, int offset)
+    : SMGEdge(value, object), offset_(offset) {}
+
+long SMGEdgePointsTo::GetOffset() const { return offset_; }
+
+bool SMGEdgePointsTo::IsConsistentWith(const SMGEdgePointsTo& other_edge) const {
+  return SMGEdge::IsConsistentWith(other_edge) && offset_ == other_edge.offset_;
 }
 
-long SMGEdgePointsTo::getOffset() const {
-    return offset;
-}
-
-bool SMGEdgePointsTo::isConsistentWith(const SMGEdgePointsTo &pOtherEdge) const {
-    return SMGEdge::isConsistentWith(pOtherEdge) && offset == pOtherEdge.offset;
-}
+}  // namespace smg

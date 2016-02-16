@@ -5,21 +5,18 @@
 
 class SMGObjectVisitor;
 
-class SMGRegion : public SMGObject
-{
+class SMGRegion: public SMGObject {
 public:
-  SMGRegion(const int pSize, const std::string pLabel);
-  std::string toString() const;
+    SMGRegion(const int pSize, const std::string &pLabel);
 
-  std::string getClassName() const override;
+    std::string toString() const;
 
-  bool propertiesEqual(const SMGRegion & pOther) const;
+    std::string getClassName() const override;
 
-  bool isAbstract() const override;
+    bool propertiesEqual(const SMGRegion &pOther) const;
 
-  void accept(SMGObjectVisitor & visitor) const override;
-
-  const SMGObject& join(const SMGObject & pOther) const override;
-
-  bool isMoreGeneral(const SMGObject &) const override;
+    bool isAbstract() const override;
+    void accept(SMGObjectVisitor &pVisitor) const override;
+    bool isMoreGeneral(const SMGObject &pOther) const override;
+    virtual SMGObjectPtr join(const SMGObject &pOther) const override;
 };

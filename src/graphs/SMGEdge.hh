@@ -4,12 +4,12 @@
 #include <SMGObject.hh>
 
 class SMGEdge {
-    const SMGValue &value;
-    const SMGObject &object;
+    const SMGValue value;
+    const SMGObjectPtr object;
 protected:
-    SMGEdge(const SMGValue &pValue, const SMGObject &pObject);
+    SMGEdge(const SMGValue &pValue, const SMGObjectPtr &pObject);
     bool isConsistentWith(const SMGEdge &pOtherEdge) const;
 public:
     const SMGValue& getValue() const;
-    const SMGObject& getObject() const;
+    SMGObjectPtr getObject() const;
 };

@@ -1,7 +1,7 @@
 #include <SMGEdge.hh>
 #include <SMGEdgePointsTo.hh>
 
-SMGEdgePointsTo::SMGEdgePointsTo(const SMGValue& pValue, const SMGObject& pObject, int pOffset) :
+SMGEdgePointsTo::SMGEdgePointsTo(const SMGValue &pValue, const SMGObjectPtr &pObject, const int pOffset) :
         SMGEdge(pValue, pObject), offset(pOffset) {
 }
 

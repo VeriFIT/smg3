@@ -41,22 +41,27 @@ public:
     ~TestingObject() {
     }
     ;
+
     TestingObject(const TestingObject&) = default;
     virtual bool isAbstract() const override {
         return false;
     }
+
     void accept(SMGObjectVisitor & visitor) const override {
         (void) visitor;
     }
-    virtual bool isMoreGeneral(const SMGObject &) const override {
+
+    virtual bool isMoreGeneral(const SMGObject& pOther __attribute__((__unused__))) const override {
         return false;
     }
     ;
-    virtual const SMGObject &join(const SMGObject &) const override {
-        return *this;
-    }
+
     virtual bool notNull() const {
         return true;
+    }
+
+    virtual SMGObjectPtr join(const SMGObject &pOther __attribute__((__unused__))) const override {
+        return std::make_shared < TestingObject > (*this);
     }
 };
 
@@ -64,14 +69,14 @@ TestingObject object8 = TestingObject(8, "label");
 TestingObject object12 = TestingObject(12, "another label");
 
 TEST(SMGObject, getNullObjectTest) {
-    const SMGObject &nullObject = SMGObject::getNullObject();
-    EXPECT_FALSE(nullObject.notNull());
+    const SMGObjectPtr nullObject = SMGNullObject::getNullObject();
+    EXPECT_FALSE(nullObject->notNull());
     EXPECT_TRUE(object8.notNull());
-    EXPECT_FALSE(nullObject.isAbstract());
-    EXPECT_FALSE(nullObject.isMoreGeneral(object8));
-    EXPECT_FALSE(nullObject.isMoreGeneral(nullObject));
-    EXPECT_EQ(&nullObject, &nullObject.join(nullObject));
-    EXPECT_EQ(&object8, &nullObject.join(object8));
+    EXPECT_FALSE(nullObject->isAbstract());
+    EXPECT_FALSE(nullObject->isMoreGeneral(object8));
+    EXPECT_FALSE(nullObject->isMoreGeneral(*nullObject));
+    EXPECT_EQ(*nullObject, *(nullObject->join(*nullObject)));
+    EXPECT_EQ(object8, *(nullObject->join(object8)));
 }
 
 //	public final void testSMGObjectIntString() {

@@ -1,19 +1,58 @@
-sudo: true
+sudo: false
 language: cpp
-script: make debug && make tests
-compiler:
-  - gcc
-install:
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
+
+matrix:
+    include:
+      - compiler: gcc
+        addons:
+            apt:
+                sources:
+                    - ubuntu-toolchain-r-test
+                packages:
+                    - g++-4.9
+                    - libgtest-dev
+        env:
+            - COMPILERXX="g++-4.9"
+            - COMPILERC="gcc-4.9"
+
+      - compiler: gcc
+        addons:
+            apt:
+                sources:
+                    - ubuntu-toolchain-r-test
+                packages:
+                    - g++-5
+                    - libgtest-dev
+        env:
+            - COMPILERXX="g++-5"
+            - COMPILERC="gcc-5"
+
+      - compiler: clang
+        addons:
+            apt:
+                sources:
+                    - ubuntu-toolchain-r-test
+                    - llvm-toolchain-precise
+                packages:
+                    - clang-3.8
+                    - libgtest-dev
+        env:
+            - COMPILERXX="clang++-3.8"
+            - COMPILERC="clang-3.8"
+
+cache:
+  directories:
+  - $HOME/gtest/
 
 before_install:
-  - "cd /usr/src/gtest && sudo rm -f Makefile; sudo cmake . -Dgtest_disable_pthreads=ON  && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
+  - export CXX=$COMPILERXX CC=$COMPILERC
+  - $CXX --version
+  - "mkdir -p $HOME/gtest && cd $HOME/gtest && cmake --target install -DCMAKE_INSTALL_PREFIX=$HOME/lib/ -Dgtest_disable_pthreads=ON /usr/src/gtest"
+  - "cmake --build ."
+  - cd -
+  - ls -R $HOME/gtest
+  - export LIBRARY_PATH=$HOME/gtest/:$LIBRARY_PATH
+  - echo $LIBRARY_PATH
 
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - gcc-4.9
-    - g++-4.9
-    - libgtest-dev
+script: make debug && make tests
+

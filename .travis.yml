@@ -47,12 +47,10 @@ cache:
 before_install:
   - export CXX=$COMPILERXX CC=$COMPILERC
   - $CXX --version
-  - "mkdir -p $HOME/gtest && cd $HOME/gtest && cmake --target install -DCMAKE_INSTALL_PREFIX=$HOME/lib/ -Dgtest_disable_pthreads=ON /usr/src/gtest"
-  - "cmake --build ."
-  - cd -
-  - ls -R $HOME/gtest
+  - ls $HOME/gtest
+  - "if [ ! -d $HOME/gtest ]; then mkdir -p $HOME/gtest && cd $HOME/gtest && cmake --target install -DCMAKE_INSTALL_PREFIX=$HOME/lib/ -Dgtest_disable_pthreads=ON /usr/src/gtest && cmake --build . && cd - ; fi"
+  - ls $HOME/gtest
   - export LIBRARY_PATH=$HOME/gtest/:$LIBRARY_PATH
-  - echo $LIBRARY_PATH
 
 script: make debug && make tests
 

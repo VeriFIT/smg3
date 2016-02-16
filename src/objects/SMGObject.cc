@@ -34,9 +34,9 @@ SMGNullObject::SMGNullObject() : SMGObject(0, "NULL") {}
 
 bool SMGNullObject::IsAbstract() const { return false; }
 
-void SMGNullObject::Accept(SMGObjectVisitor& visitor __attribute__((unused))) const {}
+void SMGNullObject::Accept(SMGObjectVisitor&) const {}
 
-bool SMGNullObject::IsMoreGeneral(const SMGObject& other __attribute__((unused))) const {
+bool SMGNullObject::IsMoreGeneral(const SMGObject&) const {
   return false;
 }
 

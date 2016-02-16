@@ -33,7 +33,7 @@ bool SMGRegion::IsAbstract() const { return false; }
 
 void SMGRegion::Accept(SMGObjectVisitor& visitor) const { visitor.Visit(*this); }
 
-bool SMGRegion::IsMoreGeneral(const SMGObject& other __attribute__((unused))) const {
+bool SMGRegion::IsMoreGeneral(const SMGObject&) const {
   return false;
 }
 

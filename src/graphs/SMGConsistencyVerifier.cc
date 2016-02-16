@@ -7,81 +7,77 @@
 
 #include "SMGConsistencyVerifier.hh"
 
-bool SMGConsistencyVerifier::verifyNullObject(const SMG& pSmg) {
-    SMGValue null_value = SMGValue::getInvalidValue();
-    for (SMGValue value : pSmg.getValues()) {
-        if (pSmg.getObjectPointedBy(value) == pSmg.getNullObject()) {
-            null_value = value;
-            break;
-        }
+namespace smg {
+
+bool SMGConsistencyVerifier::VerifyNullObject(const SMG& smg) {
+  SMGValue null_value = SMGValue::GetInvalidValue();
+  for (SMGValue value : smg.GetValues()) {
+    if (smg.GetObjectPointedBy(value) == smg.GetNullObject()) {
+      null_value = value;
+      break;
     }
+  }
 
-    if (null_value == SMGValue::getInvalidValue()) {
-        return false;
-    }
+  if (null_value == SMGValue::GetInvalidValue()) {
+    return false;
+  }
 
-    if (pSmg.getObjectPointedBy(pSmg.getNullValue()) != pSmg.getNullObject()) {
-        return false;
-    }
+  if (smg.GetObjectPointedBy(smg.GetNullValue()) != smg.GetNullObject()) {
+    return false;
+  }
 
-    if (pSmg.getNullValue() != null_value) {
-        return false;
-    }
+  if (smg.GetNullValue() != null_value) {
+    return false;
+  }
 
-    //
-    //    // Verify that NULL object has no value
-    //    SMGEdgeHasValueFilter filter = SMGEdgeHasValueFilter.objectFilter(pSmg.getNullObject());
-    //
-    //    if (pSmg.getHVEdges(filter).iterator().hasNext()) {
-    //      // pLogger.log(Level.SEVERE, "SMG inconsistent: null object has some value");
-    //      return false;
-    //    }
-    //
-    //    // Verify that the NULL object is invalid
-    //    if (pSmg.isObjectValid(pSmg.getNullObject())) {
-    ////      pLogger.log(Level.SEVERE, "SMG inconsistent: null object is not invalid");
-    //      return false;
-    //    }
+  //
+  //    // Verify that NULL object has no value
+  //    SMGEdgeHasValueFilter filter = SMGEdgeHasValueFilter.objectFilter(pSmg.getNullObject());
+  //
+  //    if (pSmg.getHVEdges(filter).iterator().hasNext()) {
+  //      // pLogger.log(Level.SEVERE, "SMG inconsistent: null object has some value");
+  //      return false;
+  //    }
+  //
+  //    // Verify that the NULL object is invalid
+  //    if (pSmg.isObjectValid(pSmg.getNullObject())) {
+  ////      pLogger.log(Level.SEVERE, "SMG inconsistent: null object is not invalid");
+  //      return false;
+  //    }
 
-    if (pSmg.getNullObject()->getSize() != 0) {
-        return false;
-    }
+  if (smg.GetNullObject()->GetSize() != 0) {
+    return false;
+  }
 
-    return true;
-
+  return true;
 }
 
-bool SMGConsistencyVerifier::verify(const SMG& pSmg) {
-    bool toReturn = true;
-    toReturn = toReturn && verifyNullObject(pSmg);
-    return toReturn;
-//      toReturn = toReturn && verifySMGProperty(
-//          verifyNullObject(pSmg), "null object invariants hold");
-//      toReturn = toReturn && verifySMGProperty(
-//          verifyInvalidRegionsHaveNoHVEdges(pSmg), "invalid regions have no outgoing edges");
-//      toReturn = toReturn && verifySMGProperty(
-//          verifyFieldConsistency(pSmg), "field consistency");
-//      toReturn = toReturn && verifySMGProperty(
-//          verifyEdgeConsistency(pSmg, pSmg.getHVEdges()), "Has Value edge consistency");
-//      toReturn = toReturn && verifySMGProperty(
-//          verifyEdgeConsistency(pSmg, pSmg.getPTEdges()), "Points To edge consistency");
-//      toReturn = toReturn && verifySMGProperty(
-//          verifyObjectConsistency(pSmg), "Validity consistency");
-//
-//  //    pLogger.log(Level.FINEST, "Ending consistency check of a SMG");
-//
-//      return toReturn;
-//    }
+bool SMGConsistencyVerifier::Verify(const SMG& smg) {
+  bool to_return = true;
+  to_return = to_return && VerifyNullObject(smg);
+  return to_return;
+  //      toReturn = toReturn && verifySMGProperty(
+  //          verifyNullObject(pSmg), "null object invariants hold");
+  //      toReturn = toReturn && verifySMGProperty(
+  //          verifyInvalidRegionsHaveNoHVEdges(pSmg), "invalid regions have no outgoing edges");
+  //      toReturn = toReturn && verifySMGProperty(
+  //          verifyFieldConsistency(pSmg), "field consistency");
+  //      toReturn = toReturn && verifySMGProperty(
+  //          verifyEdgeConsistency(pSmg, pSmg.getHVEdges()), "Has Value edge consistency");
+  //      toReturn = toReturn && verifySMGProperty(
+  //          verifyEdgeConsistency(pSmg, pSmg.getPTEdges()), "Points To edge consistency");
+  //      toReturn = toReturn && verifySMGProperty(
+  //          verifyObjectConsistency(pSmg), "Validity consistency");
+  //
+  //  //    pLogger.log(Level.FINEST, "Ending consistency check of a SMG");
+  //
+  //      return toReturn;
+  //    }
 }
 
-SMGConsistencyVerifier::SMGConsistencyVerifier() {
-// TODO Auto-generated constructor stub
+SMGConsistencyVerifier::SMGConsistencyVerifier() {}
 
-}
-
-SMGConsistencyVerifier::~SMGConsistencyVerifier() {
-// TODO Auto-generated destructor stub
-}
+SMGConsistencyVerifier::~SMGConsistencyVerifier() {}
 //
 //  /**
 //   * A consistency checks related to the NULL object
@@ -126,7 +122,8 @@ SMGConsistencyVerifier::~SMGConsistencyVerifier() {
 //   * @param pLogger A logger to record results
 //   * @param pObject An object to verify
 //   * @param pSmg A SMG to verify
-//   * @return True, if {@link pObject} in {@link pSmg} satisfies all consistency criteria. False otherwise.
+//   * @return True, if {@link pObject} in {@link pSmg} satisfies all consistency criteria. False
+// otherwise.
 //   */
 //  private static boolean checkSingleFieldConsistency(final SMGObject pObject, final SMG pSmg) {
 //
@@ -168,7 +165,8 @@ SMGConsistencyVerifier::~SMGConsistencyVerifier() {
 //   * @param pEdges A set of edges for consistency verification
 //   * @return True, if all edges in {@link pEdges} satisfy consistency criteria. False otherwise.
 //   */
-//  private static boolean verifyEdgeConsistency(final SMG pSmg, final Iterable<? extends SMGEdge> pEdges) {
+//  private static boolean verifyEdgeConsistency(final SMG pSmg, final Iterable<? extends SMGEdge>
+// pEdges) {
 //    ArrayList<SMGEdge> toVerify = new ArrayList<>();
 //    Iterables.addAll(toVerify, pEdges);
 //
@@ -238,3 +236,5 @@ SMGConsistencyVerifier::~SMGConsistencyVerifier() {
 //  //TODO: NEQ CONSISTENCY
 //}
 //
+
+}  // namespace smg

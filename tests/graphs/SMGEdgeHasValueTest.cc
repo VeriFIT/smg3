@@ -1,10 +1,11 @@
 #include <gtest/gtest.h>
+#include "graphs/SMGEdgeHasValue.hh"
+#include "graphs/SMGValue.hh"
+#include "objects/SMGObject.hh"
+#include "objects/SMGRegion.hh"
+#include "types/SMGCType.hh"
 
-#include <SMGRegion.hh>
-#include <SMGObject.hh>
-#include <SMGValue.hh>
-#include <SMGEdgeHasValue.hh>
-#include <SMGCType.hh>
+namespace smg {
 
 const int SIZE4 = 4;
 const int SIZE8 = 8;
@@ -15,117 +16,117 @@ const int OFFSET2 = 2;
 const int OFFSET4 = 4;
 const int OFFSET6 = 6;
 
-const SMGCType& MOCKTYPE4 = SMGCType::createTypeWithSize(4);
-const SMGCType& MOCKTYPE12 = SMGCType::createTypeWithSize(12);
+const SMGCType& MOCKTYPE4 = SMGCType::CreateTypeWithSize(4);
+const SMGCType& MOCKTYPE12 = SMGCType::CreateTypeWithSize(12);
 
-TEST(SMGEdgeHasValue, sanity) {
-    const SMGObjectPtr obj = std::make_shared<SMGRegion>(SIZE8, "object");
-    const SMGValue val = SMGValue::getNewValue();
-    const SMGEdgeHasValue& hv = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, obj, val);
+TEST(SMGEdgeHasValue, Sanity) {
+  const SMGObjectPtr obj = std::make_shared<SMGRegion>(SIZE8, "object");
+  const SMGValue val = SMGValue::GetNewValue();
+  const SMGEdgeHasValue& hv = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, obj, val);
 
-    EXPECT_EQ(obj->getId(), hv.getObject()->getId());
-    EXPECT_EQ(OFFSET4, hv.getOffset());
-    EXPECT_EQ(&MOCKTYPE4, &hv.getType());
-    EXPECT_EQ(SIZE4, hv.getSizeInBytes());
+  EXPECT_EQ(obj->GetId(), hv.GetObject()->GetId());
+  EXPECT_EQ(OFFSET4, hv.GetOffset());
+  EXPECT_EQ(&MOCKTYPE4, &hv.GetType());
+  EXPECT_EQ(SIZE4, hv.GetSizeInBytes());
 }
 
-TEST(SMGEdgeHasValue, isConsistentWith) {
-    const SMGObjectPtr obj1 = std::make_shared<SMGRegion>(SIZE8, "object");
-    const SMGObjectPtr obj2 = std::make_shared<SMGRegion>(SIZE8, "different object");
-    const SMGValue val1 = SMGValue::getNewValue();
-    const SMGValue val2 = SMGValue::getNewValue();
+TEST(SMGEdgeHasValue, IsConsistentWith) {
+  const SMGObjectPtr obj_1 = std::make_shared<SMGRegion>(SIZE8, "object");
+  const SMGObjectPtr obj_2 = std::make_shared<SMGRegion>(SIZE8, "different object");
+  const SMGValue val_1 = SMGValue::GetNewValue();
+  const SMGValue val_2 = SMGValue::GetNewValue();
 
-    const SMGEdgeHasValue& hv1 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, obj1, val1);
-    const SMGEdgeHasValue& hv2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, obj1, val2);
-    const SMGEdgeHasValue& hv3 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, obj1, val1);
-    const SMGEdgeHasValue& hv4 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, obj2, val1);
+  const SMGEdgeHasValue& hv_1 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, obj_1, val_1);
+  const SMGEdgeHasValue& hv_2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, obj_1, val_2);
+  const SMGEdgeHasValue& hv_3 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, obj_1, val_1);
+  const SMGEdgeHasValue& hv_4 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, obj_2, val_1);
 
-    EXPECT_TRUE(hv1.isConsistentWith(hv1));
-    EXPECT_TRUE(hv1.isConsistentWith(hv2));
-    EXPECT_TRUE(hv1.isConsistentWith(hv3));
-    EXPECT_FALSE(hv2.isConsistentWith(hv3));
-    EXPECT_TRUE(hv2.isConsistentWith(hv4));
+  EXPECT_TRUE(hv_1.IsConsistentWith(hv_1));
+  EXPECT_TRUE(hv_1.IsConsistentWith(hv_2));
+  EXPECT_TRUE(hv_1.IsConsistentWith(hv_3));
+  EXPECT_FALSE(hv_2.IsConsistentWith(hv_3));
+  EXPECT_TRUE(hv_2.IsConsistentWith(hv_4));
 }
 
-TEST(SMGEdgeHasValue, overlapsWith) {
-    const SMGObjectPtr object = std::make_shared<SMGRegion>(SIZE12, "object");
-    const SMGValue value = SMGValue::getNewValue();
+TEST(SMGEdgeHasValue, OverlapsWith) {
+  const SMGObjectPtr object = std::make_shared<SMGRegion>(SIZE12, "object");
+  const SMGValue value = SMGValue::GetNewValue();
 
-    const SMGEdgeHasValue& at0 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, object, value);
-    const SMGEdgeHasValue& at2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET2, object, value);
-    const SMGEdgeHasValue& at4 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, object, value);
-    const SMGEdgeHasValue& at6 = SMGEdgeHasValue(MOCKTYPE4, OFFSET6, object, value);
+  const SMGEdgeHasValue& at_0 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, object, value);
+  const SMGEdgeHasValue& at_2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET2, object, value);
+  const SMGEdgeHasValue& at_4 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, object, value);
+  const SMGEdgeHasValue& at_6 = SMGEdgeHasValue(MOCKTYPE4, OFFSET6, object, value);
 
-    EXPECT_TRUE(at0.overlapsWith(at2));
-    EXPECT_TRUE(at2.overlapsWith(at0));
-    EXPECT_TRUE(at2.overlapsWith(at4));
-    EXPECT_TRUE(at4.overlapsWith(at2));
-    EXPECT_TRUE(at4.overlapsWith(at6));
-    EXPECT_TRUE(at6.overlapsWith(at4));
+  EXPECT_TRUE(at_0.OverlapsWith(at_2));
+  EXPECT_TRUE(at_2.OverlapsWith(at_0));
+  EXPECT_TRUE(at_2.OverlapsWith(at_4));
+  EXPECT_TRUE(at_4.OverlapsWith(at_2));
+  EXPECT_TRUE(at_4.OverlapsWith(at_6));
+  EXPECT_TRUE(at_6.OverlapsWith(at_4));
 
-    EXPECT_TRUE(at0.overlapsWith(at0));
+  EXPECT_TRUE(at_0.OverlapsWith(at_0));
 
-    EXPECT_FALSE(at0.overlapsWith(at4));
-    EXPECT_FALSE(at0.overlapsWith(at6));
-    EXPECT_FALSE(at2.overlapsWith(at6));
-    EXPECT_FALSE(at4.overlapsWith(at0));
-    EXPECT_FALSE(at6.overlapsWith(at0));
-    EXPECT_FALSE(at6.overlapsWith(at2));
+  EXPECT_FALSE(at_0.OverlapsWith(at_4));
+  EXPECT_FALSE(at_0.OverlapsWith(at_6));
+  EXPECT_FALSE(at_2.OverlapsWith(at_6));
+  EXPECT_FALSE(at_4.OverlapsWith(at_0));
+  EXPECT_FALSE(at_6.OverlapsWith(at_0));
+  EXPECT_FALSE(at_6.OverlapsWith(at_2));
 
-    const SMGEdgeHasValue& whole = SMGEdgeHasValue(MOCKTYPE12, OFFSET0, object, value);
-    EXPECT_TRUE(whole.overlapsWith(at4));
-    EXPECT_TRUE(at4.overlapsWith(whole));
+  const SMGEdgeHasValue& whole = SMGEdgeHasValue(MOCKTYPE12, OFFSET0, object, value);
+  EXPECT_TRUE(whole.OverlapsWith(at_4));
+  EXPECT_TRUE(at_4.OverlapsWith(whole));
 }
 
-TEST(SMGEdgeHasValue, isCompatibleField) {
-    const SMGObjectPtr first = std::make_shared<SMGRegion>(SIZE12, "object-1");
-    const SMGObjectPtr second = std::make_shared<SMGRegion>(SIZE12, "object-2");
-    const SMGValue value = SMGValue::getNewValue();
+TEST(SMGEdgeHasValue, IsCompatibleField) {
+  const SMGObjectPtr first = std::make_shared<SMGRegion>(SIZE12, "object-1");
+  const SMGObjectPtr second = std::make_shared<SMGRegion>(SIZE12, "object-2");
+  const SMGValue value = SMGValue::GetNewValue();
 
-    const SMGEdgeHasValue& firstAt0 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, first, value);
-    const SMGEdgeHasValue& firstAt2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET2, first, value);
-    const SMGEdgeHasValue& firstAt4 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, first, value);
-    const SMGEdgeHasValue& first12At0 = SMGEdgeHasValue(MOCKTYPE12, OFFSET0, first, value);
+  const SMGEdgeHasValue& first_at_0 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, first, value);
+  const SMGEdgeHasValue& first_at_2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET2, first, value);
+  const SMGEdgeHasValue& first_at_4 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, first, value);
+  const SMGEdgeHasValue& first_12_at_0 = SMGEdgeHasValue(MOCKTYPE12, OFFSET0, first, value);
 
-    const SMGEdgeHasValue& secondAt0 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, second, value);
-    const SMGEdgeHasValue& secondAt2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET2, second, value);
-    const SMGEdgeHasValue& secondAt4 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, second, value);
-    const SMGEdgeHasValue& second12At0 = SMGEdgeHasValue(MOCKTYPE12, OFFSET0, second, value);
+  const SMGEdgeHasValue& second_at_0 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, second, value);
+  const SMGEdgeHasValue& second_at_2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET2, second, value);
+  const SMGEdgeHasValue& second_at_4 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, second, value);
+  const SMGEdgeHasValue& second_12_at_0 = SMGEdgeHasValue(MOCKTYPE12, OFFSET0, second, value);
 
-    EXPECT_TRUE(firstAt0.isCompatibleField(firstAt0));
-    EXPECT_FALSE(firstAt0.isCompatibleField(firstAt2));
-    EXPECT_FALSE(firstAt0.isCompatibleField(firstAt4));
-    EXPECT_FALSE(firstAt0.isCompatibleField(first12At0));
+  EXPECT_TRUE(first_at_0.IsCompatibleField(first_at_0));
+  EXPECT_FALSE(first_at_0.IsCompatibleField(first_at_2));
+  EXPECT_FALSE(first_at_0.IsCompatibleField(first_at_4));
+  EXPECT_FALSE(first_at_0.IsCompatibleField(first_12_at_0));
 
-    EXPECT_TRUE(firstAt0.isCompatibleField(secondAt0));
-    EXPECT_FALSE(firstAt0.isCompatibleField(secondAt2));
-    EXPECT_FALSE(firstAt0.isCompatibleField(secondAt4));
-    EXPECT_FALSE(firstAt0.isCompatibleField(second12At0));
+  EXPECT_TRUE(first_at_0.IsCompatibleField(second_at_0));
+  EXPECT_FALSE(first_at_0.IsCompatibleField(second_at_2));
+  EXPECT_FALSE(first_at_0.IsCompatibleField(second_at_4));
+  EXPECT_FALSE(first_at_0.IsCompatibleField(second_12_at_0));
 }
 
-TEST(SMGEdgeHasValue, isCompatibleFieldOnSameObject) {
-    const SMGObjectPtr first = std::make_shared<SMGRegion>(SIZE12, "object-1");
-    const SMGObjectPtr second = std::make_shared<SMGRegion>(SIZE12, "object-2");
-    const SMGValue value = SMGValue::getNewValue();
+TEST(SMGEdgeHasValue, IsCompatibleFieldOnSameObject) {
+  const SMGObjectPtr first = std::make_shared<SMGRegion>(SIZE12, "object-1");
+  const SMGObjectPtr second = std::make_shared<SMGRegion>(SIZE12, "object-2");
+  const SMGValue value = SMGValue::GetNewValue();
 
-    const SMGEdgeHasValue firstAt0 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, first, value);
-    const SMGEdgeHasValue firstAt2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET2, first, value);
-    const SMGEdgeHasValue firstAt4 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, first, value);
-    const SMGEdgeHasValue first12At0 = SMGEdgeHasValue(MOCKTYPE12, OFFSET0, first, value);
+  const SMGEdgeHasValue first_at_0 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, first, value);
+  const SMGEdgeHasValue first_at_2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET2, first, value);
+  const SMGEdgeHasValue first_at_4 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, first, value);
+  const SMGEdgeHasValue first_12_at_0 = SMGEdgeHasValue(MOCKTYPE12, OFFSET0, first, value);
 
-    const SMGEdgeHasValue secondAt0 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, second, value);
-    const SMGEdgeHasValue secondAt2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET2, second, value);
-    const SMGEdgeHasValue secondAt4 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, second, value);
-    const SMGEdgeHasValue second12At0 = SMGEdgeHasValue(MOCKTYPE12, OFFSET0, second, value);
+  const SMGEdgeHasValue second_at_0 = SMGEdgeHasValue(MOCKTYPE4, OFFSET0, second, value);
+  const SMGEdgeHasValue second_at_2 = SMGEdgeHasValue(MOCKTYPE4, OFFSET2, second, value);
+  const SMGEdgeHasValue second_at_4 = SMGEdgeHasValue(MOCKTYPE4, OFFSET4, second, value);
+  const SMGEdgeHasValue second_12_at_0 = SMGEdgeHasValue(MOCKTYPE12, OFFSET0, second, value);
 
-    EXPECT_TRUE(firstAt0.isCompatibleFieldOnSameObject(firstAt0));
-    EXPECT_FALSE(firstAt0.isCompatibleFieldOnSameObject(firstAt2));
-    EXPECT_FALSE(firstAt0.isCompatibleFieldOnSameObject(firstAt4));
-    EXPECT_FALSE(firstAt0.isCompatibleFieldOnSameObject(first12At0));
-    EXPECT_FALSE(firstAt0.isCompatibleFieldOnSameObject(secondAt0));
-    EXPECT_FALSE(firstAt0.isCompatibleFieldOnSameObject(secondAt2));
-    EXPECT_FALSE(firstAt0.isCompatibleFieldOnSameObject(secondAt4));
-    EXPECT_FALSE(firstAt0.isCompatibleFieldOnSameObject(second12At0));
+  EXPECT_TRUE(first_at_0.IsCompatibleFieldOnSameObject(first_at_0));
+  EXPECT_FALSE(first_at_0.IsCompatibleFieldOnSameObject(first_at_2));
+  EXPECT_FALSE(first_at_0.IsCompatibleFieldOnSameObject(first_at_4));
+  EXPECT_FALSE(first_at_0.IsCompatibleFieldOnSameObject(first_12_at_0));
+  EXPECT_FALSE(first_at_0.IsCompatibleFieldOnSameObject(second_at_0));
+  EXPECT_FALSE(first_at_0.IsCompatibleFieldOnSameObject(second_at_2));
+  EXPECT_FALSE(first_at_0.IsCompatibleFieldOnSameObject(second_at_4));
+  EXPECT_FALSE(first_at_0.IsCompatibleFieldOnSameObject(second_12_at_0));
 }
 //
 //  @Test(expected = IllegalArgumentException.class)
@@ -150,7 +151,8 @@ TEST(SMGEdgeHasValue, isCompatibleFieldOnSameObject) {
 //    SMGEdgeHasValue hv11at0 = new SMGEdgeHasValue(MOCKTYPE4, 0, object1, value1);
 //    SMGEdgeHasValue hv12at0 = new SMGEdgeHasValue(MOCKTYPE4, 0, object1, value2);
 //
-//    SMGEdgeHasValueFilter filter = SMGEdgeHasValueFilter.objectFilter(object1).filterHavingValue(value1);
+//    SMGEdgeHasValueFilter filter =
+// SMGEdgeHasValueFilter.objectFilter(object1).filterHavingValue(value1);
 //    Predicate<SMGEdgeHasValue> predicate = filter.asPredicate();
 //
 //    Assert.assertTrue(predicate.apply(hv11at0));
@@ -277,3 +279,5 @@ TEST(SMGEdgeHasValue, isCompatibleFieldOnSameObject) {
 //    Assert.assertTrue(filteredSet.contains(hv22at0));
 //    Assert.assertTrue(filteredSet.contains(hv12at0));
 //  }
+
+}  // namespace smg

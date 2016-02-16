@@ -3,71 +3,70 @@
 #include <set>
 #include <map>
 #include <memory>
+#include "graphs/SMGEdgeHasValue.hh"
+#include "graphs/SMGEdgePointsTo.hh"
+#include "graphs/SMGValue.hh"
+#include "objects/SMGObject.hh"
 
-#include <SMGObject.hh>
-#include "SMGValue.hh"
-#include "SMGEdgeHasValue.hh"
-#include "SMGEdgePointsTo.hh"
+namespace smg {
 
-template<class T>
-class SMGEntitySet {
-private:
-    std::set<std::shared_ptr<T>> entity_set;
-public:
-    typename std::set<std::shared_ptr<T>>::size_type size() const noexcept;
-    bool contains(std::shared_ptr<T> pElement) const;
-    bool empty() const noexcept;
+template <class T> class SMGEntitySet {
+ private:
+  std::set<std::shared_ptr<T>> entity_set;
 
-    void add(const std::shared_ptr<T> pElement);
+ public:
+  typename std::set<std::shared_ptr<T>>::size_type size() const noexcept;
+  bool contains(std::shared_ptr<T> element) const;
+  bool empty() const noexcept;
+
+  void add(const std::shared_ptr<T> element);
 };
 
 class SMG {
-private:
-    SMGEntitySet<const SMGObject> objects;
-    std::set<SMGValue> values;
-    std::map<SMGValue, SMGEdgePointsToPtr> pt_edges;
-    SMGEntitySet<const SMGEdgeHasValue> hv_edges;
+ private:
+  SMGEntitySet<const SMGObject> objects_;
+  std::set<SMGValue> values_;
+  std::map<SMGValue, SMGEdgePointsToPtr> pt_edges_;
+  SMGEntitySet<const SMGEdgeHasValue> hv_edges_;
 
-    SMGObjectPtr null_object = SMGNullObject::getNullObject();
-    SMGValue null_value = SMGValue::getNullValue();
+  SMGObjectPtr null_object_ = SMGNullObject::GetNullObject();
+  SMGValue null_value_ = SMGValue::GetNullValue();
 
-public:
-    SMG();
-    virtual ~SMG();
+ public:
+  SMG();
+  virtual ~SMG();
 
-    void addObject(const SMGObjectPtr &pObject);
-    void addValue(const SMGValue &pValue);
-    void addPointsToEdge(const SMGEdgePointsToPtr &pEdge);
-    void addHasValueEdge(const SMGEdgeHasValuePtr &pEdge);
+  void AddObject(const SMGObjectPtr& object);
+  void AddValue(const SMGValue& value);
+  void AddPointsToEdge(const SMGEdgePointsToPtr& edge);
+  void AddHasValueEdge(const SMGEdgeHasValuePtr& edge);
 
-    SMGObjectPtr getNullObject() const;
-    const SMGValue getNullValue() const;
+  SMGObjectPtr GetNullObject() const;
+  const SMGValue GetNullValue() const;
 
-    const SMGEntitySet<const SMGObject>& getObjects() const;
-    const std::set<SMGValue>& getValues() const;
-    const std::map<SMGValue, SMGEdgePointsToPtr>& getPTEdges() const;
-    const SMGEntitySet<const SMGEdgeHasValue>& getHVEdges() const;
+  const SMGEntitySet<const SMGObject>& GetObjects() const;
+  const std::set<SMGValue>& GetValues() const;
+  const std::map<SMGValue, SMGEdgePointsToPtr>& GetPTEdges() const;
+  const SMGEntitySet<const SMGEdgeHasValue>& GetHVEdges() const;
 
-    const SMGObjectPtr getObjectPointedBy(const SMGValue& pValue) const;
+  const SMGObjectPtr GetObjectPointedBy(const SMGValue& value) const;
 };
 
-template<class T>
-inline void SMGEntitySet<T>::add(std::shared_ptr<T> pElement) {
-    entity_set.insert(pElement);
+template <class T> inline void SMGEntitySet<T>::add(std::shared_ptr<T> element) {
+  entity_set.insert(element);
 }
 
-template<class T>
+template <class T>
 inline typename std::set<std::shared_ptr<T>>::size_type SMGEntitySet<T>::size() const noexcept {
-    return entity_set.size();
+  return entity_set.size();
 }
 
-template<class T>
-inline bool SMGEntitySet<T>::contains(std::shared_ptr<T> pElement) const {
-    return entity_set.count(pElement);
+template <class T> inline bool SMGEntitySet<T>::contains(std::shared_ptr<T> element) const {
+  return entity_set.count(element);
 }
 
-template<class T>
-inline bool SMGEntitySet<T>::empty() const noexcept {
-    return entity_set.empty();
+template <class T> inline bool SMGEntitySet<T>::empty() const noexcept {
+  return entity_set.empty();
 }
 
+}  // namespace smg

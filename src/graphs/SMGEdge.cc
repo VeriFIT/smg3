@@ -1,19 +1,19 @@
-#include <SMGEdge.hh>
-#include <SMGValue.hh>
-#include <SMGObject.hh>
+#include "SMGEdge.hh"
+#include "graphs/SMGValue.hh"
+#include "objects/SMGObject.hh"
 
-SMGEdge::SMGEdge(const SMGValue &pValue, const SMGObjectPtr &pObject) :
-        value(pValue), object(pObject) {
+namespace smg {
+
+SMGEdge::SMGEdge(const SMGValue& value, const SMGObjectPtr& object)
+    : value_(value), object_(object) {}
+
+const SMGValue& SMGEdge::GetValue() const { return value_; }
+
+SMGObjectPtr SMGEdge::GetObject() const { return object_; }
+
+bool SMGEdge::IsConsistentWith(const SMGEdge& other_edge) const {
+  return other_edge.object_->GetId() == object_->GetId() &&
+         other_edge.value_.GetId() == value_.GetId();
 }
 
-const SMGValue& SMGEdge::getValue() const {
-    return value;
-}
-
-SMGObjectPtr SMGEdge::getObject() const {
-    return object;
-}
-
-bool SMGEdge::isConsistentWith(const SMGEdge &pOtherEdge) const {
-    return pOtherEdge.object->getId() == object->getId() && pOtherEdge.value.getId() == value.getId();
-}
+}  // namespace smg

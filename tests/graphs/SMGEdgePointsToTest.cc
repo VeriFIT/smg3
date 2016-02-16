@@ -23,45 +23,49 @@
  */
 
 #include <gtest/gtest.h>
-#include <SMGEdgePointsTo.hh>
-#include <SMGValue.hh>
-#include <SMGObject.hh>
-#include <SMGRegion.hh>
+#include "graphs/SMGEdgePointsTo.hh"
+#include "graphs/SMGValue.hh"
+#include "objects/SMGObject.hh"
+#include "objects/SMGRegion.hh"
+
+namespace smg {
 
 const int SIZE8 = 8;
 const int OFFSET0 = 0;
 const int OFFSET4 = 4;
 
-TEST(SMGEdgePointsTo, sanity) {
-    const SMGValue value = SMGValue::getNewValue();
-    const SMGObjectPtr object = std::make_shared<SMGRegion>(SIZE8, "object");
-    const SMGEdgePointsTo edge = SMGEdgePointsTo(value, object, 0);
+TEST(SMGEdgePointsTo, Sanity) {
+  const SMGValue value = SMGValue::GetNewValue();
+  const SMGObjectPtr object = std::make_shared<SMGRegion>(SIZE8, "object");
+  const SMGEdgePointsTo edge = SMGEdgePointsTo(value, object, 0);
 
-    EXPECT_EQ(value.getId(), edge.getValue().getId());
-    EXPECT_EQ(object->getId(), edge.getObject()->getId());
-    EXPECT_EQ(0, edge.getOffset());
+  EXPECT_EQ(value.GetId(), edge.GetValue().GetId());
+  EXPECT_EQ(object->GetId(), edge.GetObject()->GetId());
+  EXPECT_EQ(0, edge.GetOffset());
 }
 
-TEST(SMGEdgePointsTo, isConsistentWith) {
-    const SMGValue val1 = SMGValue::getNewValue();
-    const SMGValue val2 = SMGValue::getNewValue();
-    const SMGObjectPtr obj1 = std::make_shared<SMGRegion>(SIZE8, "object 1");
-    const SMGObjectPtr obj2 = std::make_shared<SMGRegion>(SIZE8, "object 2");
+TEST(SMGEdgePointsTo, IsConsistentWith) {
+  const SMGValue val_1 = SMGValue::GetNewValue();
+  const SMGValue val_2 = SMGValue::GetNewValue();
+  const SMGObjectPtr obj_1 = std::make_shared<SMGRegion>(SIZE8, "object 1");
+  const SMGObjectPtr obj_2 = std::make_shared<SMGRegion>(SIZE8, "object 2");
 
-    const SMGEdgePointsTo& edge1 = SMGEdgePointsTo(val1, obj1, OFFSET0);
-    const SMGEdgePointsTo& edge2 = SMGEdgePointsTo(val2, obj1, OFFSET0);
-    const SMGEdgePointsTo& edge3 = SMGEdgePointsTo(val1, obj1, OFFSET4);
-    const SMGEdgePointsTo& edge4 = SMGEdgePointsTo(val1, obj2, OFFSET0);
+  const SMGEdgePointsTo& edge_1 = SMGEdgePointsTo(val_1, obj_1, OFFSET0);
+  const SMGEdgePointsTo& edge_2 = SMGEdgePointsTo(val_2, obj_1, OFFSET0);
+  const SMGEdgePointsTo& edge_3 = SMGEdgePointsTo(val_1, obj_1, OFFSET4);
+  const SMGEdgePointsTo& edge_4 = SMGEdgePointsTo(val_1, obj_2, OFFSET0);
 
-    // An edge is consistent with itself
-    EXPECT_TRUE(edge1.isConsistentWith(edge1));
+  // An edge is consistent with itself
+  EXPECT_TRUE(edge_1.IsConsistentWith(edge_1));
 
-    // Different vals pointing to same place: violates "injective"
-    EXPECT_FALSE(edge1.isConsistentWith(edge2));
+  // Different vals pointing to same place: violates "injective"
+  EXPECT_FALSE(edge_1.IsConsistentWith(edge_2));
 
-    // Same val pointing to different offsets
-    EXPECT_FALSE(edge1.isConsistentWith(edge3));
+  // Same val pointing to different offsets
+  EXPECT_FALSE(edge_1.IsConsistentWith(edge_3));
 
-    // Same val pointing to different objects
-    EXPECT_FALSE(edge1.isConsistentWith(edge4));
+  // Same val pointing to different objects
+  EXPECT_FALSE(edge_1.IsConsistentWith(edge_4));
 }
+
+}  // namespace smg

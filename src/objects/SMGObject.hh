@@ -3,49 +3,52 @@
 #include <memory>
 #include <string>
 
+namespace smg {
+
 class SMGObjectVisitor;
-typedef int TObjectSize;
+typedef int ObjectSize;
 
 class SMGObject;
 typedef std::shared_ptr<const SMGObject> SMGObjectPtr;
 
 class SMGObject {
-private:
-    static long id_counter;
-    int size;
-    const std::string label;
-    long id;
+ private:
+  static long id_counter_;
+  int size_;
+  const std::string label_;
+  long id_;
 
-public:
-    SMGObject(const int pSize, const std::string &pLabel);
-    virtual ~SMGObject();
+ public:
+  SMGObject(const int size, const std::string& label);
+  virtual ~SMGObject();
 
-    virtual std::string getClassName() const;
+  const std::string& GetLabel() const;
+  ObjectSize GetSize() const;
+  long GetId() const;
 
-    const std::string& getLabel() const;
-    TObjectSize getSize() const;
-    long getId() const;
-
-    virtual bool isAbstract() const = 0;
-    virtual void accept(SMGObjectVisitor & visitor) const = 0;
-    virtual bool isMoreGeneral(const SMGObject& pOther) const = 0;
-    virtual bool notNull() const;
-    virtual SMGObjectPtr join(const SMGObject &pOther) const = 0;
-    bool operator==(const SMGObject &pOther) const;
-    bool operator!=(const SMGObject &pOther) const;
+  virtual std::string GetClassName() const;
+  virtual bool NotNull() const;
+  virtual bool IsAbstract() const = 0;
+  virtual void Accept(SMGObjectVisitor& visitor) const = 0;
+  virtual bool IsMoreGeneral(const SMGObject& other) const = 0;
+  virtual SMGObjectPtr Join(const SMGObject& other) const = 0;
+  bool operator==(const SMGObject& other) const;
+  bool operator!=(const SMGObject& other) const;
 };
 
-class SMGNullObject: public SMGObject {
-private:
-    const static SMGObjectPtr NULL_OBJECT;
+class SMGNullObject : public SMGObject {
+ private:
+  static const SMGObjectPtr NULL_OBJECT;
 
-    SMGNullObject();
+  SMGNullObject();
 
-public:
-    static const SMGObjectPtr getNullObject();
-    bool isAbstract() const override;
-    void accept(SMGObjectVisitor &pVisitor) const override;
-    bool isMoreGeneral(const SMGObject &pOther) const override;
-    bool notNull() const override;
-    virtual SMGObjectPtr join(const SMGObject &pOther) const override;
+ public:
+  static const SMGObjectPtr GetNullObject();
+  bool IsAbstract() const override;
+  void Accept(SMGObjectVisitor& visitor) const override;
+  bool IsMoreGeneral(const SMGObject& other) const override;
+  bool NotNull() const override;
+  SMGObjectPtr Join(const SMGObject& other) const override;
 };
+
+}  // namespace smg

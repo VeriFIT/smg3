@@ -1,12 +1,12 @@
 #include "UnsupportedOperationException.hh"
 
-UnsupportedOperationException::UnsupportedOperationException(char const* const _Message) noexcept
-  :std::exception()
-{
-  msg = _Message;
+namespace smg {
+
+UnsupportedOperationException::UnsupportedOperationException(char const* const message) noexcept
+    : std::exception() {
+  msg_ = message;
 }
 
-const char * UnsupportedOperationException::what() const noexcept
-{
-  return msg;
-}
+const char* UnsupportedOperationException::what() const noexcept { return msg_; }
+
+}  // namespace smg

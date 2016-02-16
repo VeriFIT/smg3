@@ -19,16 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\exceptions\UnsupportedOperationException.hh" />
-    <ClInclude Include="..\src\objects\SMGObject.hh" />
-    <ClInclude Include="..\src\objects\SMGObjectVisitor.hh" />
-    <ClInclude Include="..\src\objects\SMGRegion.hh" />
+    <ClCompile Include="..\src\**\*.cc" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\exceptions\UnsupportedOperationException.cc" />
-    <ClCompile Include="..\src\objects\SMGObject.cc" />
-    <ClCompile Include="..\src\objects\SMGObjectVisitor.cc" />
-    <ClCompile Include="..\src\objects\SMGRegion.cc" />
+    <ClInclude Include="..\src\**\*.hh" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5F6C8883-417F-4DD3-AD79-6F9874AB5FBE}</ProjectGuid>
@@ -52,10 +46,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <OutDir>..\bin\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>..\obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>../src/objects;../src/exceptions;$(IncludePath)</IncludePath>
-    <SourcePath>../src/objects;../src/exceptions;$(SourcePath)</SourcePath>
+    <OutDir>../bin/$(ProjectName)/$(Platform)/$(Configuration)/</OutDir>
+    <IntDir>../obj/$(ProjectName)/$(Platform)/$(Configuration)/</IntDir>
+    <IncludePath>../src;$(IncludePath)</IncludePath>
+    <SourcePath>../src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

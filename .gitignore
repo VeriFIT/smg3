@@ -33,6 +33,8 @@ bin/
 *.opensdf
 *.vcxproj.user
 *.opendb
+msvc/*.db
+
 
 
 #IntelliJ CLion

@@ -17,9 +17,6 @@ bool SMGRegion::PropertiesEqual(const SMGRegion& other) const {
   if (&other == this) {
     return true;
   }
-  if (&other == nullptr) {
-    return false;
-  }
   if (GetLabel() != other.GetLabel()) {
     return false;
   }

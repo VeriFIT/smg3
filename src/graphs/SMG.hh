@@ -83,7 +83,7 @@ inline typename std::set<std::shared_ptr<T>>::size_type SMGEntitySet<T>::size() 
 }
 
 template<class T> inline bool SMGEntitySet<T>::contains(std::shared_ptr<T> element) const {
-  return entity_set.count(element);
+  return entity_set.find(element) != entity_set.end();
 }
 
 template<class T> inline bool SMGEntitySet<T>::empty() const noexcept {

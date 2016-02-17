@@ -10,7 +10,7 @@
 
 namespace smg {
 
-template <class T> class SMGEntitySet {
+template<class T> class SMGEntitySet {
  private:
   std::set<std::shared_ptr<T>> entity_set;
 
@@ -20,6 +20,12 @@ template <class T> class SMGEntitySet {
   bool empty() const noexcept;
 
   void add(const std::shared_ptr<T> element);
+  void remove(const std::shared_ptr<T> element);
+  typename std::set<std::shared_ptr<T>>::iterator
+      remove(typename std::set<std::shared_ptr<T>>::iterator position);
+
+  typename std::set<std::shared_ptr<T>>::iterator begin() noexcept;
+  typename std::set<std::shared_ptr<T>>::iterator end() noexcept;
 };
 
 class SMG {
@@ -40,6 +46,11 @@ class SMG {
   void AddValue(const SMGValue& value);
   void AddPointsToEdge(const SMGEdgePointsToPtr& edge);
   void AddHasValueEdge(const SMGEdgeHasValuePtr& edge);
+  void RemoveObject(const SMGObjectPtr& object);
+  void RemoveValue(const SMGValue& value);
+  void RemovePointsToEdge(const SMGEdgePointsToPtr& edge);
+  void RemoveHasValueEdge(const SMGEdgeHasValuePtr& edge);
+  void RemoveObjectAndEdges(const SMGObjectPtr& object);
 
   SMGObjectPtr GetNullObject() const;
   const SMGValue GetNullValue() const;
@@ -52,21 +63,41 @@ class SMG {
   const SMGObjectPtr GetObjectPointedBy(const SMGValue& value) const;
 };
 
-template <class T> inline void SMGEntitySet<T>::add(std::shared_ptr<T> element) {
+template<class T> inline void SMGEntitySet<T>::add(std::shared_ptr<T> element) {
   entity_set.insert(element);
 }
 
-template <class T>
+template<class T> inline void SMGEntitySet<T>::remove(const std::shared_ptr<T> element) {
+  entity_set.erase(element);
+}
+
+template<class T>
+inline typename std::set<std::shared_ptr<T>>::iterator SMGEntitySet<T>::remove(
+    typename std::set<std::shared_ptr<T>>::iterator position) {
+  return entity_set.erase(position);
+}
+
+template<class T>
 inline typename std::set<std::shared_ptr<T>>::size_type SMGEntitySet<T>::size() const noexcept {
   return entity_set.size();
 }
 
-template <class T> inline bool SMGEntitySet<T>::contains(std::shared_ptr<T> element) const {
+template<class T> inline bool SMGEntitySet<T>::contains(std::shared_ptr<T> element) const {
   return entity_set.count(element);
 }
 
-template <class T> inline bool SMGEntitySet<T>::empty() const noexcept {
+template<class T> inline bool SMGEntitySet<T>::empty() const noexcept {
   return entity_set.empty();
+}
+
+template<class T>
+inline typename std::set<std::shared_ptr<T>>::iterator SMGEntitySet<T>::begin() noexcept {
+  return entity_set.begin();
+}
+
+template<class T>
+inline typename std::set<std::shared_ptr<T>>::iterator SMGEntitySet<T>::end() noexcept {
+  return entity_set.end();
 }
 
 }  // namespace smg

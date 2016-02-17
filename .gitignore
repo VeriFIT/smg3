@@ -32,6 +32,10 @@ bin/
 *.sdf
 *.opensdf
 *.vcxproj.user
+*.opendb
+msvc/*.db
+
+
 
 #IntelliJ CLion
 .idea/

@@ -9,7 +9,7 @@ SMG::SMG() {
   AddPointsToEdge(null_pointer);
 }
 
-SMG::~SMG() {}
+SMG::~SMG() { }
 
 void SMG::AddObject(const SMGObjectPtr& object) { objects_.add(object); }
 
@@ -34,6 +34,32 @@ const SMGEntitySet<const SMGEdgeHasValue>& SMG::GetHVEdges() const { return hv_e
 const SMGObjectPtr SMG::GetObjectPointedBy(const SMGValue& value) const {
   SMGEdgePointsToPtr edge = pt_edges_.find(value)->second;
   return edge->GetObject();
+}
+
+void SMG::RemoveObject(const SMGObjectPtr& object) { objects_.remove(object); }
+
+void SMG::RemoveValue(const SMGValue& value) { values_.erase(value); }
+
+void SMG::RemovePointsToEdge(const SMGEdgePointsToPtr& edge) { pt_edges_.erase(edge->GetValue()); }
+
+void SMG::RemoveHasValueEdge(const SMGEdgeHasValuePtr& edge) { hv_edges_.remove(edge); }
+
+void SMG::RemoveObjectAndEdges(const SMGObjectPtr& object) {
+  RemoveObject(object);
+  for (auto hv_iter = hv_edges_.begin(); hv_iter != hv_edges_.end();) {
+    if ((*hv_iter)->GetObject() == object) {
+      hv_iter = hv_edges_.remove(hv_iter);
+    } else {
+      ++hv_iter;
+    }
+  }
+  for (auto pt_iter = pt_edges_.begin(); pt_iter != pt_edges_.end();) {
+    if (pt_iter->second->GetObject() == object) {
+      pt_iter = pt_edges_.erase(pt_iter);
+    } else {
+      ++pt_iter;
+    }
+  }
 }
 
 }  // namespace smg

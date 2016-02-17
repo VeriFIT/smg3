@@ -202,6 +202,13 @@ TEST_F(SMGTest, RemoveObjectAndEdges) {
   EXPECT_FALSE(empty_smg.GetHVEdges().contains(hv_4));
 }
 
+TEST_F(SMGTest, GetNullObject) {
+  const auto null_object = smg.GetNullObject();
+  EXPECT_FALSE(smg.IsObjectValid(null_object));
+  EXPECT_EQ(null_object->GetSize(), 0);
+}
+
+
 //
 //  @Test(expected = NoSuchElementException.class)
 //  public final void getUniqueHV0Test() {

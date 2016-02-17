@@ -41,7 +41,7 @@ class TestingObject : public SMGObject {
   ~TestingObject() {}
   TestingObject(const TestingObject&) = default;
 
-  bool NotNull() const { return true; }
+  bool NotNull() const override { return true; }
 
   bool IsAbstract() const override { return false; }
 

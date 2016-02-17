@@ -1,9 +1,17 @@
 sudo: false
-language: cpp
 
 matrix:
     include:
+      - compiler: python-cpplint
+        language: python
+        install:
+            - pip install cpplint
+        script:
+            - "cpplint --linelength=100 --extensions=cc,hh --filter=-legal,-runtime/int,-runtime/references src/*/*"
+        cache:
+
       - compiler: gcc-4.9
+        language: cpp
         addons:
             apt:
                 sources:
@@ -16,6 +24,7 @@ matrix:
             - COMPILERC="gcc-4.9"
 
       - compiler: gcc-5
+        language: cpp
         addons:
             apt:
                 sources:
@@ -28,6 +37,7 @@ matrix:
             - COMPILERC="gcc-5"
 
       - compiler: clang-3.6
+        language: cpp
         addons:
             apt:
                 sources:
@@ -42,6 +52,7 @@ matrix:
 
     ## disabled because of https://llvm.org/bugs/show_bug.cgi?id=22757, waiting for
     #   - compiler: clang-3.8
+    #     language: cpp
     #     addons:
     #         apt:
     #             sources:
@@ -59,7 +70,7 @@ cache:
     directories:
         - $HOME/gtest/
 
-before_install:
+install:
   - export CXX=$COMPILERXX CC=$COMPILERC
   - $CXX --version
 # - "if [ ! -f $HOME/gtest/libgtest.a ]; then .... ; fi

@@ -59,7 +59,7 @@ class TestingObject : public SMGObject {
 TestingObject object_8 = TestingObject(8, "label");
 TestingObject object_12 = TestingObject(12, "another label");
 
-TEST(SMGObject, getNullObjectTest) {
+TEST(SMGObject, GetNullObject) {
   const SMGObjectPtr null_object = SMGNullObject::GetNullObject();
   EXPECT_FALSE(null_object->NotNull());
   EXPECT_TRUE(object_8.NotNull());

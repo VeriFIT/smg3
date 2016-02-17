@@ -1,15 +1,21 @@
 #pragma once
 
-#include <SMGValue.hh>
-#include <SMGObject.hh>
+#include "graphs/SMGValue.hh"
+#include "objects/SMGObject.hh"
+
+namespace smg {
 
 class SMGEdge {
-    const SMGValue &value;
-    const SMGObject &object;
-protected:
-    SMGEdge(const SMGValue &pValue, const SMGObject &pObject);
-    bool isConsistentWith(const SMGEdge &pOtherEdge) const;
-public:
-    const SMGValue& getValue() const;
-    const SMGObject& getObject() const;
+  const SMGValue& value_;
+  const SMGObject& object_;
+
+ protected:
+  SMGEdge(const SMGValue& value, const SMGObject& object);
+  bool IsConsistentWith(const SMGEdge& other_edge) const;
+
+ public:
+  const SMGValue& GetValue() const;
+  const SMGObject& GetObject() const;
 };
+
+}  // namespace smg

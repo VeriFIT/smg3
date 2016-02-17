@@ -2,43 +2,44 @@
 
 #include <string>
 
+namespace smg {
+
 class SMGObjectVisitor;
-typedef int TObjectSize;
+typedef int ObjectSize;
 
-class SMGObject
-{
-private:
-  static long id_counter;
-  int size;
-  std::string label;
-  long id;
+class SMGObject {
+ private:
+  static long id_counter_;
+  int size_;
+  std::string label_;
+  long id_;
 
-public:
-  SMGObject(const int, const std::string);
+ public:
+  SMGObject(const int size, const std::string label);
   virtual ~SMGObject() {}
 
-  virtual std::string getClassName() const;
+  static const SMGObject& GetNullObject();
+  std::string GetLabel() const;
+  ObjectSize GetSize() const;
+  long GetId() const;
 
-  static const SMGObject & getNullObject();
-  std::string getLabel() const;
-  TObjectSize getSize() const;
-  long getId() const;
-
-  virtual bool isAbstract() const = 0;
-  virtual void accept(SMGObjectVisitor & visitor) const = 0;
-  virtual bool isMoreGeneral(const SMGObject &) const = 0;
-  virtual const SMGObject & join(const SMGObject & pOther) const = 0;
-  virtual bool notNull() const;
+  virtual std::string GetClassName() const;
+  virtual bool NotNull() const;
+  virtual bool IsAbstract() const = 0;
+  virtual void Accept(SMGObjectVisitor& visitor) const = 0;
+  virtual bool IsMoreGeneral(const SMGObject&) const = 0;
+  virtual const SMGObject& Join(const SMGObject& other) const = 0;
 };
 
-class SMGNullObject : public SMGObject
-{
-public:
+class SMGNullObject : public SMGObject {
+ public:
   SMGNullObject() : SMGObject(0, "NULL") {}
 
-  bool isAbstract() const override { return false; }
-  void accept(SMGObjectVisitor & visitor) const override { (void)visitor; }
-  bool isMoreGeneral(const SMGObject &) const override { return false; }
-  const SMGObject & join(const SMGObject & pOther) const override { return pOther; }
-  bool notNull() const override;
+  bool NotNull() const override;
+  bool IsAbstract() const override { return false; }
+  void Accept(SMGObjectVisitor& visitor) const override { (void)visitor; }
+  bool IsMoreGeneral(const SMGObject&) const override { return false; }
+  const SMGObject& Join(const SMGObject& other) const override { return other; }
 };
+
+}  // namespace smg

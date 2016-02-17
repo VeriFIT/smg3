@@ -23,13 +23,17 @@
  */
 
 #include <gtest/gtest.h>
-#include <SMGValue.hh>
+#include "graphs/SMGValue.hh"
 
-TEST(SMGValue, SMGValue_getNewValue) {
-	SMGValue value1 = SMGValue::getNewValue();
-	SMGValue value2 = SMGValue::getNewValue();
-	SMGValue value3 = SMGValue::getNewValue();
-	EXPECT_NE(value1.getId(), value2.getId());
-	EXPECT_NE(value1.getId(), value3.getId());
-	EXPECT_NE(value2.getId(), value3.getId());
+namespace smg {
+
+TEST(SMGValue, SMGValue_GetNewValue) {
+  SMGValue value_1 = SMGValue::GetNewValue();
+  SMGValue value_2 = SMGValue::GetNewValue();
+  SMGValue value_3 = SMGValue::GetNewValue();
+  EXPECT_NE(value_1.GetId(), value_2.GetId());
+  EXPECT_NE(value_1.GetId(), value_3.GetId());
+  EXPECT_NE(value_2.GetId(), value_3.GetId());
 }
+
+}  // namespace smg

@@ -1,15 +1,20 @@
 #pragma once
 
 #include <string>
-#include <SMGValue.hh>
-#include <SMGObject.hh>
-#include <SMGEdge.hh>
+#include "graphs/SMGEdge.hh"
+#include "graphs/SMGValue.hh"
+#include "objects/SMGObject.hh"
 
-class SMGEdgePointsTo: public SMGEdge {
-private:
-    long offset;
-public:
-    SMGEdgePointsTo(const SMGValue& pValue, const SMGObject& pObject, int pOffset);
-    long getOffset() const;
-    bool isConsistentWith(const SMGEdgePointsTo &pOtherEdge) const;
+namespace smg {
+
+class SMGEdgePointsTo : public SMGEdge {
+ private:
+  long offset_;
+
+ public:
+  SMGEdgePointsTo(const SMGValue& value, const SMGObject& object, int offset);
+  long GetOffset() const;
+  bool IsConsistentWith(const SMGEdgePointsTo& other_edge) const;
 };
+
+}  // namespace smg

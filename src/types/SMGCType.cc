@@ -1,20 +1,15 @@
-#include <SMGCType.hh>
+#include "SMGCType.hh"
 
-const SMGCType SMGCType::createTypeWithSize(const int pSize) {
-    return SMGCType(pSize);
-}
-const SMGCType SMGCType::getIntType() {
-    return createTypeWithSize(SMGCType::SIZE_INT);
-}
+namespace smg {
 
-const SMGCType SMGCType::getPointerType() {
-    return createTypeWithSize(SMGCType::SIZE_POINTER);
-}
+const SMGCType SMGCType::CreateTypeWithSize(const int size) { return SMGCType(size); }
 
-SMGCType::SMGCType(const int pSize) :
-        size(pSize) {
-}
+const SMGCType SMGCType::GetIntType() { return CreateTypeWithSize(SMGCType::SIZE_INT); }
 
-int SMGCType::getSize() const {
-    return size;
-}
+const SMGCType SMGCType::GetPointerType() { return CreateTypeWithSize(SMGCType::SIZE_POINTER); }
+
+SMGCType::SMGCType(const int size) : size_(size) {}
+
+int SMGCType::GetSize() const { return size_; }
+
+}  // namespace smg

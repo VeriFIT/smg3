@@ -18,6 +18,12 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\tests\**\*.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\tests\**\*.hh" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3859E76D-6CE7-438E-92B3-4AC6C3A3DE90}</ProjectGuid>
     <RootNamespace>Test</RootNamespace>
@@ -30,7 +36,7 @@
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+ <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
@@ -39,7 +45,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup>
+    <OutDir>../bin/$(ProjectName)/$(Platform)/$(Configuration)/</OutDir>
+    <IntDir>../obj/$(ProjectName)/$(Platform)/$(Configuration)/</IntDir>
+    <IncludePath>../src;$(IncludePath)</IncludePath>
+    <SourcePath>../src;$(SourcePath)</SourcePath>
+  </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>

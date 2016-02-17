@@ -9,7 +9,7 @@ SMG::SMG() {
   AddPointsToEdge(null_pointer);
 }
 
-SMG::~SMG() {}
+SMG::~SMG() { }
 
 void SMG::AddObject(const SMGObjectPtr& object) { objects_.add(object); }
 
@@ -35,5 +35,13 @@ const SMGObjectPtr SMG::GetObjectPointedBy(const SMGValue& value) const {
   SMGEdgePointsToPtr edge = pt_edges_.find(value)->second;
   return edge->GetObject();
 }
+
+void SMG::RemoveObject(const SMGObjectPtr& object) { objects_.remove(object); }
+
+void SMG::RemoveValue(const SMGValue& value) { values_.erase(value); }
+
+void SMG::RemovePointsToEdge(const SMGEdgePointsToPtr& edge) { pt_edges_.erase(edge->GetValue()); }
+
+void SMG::RemoveHasValueEdge(const SMGEdgeHasValuePtr& edge) { hv_edges_.remove(edge); }
 
 }  // namespace smg

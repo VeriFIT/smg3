@@ -1,10 +1,12 @@
 #include "IllegalArgumentException.hh"
 
-IllegalArgumentException::IllegalArgumentException(char const* const _Message) noexcept
-: std::exception() {
-    msg = _Message;
+namespace smg {
+
+IllegalArgumentException::IllegalArgumentException(char const* const message) noexcept
+    : std::exception() {
+  msg_ = message;
 }
 
-const char * IllegalArgumentException::what() const noexcept {
-    return msg;
-}
+const char* IllegalArgumentException::what() const noexcept { return msg_; }
+
+}  // namespace smg

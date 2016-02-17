@@ -1,13 +1,17 @@
 #pragma once
 
-#include "SMG.hh"
+#include "graphs/SMG.hh"
+
+namespace smg {
 
 class SMGConsistencyVerifier {
-public:
-    static bool verify(const SMG &pSmg);
+ public:
+  static bool Verify(const SMG& smg);
 
-private:
-    static bool verifyNullObject(const SMG &pSmg);
-    SMGConsistencyVerifier();
-    virtual ~SMGConsistencyVerifier();
+ private:
+  static bool VerifyNullObject(const SMG& smg);
+  SMGConsistencyVerifier();
+  virtual ~SMGConsistencyVerifier();
 };
+
+}  // namespace smg

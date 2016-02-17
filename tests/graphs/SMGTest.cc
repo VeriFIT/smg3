@@ -21,14 +21,16 @@
  */
 
 #include <gtest/gtest.h>
-#include <SMGEdgePointsTo.hh>
-#include <SMGEdgeHasValue.hh>
-#include <SMGValue.hh>
-#include <SMGObject.hh>
-#include <SMGRegion.hh>
-#include <SMGCType.hh>
-#include <SMG.hh>
-#include <SMGConsistencyVerifier.hh>
+#include "graphs/SMG.hh"
+#include "graphs/SMGConsistencyVerifier.hh"
+#include "graphs/SMGEdgeHasValue.hh"
+#include "graphs/SMGEdgePointsTo.hh"
+#include "graphs/SMGValue.hh"
+#include "objects/SMGObject.hh"
+#include "objects/SMGRegion.hh"
+#include "types/SMGCType.hh"
+
+namespace smg {
 
 const int SIZE4 = 4;
 const int SIZE8 = 8;
@@ -37,7 +39,7 @@ const int SIZE16 = 16;
 const int OFFSET0 = 0;
 const int OFFSET4 = 4;
 
-const SMGCType& mockType = SMGCType::createTypeWithSize(SIZE4);
+const SMGCType& mock_type = SMGCType::CreateTypeWithSize(SIZE4);
 
 // obj1 = xxxxxxxx
 // obj2 = yyyyzzzz
@@ -45,84 +47,87 @@ const SMGCType& mockType = SMGCType::createTypeWithSize(SIZE4);
 // yyyy has value 2
 // zzzz has value 1
 
-const SMGObjectPtr obj1 = std::make_shared < SMGRegion > (SIZE8, "object-1");
-const SMGObjectPtr obj2 = std::make_shared < SMGRegion > (SIZE8, "object-2");
+const SMGObjectPtr obj_1 = std::make_shared<SMGRegion>(SIZE8, "object-1");
+const SMGObjectPtr obj_2 = std::make_shared<SMGRegion>(SIZE8, "object-2");
 
-const SMGValue val1 = SMGValue::getNewValue();
-const SMGValue val2 = SMGValue::getNewValue();
+const SMGValue val_1 = SMGValue::GetNewValue();
+const SMGValue val_2 = SMGValue::GetNewValue();
 
-const SMGEdgePointsToPtr pt1to1 = std::make_shared < SMGEdgePointsTo > (val1, obj1, OFFSET0);
-const SMGEdgeHasValuePtr hv2has2at0 = std::make_shared < SMGEdgeHasValue > (mockType, OFFSET0, obj2, val2);
-const SMGEdgeHasValuePtr hv2has1at4 = std::make_shared < SMGEdgeHasValue > (mockType, OFFSET4, obj2, val1);
+const SMGEdgePointsToPtr pt_1_to_1 = std::make_shared<SMGEdgePointsTo>(val_1, obj_1, OFFSET0);
+const SMGEdgeHasValuePtr hv_2_has_2_at_0 =
+    std::make_shared<SMGEdgeHasValue>(mock_type, OFFSET0, obj_2, val_2);
+const SMGEdgeHasValuePtr hv_2_has_1_at_4 =
+    std::make_shared<SMGEdgeHasValue>(mock_type, OFFSET4, obj_2, val_1);
 
-class SMGTest: public testing::Test {
-protected:
-    SMG smg = SMG();
-    SMG emptySmg = SMG();
+class SMGTest : public testing::Test {
+ protected:
+  SMG smg = SMG();
+  SMG empty_smg = SMG();
 
-    virtual void setUp() {
-        smg.addObject(obj1);
-        smg.addObject(obj2);
+  virtual void setUp() {
+    smg.AddObject(obj_1);
+    smg.AddObject(obj_2);
 
-        smg.addValue(val1);
-        smg.addValue(val2);
+    smg.AddValue(val_1);
+    smg.AddValue(val_2);
 
-        smg.addPointsToEdge(pt1to1);
+    smg.AddPointsToEdge(pt_1_to_1);
 
-        smg.addHasValueEdge(hv2has2at0);
-        smg.addHasValueEdge(hv2has1at4);
-    }
+    smg.AddHasValueEdge(hv_2_has_2_at_0);
+    smg.AddHasValueEdge(hv_2_has_1_at_4);
+  }
 };
 
-TEST_F(SMGTest, constructorTest) {
-    EXPECT_TRUE(SMGConsistencyVerifier::verify(emptySmg));
-    const SMGObjectPtr nullObject = emptySmg.getNullObject();
-    const SMGValue nullAddress = emptySmg.getNullValue();
+TEST_F(SMGTest, ConstructorTest) {
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(empty_smg));
+  const SMGObjectPtr null_object = empty_smg.GetNullObject();
+  const SMGValue null_address = empty_smg.GetNullValue();
 
-    EXPECT_FALSE(nullObject->notNull());
-    EXPECT_EQ(1, emptySmg.getObjects().size());
-    EXPECT_TRUE(emptySmg.getObjects().contains(nullObject));
+  EXPECT_FALSE(null_object->NotNull());
+  EXPECT_EQ(1, empty_smg.GetObjects().size());
+  EXPECT_TRUE(empty_smg.GetObjects().contains(null_object));
 
-    EXPECT_EQ(1, emptySmg.getValues().size());
-    EXPECT_TRUE(emptySmg.getValues().count(nullAddress));
+  EXPECT_EQ(1, empty_smg.GetValues().size());
+  EXPECT_TRUE(empty_smg.GetValues().count(null_address));
 
-    EXPECT_EQ(1, emptySmg.getPTEdges().size());
-    const SMGObjectPtr targetObject = emptySmg.getObjectPointedBy(nullAddress);
-    EXPECT_EQ(nullObject->getId(), targetObject->getId());
+  EXPECT_EQ(1, empty_smg.GetPTEdges().size());
+  const SMGObjectPtr target_object = empty_smg.GetObjectPointedBy(null_address);
+  EXPECT_EQ(null_object->GetId(), target_object->GetId());
 
-    EXPECT_TRUE(emptySmg.getHVEdges().empty());
+  EXPECT_TRUE(empty_smg.GetHVEdges().empty());
 
-    // COPY CONSTRUCTOR
+  // COPY CONSTRUCTOR
 
-    SMG smgCopy = SMG(emptySmg);
+  SMG smg_copy = SMG(empty_smg);
 
-    EXPECT_TRUE(SMGConsistencyVerifier::verify(emptySmg));
-    EXPECT_TRUE(SMGConsistencyVerifier::verify(smgCopy));
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(empty_smg));
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(smg_copy));
 
-    const SMGObjectPtr thirdObject = std::make_shared<SMGRegion>(SIZE16, "object-3");
-    const SMGValue thirdValue = SMGValue::getNewValue();
-    smgCopy.addObject(thirdObject);
-    smgCopy.addValue(thirdValue);
-    smgCopy.addHasValueEdge(std::make_shared<SMGEdgeHasValue>(mockType, OFFSET0, thirdObject, thirdValue));
-    smgCopy.addPointsToEdge(std::make_shared<SMGEdgePointsTo>(thirdValue, thirdObject, OFFSET0));
+  const SMGObjectPtr third_object = std::make_shared<SMGRegion>(SIZE16, "object-3");
+  const SMGValue third_value = SMGValue::GetNewValue();
+  smg_copy.AddObject(third_object);
+  smg_copy.AddValue(third_value);
+  smg_copy.AddHasValueEdge(
+      std::make_shared<SMGEdgeHasValue>(mock_type, OFFSET0, third_object, third_value));
+  smg_copy.AddPointsToEdge(std::make_shared<SMGEdgePointsTo>(third_value, third_object, OFFSET0));
 
-    EXPECT_TRUE(SMGConsistencyVerifier::verify(emptySmg));
-    EXPECT_TRUE(SMGConsistencyVerifier::verify(smgCopy));
-    EXPECT_EQ(1, emptySmg.getObjects().size());
-    EXPECT_EQ(2, smgCopy.getObjects().size());
-    EXPECT_EQ(1, smgCopy.getObjects().contains(thirdObject));
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(empty_smg));
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(smg_copy));
+  EXPECT_EQ(1, empty_smg.GetObjects().size());
+  EXPECT_EQ(2, smg_copy.GetObjects().size());
+  EXPECT_EQ(1, smg_copy.GetObjects().contains(third_object));
 
-    EXPECT_EQ(1, emptySmg.getValues().size());
-    EXPECT_EQ(2, smgCopy.getValues().size());
-    EXPECT_EQ(1, smgCopy.getValues().count(thirdValue));
+  EXPECT_EQ(1, empty_smg.GetValues().size());
+  EXPECT_EQ(2, smg_copy.GetValues().size());
+  EXPECT_EQ(1, smg_copy.GetValues().count(third_value));
 
-    EXPECT_EQ(1, emptySmg.getPTEdges().size());
-    EXPECT_EQ(2, smgCopy.getPTEdges().size());
-    const SMGObjectPtr targetObjectForThird = smgCopy.getObjectPointedBy(thirdValue);
-    EXPECT_EQ(thirdObject.get(), targetObjectForThird.get());
+  EXPECT_EQ(1, empty_smg.GetPTEdges().size());
+  EXPECT_EQ(2, smg_copy.GetPTEdges().size());
+  const SMGObjectPtr target_object_for_third = smg_copy.GetObjectPointedBy(third_value);
+  EXPECT_EQ(third_object.get(), target_object_for_third.get());
 
-    EXPECT_TRUE(emptySmg.getHVEdges().empty());
-    EXPECT_EQ(1, smgCopy.getHVEdges().size());
+  EXPECT_TRUE(empty_smg.GetHVEdges().empty());
+  EXPECT_EQ(1, smg_copy.GetHVEdges().size());
 }
 
 //
@@ -432,14 +437,19 @@ TEST_F(SMGTest, constructorTest) {
 //
 //  @Test
 //  public final void getHVEdgesFilteredTest() {
-//    Assert.assertEquals(0, Iterables.size(smg.getHVEdges(SMGEdgeHasValueFilter.objectFilter(obj1))));
-//    Assert.assertEquals(2, Iterables.size(smg.getHVEdges(SMGEdgeHasValueFilter.objectFilter(obj2))));
-//    Assert.assertTrue(Iterables.contains(smg.getHVEdges(SMGEdgeHasValueFilter.objectFilter(obj2)), hv2has2at0));
-//    Assert.assertTrue(Iterables.contains(smg.getHVEdges(SMGEdgeHasValueFilter.objectFilter(obj2)), hv2has1at4));
+//    Assert.assertEquals(0,
+// Iterables.size(smg.getHVEdges(SMGEdgeHasValueFilter.objectFilter(obj1))));
+//    Assert.assertEquals(2,
+// Iterables.size(smg.getHVEdges(SMGEdgeHasValueFilter.objectFilter(obj2))));
+//    Assert.assertTrue(Iterables.contains(smg.getHVEdges(SMGEdgeHasValueFilter.objectFilter(obj2)),
+// hv2has2at0));
+//    Assert.assertTrue(Iterables.contains(smg.getHVEdges(SMGEdgeHasValueFilter.objectFilter(obj2)),
+// hv2has1at4));
 //
-//    Assert.assertEquals(1, Iterables.size(smg.getHVEdges(SMGEdgeHasValueFilter.objectFilter(obj2).filterAtOffset(0))));
-//    Assert.assertTrue(Iterables.contains(smg.getHVEdges(SMGEdgeHasValueFilter.objectFilter(obj2).filterAtOffset(0)),
-//                                         hv2has2at0));
+//    Assert.assertEquals(1,
+// Iterables.size(smg.getHVEdges(SMGEdgeHasValueFilter.objectFilter(obj2).filterAtOffset(0))));
+//    Assert.assertTrue(Iterables.contains(smg.getHVEdges(SMGEdgeHasValueFilter.objectFilter(obj2).
+//                                         filterAtOffset(0)), hv2has2at0));
 //  }
 //
 //  @Test
@@ -583,3 +593,5 @@ TEST_F(SMGTest, constructorTest) {
 //    Assert.assertFalse(nr.neqExists(two, three));
 //  }
 //}
+
+}  // namespace smg

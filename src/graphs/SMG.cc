@@ -1,56 +1,39 @@
 #include "SMG.hh"
 
+namespace smg {
+
 SMG::SMG() {
-    SMGEdgePointsToPtr null_pointer = std::make_shared < SMGEdgePointsTo > (null_value, null_object, 0);
-    addObject (null_object);
-    addValue (null_value);
-    addPointsToEdge(null_pointer);
+  SMGEdgePointsToPtr null_pointer = std::make_shared<SMGEdgePointsTo>(null_value_, null_object_, 0);
+  AddObject(null_object_);
+  AddValue(null_value_);
+  AddPointsToEdge(null_pointer);
 }
 
-SMG::~SMG() {
+SMG::~SMG() {}
+
+void SMG::AddObject(const SMGObjectPtr& object) { objects_.add(object); }
+
+void SMG::AddValue(const SMGValue& value) { values_.insert(value); }
+
+void SMG::AddPointsToEdge(const SMGEdgePointsToPtr& edge) { pt_edges_[edge->GetValue()] = edge; }
+
+void SMG::AddHasValueEdge(const SMGEdgeHasValuePtr& edge) { hv_edges_.add(edge); }
+
+SMGObjectPtr SMG::GetNullObject() const { return null_object_; }
+
+const SMGValue SMG::GetNullValue() const { return null_value_; }
+
+const SMGEntitySet<const SMGObject>& SMG::GetObjects() const { return objects_; }
+
+const std::set<SMGValue>& SMG::GetValues() const { return values_; }
+
+const std::map<SMGValue, SMGEdgePointsToPtr>& SMG::GetPTEdges() const { return pt_edges_; }
+
+const SMGEntitySet<const SMGEdgeHasValue>& SMG::GetHVEdges() const { return hv_edges_; }
+
+const SMGObjectPtr SMG::GetObjectPointedBy(const SMGValue& value) const {
+  SMGEdgePointsToPtr edge = pt_edges_.find(value)->second;
+  return edge->GetObject();
 }
 
-void SMG::addObject(const SMGObjectPtr &pObject) {
-    objects.add(pObject);
-}
-
-void SMG::addValue(const SMGValue &pValue) {
-    values.insert(pValue);
-}
-
-void SMG::addPointsToEdge(const SMGEdgePointsToPtr &pEdge) {
-    pt_edges[pEdge->getValue()] = pEdge;
-}
-
-void SMG::addHasValueEdge(const SMGEdgeHasValuePtr &pEdge) {
-    hv_edges.add(pEdge);
-}
-
-SMGObjectPtr SMG::getNullObject() const {
-    return null_object;
-}
-
-const SMGValue SMG::getNullValue() const {
-    return null_value;
-}
-
-const SMGEntitySet<const SMGObject>& SMG::getObjects() const {
-    return objects;
-}
-
-const std::set<SMGValue>& SMG::getValues() const {
-    return values;
-}
-
-const std::map<SMGValue, SMGEdgePointsToPtr>& SMG::getPTEdges() const {
-    return pt_edges;
-}
-
-const SMGEntitySet<const SMGEdgeHasValue>& SMG::getHVEdges() const {
-    return hv_edges;
-}
-
-const SMGObjectPtr SMG::getObjectPointedBy(const SMGValue& pValue) const {
-    SMGEdgePointsToPtr edge = pt_edges.find(pValue)->second;
-    return edge->getObject();
-}
+}  // namespace smg

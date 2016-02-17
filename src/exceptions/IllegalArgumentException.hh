@@ -1,9 +1,14 @@
 #include <exception>
 
-class IllegalArgumentException: public std::exception {
-private:
-    char const* msg = nullptr;
-public:
-    explicit IllegalArgumentException(char const* const _Message) noexcept;
-    const char * what() const noexcept override;
+namespace smg {
+
+class IllegalArgumentException : public std::exception {
+ private:
+  char const* msg_ = nullptr;
+
+ public:
+  explicit IllegalArgumentException(char const* const message) noexcept;
+  const char* what() const noexcept override;
 };
+
+}  // namespace smg

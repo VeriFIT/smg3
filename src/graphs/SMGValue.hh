@@ -2,21 +2,25 @@
 
 #include <string>
 
+namespace smg {
+
 class SMGValue {
-private:
-    static long id_counter;
-    const static SMGValue NULL_VALUE;
-    const static SMGValue INVALID_VALUE;
+ private:
+  static long id_counter_;
+  static const SMGValue NULL_VALUE;
+  static const SMGValue INVALID_VALUE;
+  long id_;
 
-    long id;
+  explicit SMGValue(const long id);
 
-    SMGValue(long pId);
-public:
-    static const SMGValue getNewValue();
-    static const SMGValue& getInvalidValue();
-    static const SMGValue& getNullValue();
-    long getId() const;
-    bool operator<(const SMGValue &pOther) const;
-    bool operator==(const SMGValue &pOther) const;
-    bool operator!=(const SMGValue &pOther) const;
+ public:
+  static const SMGValue GetNewValue();
+  static const SMGValue& GetInvalidValue();
+  static const SMGValue& GetNullValue();
+  long GetId() const;
+  bool operator<(const SMGValue& other) const;
+  bool operator==(const SMGValue& other) const;
+  bool operator!=(const SMGValue& other) const;
 };
+
+}  // namespace smg

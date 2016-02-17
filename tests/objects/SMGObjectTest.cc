@@ -47,11 +47,11 @@ class TestingObject : public SMGObject {
 
   void Accept(SMGObjectVisitor& visitor) const override { (void)visitor; }
 
-  bool IsMoreGeneral(const SMGObject& other __attribute__((__unused__))) const override {
+  bool IsMoreGeneral(const SMGObject&) const override {
     return false;
   };
 
-  SMGObjectPtr Join(const SMGObject& other __attribute__((__unused__))) const override {
+  SMGObjectPtr Join(const SMGObject&) const override {
     return std::make_shared<TestingObject>(*this);
   }
 };

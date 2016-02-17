@@ -44,4 +44,22 @@ void SMG::RemovePointsToEdge(const SMGEdgePointsToPtr& edge) { pt_edges_.erase(e
 
 void SMG::RemoveHasValueEdge(const SMGEdgeHasValuePtr& edge) { hv_edges_.remove(edge); }
 
+void SMG::RemoveObjectAndEdges(const SMGObjectPtr& object) {
+  RemoveObject(object);
+  for (auto hv_iter = hv_edges_.begin(); hv_iter != hv_edges_.end();) {
+    if ((*hv_iter)->GetObject() == object) {
+      hv_iter = hv_edges_.remove(hv_iter);
+    } else {
+      ++hv_iter;
+    }
+  }
+  for (auto pt_iter = pt_edges_.begin(); pt_iter != pt_edges_.end();) {
+    if (pt_iter->second->GetObject() == object) {
+      pt_iter = pt_edges_.erase(pt_iter);
+    } else {
+      ++pt_iter;
+    }
+  }
+}
+
 }  // namespace smg

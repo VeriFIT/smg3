@@ -171,7 +171,35 @@ TEST_F(SMGTest, RemoveObjectTest) {
 
   EXPECT_TRUE(empty_smg.GetHVEdges().contains(hv_0));
   EXPECT_TRUE(empty_smg.GetHVEdges().contains(hv_4));
+}
 
+TEST_F(SMGTest, RemoveObjectAndEdges) {
+  const SMGValue new_value = SMGValue::GetNewValue();
+
+  const SMGObjectPtr object = std::make_shared<SMGRegion>(SIZE8, "object");
+  const SMGEdgeHasValuePtr hv_0 =
+      std::make_shared<SMGEdgeHasValue>(mock_type, OFFSET0, object, SMGValue::GetNullValue());
+  const SMGEdgeHasValuePtr hv_4 =
+      std::make_shared<SMGEdgeHasValue>(mock_type, OFFSET4, object, SMGValue::GetNullValue());
+  const SMGEdgePointsToPtr pt = std::make_shared<SMGEdgePointsTo>(new_value, object, OFFSET0);
+
+  empty_smg.AddValue(new_value);
+  empty_smg.AddObject(object);
+  empty_smg.AddPointsToEdge(pt);
+  empty_smg.AddHasValueEdge(hv_0);
+  empty_smg.AddHasValueEdge(hv_4);
+
+  EXPECT_TRUE(empty_smg.GetObjects().contains(object));
+  empty_smg.RemoveObjectAndEdges(object);
+  EXPECT_FALSE(empty_smg.GetObjects().contains(object));
+  const auto pt_edges_map = empty_smg.GetPTEdges();
+  SMGEntitySet<const SMGEdgePointsTo> pt_edges;
+  for (auto pti : pt_edges_map) {
+    pt_edges.add(pti.second);
+  }
+  EXPECT_FALSE(pt_edges.contains(pt));
+  EXPECT_FALSE(empty_smg.GetHVEdges().contains(hv_0));
+  EXPECT_FALSE(empty_smg.GetHVEdges().contains(hv_4));
 }
 
 //

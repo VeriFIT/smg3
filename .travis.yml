@@ -3,7 +3,7 @@ language: cpp
 
 matrix:
     include:
-      - compiler: gcc
+      - compiler: gcc-4.9
         addons:
             apt:
                 sources:
@@ -15,7 +15,7 @@ matrix:
             - COMPILERXX="g++-4.9"
             - COMPILERC="gcc-4.9"
 
-      - compiler: gcc
+      - compiler: gcc-5
         addons:
             apt:
                 sources:
@@ -27,28 +27,44 @@ matrix:
             - COMPILERXX="g++-5"
             - COMPILERC="gcc-5"
 
-      - compiler: clang
+      - compiler: clang-3.6
         addons:
             apt:
                 sources:
                     - ubuntu-toolchain-r-test
-                    - llvm-toolchain-precise
+                    - llvm-toolchain-precise-3.6
                 packages:
-                    - clang-3.8
+                    - clang-3.6
                     - libgtest-dev
         env:
-            - COMPILERXX="clang++-3.8"
-            - COMPILERC="clang-3.8"
+            - COMPILERXX="clang++-3.6"
+            - COMPILERC="clang-3.6"
+
+    ## disabled because of https://llvm.org/bugs/show_bug.cgi?id=22757, waiting for
+    #   - compiler: clang-3.8
+    #     addons:
+    #         apt:
+    #             sources:
+    #                 - ubuntu-toolchain-r-test
+    #                 - llvm-toolchain-precise
+    #             packages:
+    #                 - clang-3.8
+    #                 - libgtest-dev
+    #     env:
+    #         - COMPILERXX="clang++-3.8"
+    #         - COMPILERC="clang-3.8"
 
 cache:
-  directories:
-  - $HOME/gtest/
+    apt: true
+    directories:
+        - $HOME/gtest/
 
 before_install:
   - export CXX=$COMPILERXX CC=$COMPILERC
   - $CXX --version
-  - ls $HOME/gtest
-  - "if [ ! -d $HOME/gtest ]; then mkdir -p $HOME/gtest && cd $HOME/gtest && cmake --target install -DCMAKE_INSTALL_PREFIX=$HOME/lib/ -Dgtest_disable_pthreads=ON /usr/src/gtest && cmake --build . && cd - ; fi"
+# - "if [ ! -f $HOME/gtest/libgtest.a ]; then .... ; fi
+  - "mkdir -p $HOME/gtest && cd $HOME/gtest && cmake --target install -DCMAKE_INSTALL_PREFIX=$HOME/lib/ -Dgtest_disable_pthreads=ON /usr/src/gtest && cmake --build . && cd -"
+  - rm -rf $HOME/gtest/CMakeFiles/Makefile.cmake #for cache
   - ls $HOME/gtest
   - export LIBRARY_PATH=$HOME/gtest/:$LIBRARY_PATH
 

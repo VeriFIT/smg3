@@ -24,6 +24,11 @@
   <ItemGroup>
     <ClInclude Include="..\tests\**\*.hh" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="SmgLib.vcxproj">
+      <Project>{5f6c8883-417f-4dd3-ad79-6f9874ab5fbe}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3859E76D-6CE7-438E-92B3-4AC6C3A3DE90}</ProjectGuid>
     <RootNamespace>Test</RootNamespace>
@@ -46,26 +51,26 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <OutDir>../bin/$(ProjectName)/$(Platform)/$(Configuration)/</OutDir>
-    <IntDir>../obj/$(ProjectName)/$(Platform)/$(Configuration)/</IntDir>
+    <OutDir>../bin/$(Platform)/$(Configuration)/</OutDir>
+    <IntDir>../obj/$(Platform)/$(Configuration)/</IntDir>
     <IncludePath>../src;$(IncludePath)</IncludePath>
     <SourcePath>../src;$(SourcePath)</SourcePath>
+    <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary Condition="'$(Configuration)'=='Release'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies Condition="'$(Configuration)'=='Release'">gtest.lib;gtest_main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)'=='Debug'">gtestd.lib;gtest_maind.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ProjectReference Include="Main.vcxproj">
-      <Project>{5f6c8883-417f-4dd3-ad79-6f9874ab5fbe}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

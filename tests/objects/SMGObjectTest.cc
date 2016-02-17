@@ -41,17 +41,17 @@ class TestingObject : public SMGObject {
   ~TestingObject() {}
   TestingObject(const TestingObject&) = default;
 
-  bool NotNull() const { return true; }
+  bool NotNull() const override { return true; }
 
   bool IsAbstract() const override { return false; }
 
   void Accept(SMGObjectVisitor& visitor) const override { (void)visitor; }
 
-  bool IsMoreGeneral(const SMGObject& other __attribute__((__unused__))) const override {
+  bool IsMoreGeneral(const SMGObject&) const override {
     return false;
   };
 
-  SMGObjectPtr Join(const SMGObject& other __attribute__((__unused__))) const override {
+  SMGObjectPtr Join(const SMGObject&) const override {
     return std::make_shared<TestingObject>(*this);
   }
 };

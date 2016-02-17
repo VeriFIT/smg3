@@ -17,9 +17,7 @@ bool SMGRegion::PropertiesEqual(const SMGRegion& other) const {
   if (&other == this) {
     return true;
   }
-  if (&other == nullptr) {
-    return false;
-  }
+  //}
   if (GetLabel() != other.GetLabel()) {
     return false;
   }
@@ -33,7 +31,7 @@ bool SMGRegion::IsAbstract() const { return false; }
 
 void SMGRegion::Accept(SMGObjectVisitor& visitor) const { visitor.Visit(*this); }
 
-bool SMGRegion::IsMoreGeneral(const SMGObject& other __attribute__((unused))) const {
+bool SMGRegion::IsMoreGeneral(const SMGObject&) const {
   return false;
 }
 

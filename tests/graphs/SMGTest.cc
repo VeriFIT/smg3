@@ -64,7 +64,7 @@ class SMGTest : public testing::Test {
   SMG smg = SMG();
   SMG empty_smg = SMG();
 
-  virtual void setUp() {
+  void SetUp() {
     smg.AddObject(obj_1);
     smg.AddObject(obj_2);
 
@@ -206,6 +206,32 @@ TEST_F(SMGTest, GetNullObject) {
   const auto null_object = smg.GetNullObject();
   EXPECT_FALSE(smg.IsObjectValid(null_object));
   EXPECT_EQ(null_object->GetSize(), 0);
+}
+
+TEST_F(SMGTest, Validity) {
+  EXPECT_FALSE(smg.IsObjectValid(smg.GetNullObject()));
+  EXPECT_TRUE(smg.IsObjectValid(obj_1));
+  EXPECT_TRUE(smg.IsObjectValid(obj_2));
+
+  SMG smg_copy(smg);
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(smg));
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(smg_copy));
+
+  smg.SetValidity(obj_1, false);
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(smg_copy));
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(smg));
+  EXPECT_FALSE(smg.IsObjectValid(smg.GetNullObject()));
+  EXPECT_FALSE(smg.IsObjectValid(obj_1));
+  EXPECT_TRUE(smg.IsObjectValid(obj_2));
+  EXPECT_FALSE(smg_copy.IsObjectValid(smg_copy.GetNullObject()));
+  EXPECT_TRUE(smg_copy.IsObjectValid(obj_1));
+  EXPECT_TRUE(smg_copy.IsObjectValid(obj_2));
+
+  smg.SetValidity(obj_2, false);
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(smg_copy));
+  EXPECT_FALSE(smg_copy.IsObjectValid(smg_copy.GetNullObject()));
+  EXPECT_TRUE(smg_copy.IsObjectValid(obj_1));
+  EXPECT_TRUE(smg_copy.IsObjectValid(obj_2));
 }
 
 

@@ -21,6 +21,7 @@
  */
 
 #include <gtest/gtest.h>
+#include "exceptions/IllegalArgumentException.hh"
 #include "graphs/SMG.hh"
 #include "graphs/SMGConsistencyVerifier.hh"
 #include "graphs/SMGEdgeHasValue.hh"
@@ -232,6 +233,16 @@ TEST_F(SMGTest, Validity) {
   EXPECT_FALSE(smg_copy.IsObjectValid(smg_copy.GetNullObject()));
   EXPECT_TRUE(smg_copy.IsObjectValid(obj_1));
   EXPECT_TRUE(smg_copy.IsObjectValid(obj_2));
+}
+
+TEST_F(SMGTest, IsObjectValidBadCall) {
+  const SMGObjectPtr object = std::make_shared<SMGRegion>(SIZE8, "object");
+  EXPECT_THROW(smg.IsObjectValid(object), IllegalArgumentException);
+}
+
+TEST_F(SMGTest, SetValidityBadCall) {
+  const SMGObjectPtr object = std::make_shared<SMGRegion>(SIZE8, "object");
+  EXPECT_THROW(smg.SetValidity(object, true), IllegalArgumentException);
 }
 
 

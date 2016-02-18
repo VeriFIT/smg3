@@ -13,9 +13,11 @@ SMG::SMG() {
 
 SMG::~SMG() { }
 
-void SMG::AddObject(const SMGObjectPtr& object) {
+void SMG::AddObject(const SMGObjectPtr& object) { AddObject(object, true); }
+
+void SMG::AddObject(const SMGObjectPtr& object, const bool validity) {
   objects_.add(object);
-  object_validity_[object->GetId()];
+  object_validity_[object->GetId()] = validity;
 }
 
 void SMG::AddValue(const SMGValue& value) { values_.insert(value); }

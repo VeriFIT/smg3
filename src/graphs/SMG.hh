@@ -44,6 +44,7 @@ class SMG {
   virtual ~SMG();
 
   void AddObject(const SMGObjectPtr& object);
+  void AddObject(const SMGObjectPtr& object, const bool validity);
   void AddValue(const SMGValue& value);
   void AddPointsToEdge(const SMGEdgePointsToPtr& edge);
   void AddHasValueEdge(const SMGEdgeHasValuePtr& edge);

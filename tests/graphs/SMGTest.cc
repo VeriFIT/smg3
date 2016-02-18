@@ -78,7 +78,7 @@ class SMGTest : public testing::Test {
   }
 };
 
-TEST_F(SMGTest, ConstructorTest) {
+TEST_F(SMGTest, Constructor) {
   EXPECT_TRUE(SMGConsistencyVerifier::Verify(empty_smg));
   const SMGObjectPtr null_object = empty_smg.GetNullObject();
   const SMGValue null_address = empty_smg.GetNullValue();
@@ -130,7 +130,7 @@ TEST_F(SMGTest, ConstructorTest) {
   EXPECT_EQ(1, smg_copy.GetHVEdges().size());
 }
 
-TEST_F(SMGTest, AddRemoveHasValueEdgeTest) {
+TEST_F(SMGTest, AddRemoveHasValueEdge) {
   const SMGObjectPtr object = std::make_shared<SMGRegion>(SIZE4, "object");
 
   const SMGEdgeHasValuePtr
@@ -143,7 +143,7 @@ TEST_F(SMGTest, AddRemoveHasValueEdgeTest) {
   EXPECT_FALSE(empty_smg.GetHVEdges().contains(hv));
 }
 
-TEST_F(SMGTest, RemoveObjectTest) {
+TEST_F(SMGTest, RemoveObject) {
   const SMGValue new_value = SMGValue::GetNewValue();
 
   const SMGObjectPtr object = std::make_shared<SMGRegion>(SIZE8, "object");
@@ -202,6 +202,13 @@ TEST_F(SMGTest, RemoveObjectAndEdges) {
   EXPECT_FALSE(empty_smg.GetHVEdges().contains(hv_4));
 }
 
+TEST_F(SMGTest, GetNullObject) {
+  const auto null_object = smg.GetNullObject();
+  EXPECT_FALSE(smg.IsObjectValid(null_object));
+  EXPECT_EQ(null_object->GetSize(), 0);
+}
+
+
 //
 //  @Test(expected = NoSuchElementException.class)
 //  public final void getUniqueHV0Test() {
@@ -253,70 +260,6 @@ TEST_F(SMGTest, RemoveObjectAndEdges) {
 //    smg.replaceHVSet(hvSet);
 //    Set<SMGEdgeHasValue> newHVSet = Sets.newHashSet(smg.getHVEdges());
 //    Assert.assertTrue(hvSet.equals(newHVSet));
-//  }
-//
-//  @Test
-//  public final void constructorTest() {
-//  }
-//
-//  @Test
-//  public final void addRemoveHasValueEdgeTest() {
-//    SMGObject object = new SMGRegion(SIZE4, "object");
-//
-//    SMGEdgeHasValue hv = new SMGEdgeHasValue(mockType, 0, object, emptySmg.getNullValue());
-//
-//    emptySmg.addHasValueEdge(hv);
-//    Assert.assertTrue(Iterables.contains(emptySmg.getHVEdges(), hv));
-//
-//    emptySmg.removeHasValueEdge(hv);
-//    Assert.assertFalse(Iterables.contains(emptySmg.getHVEdges(), hv));
-//  }
-//
-//  @Test
-//  public final void removeObjectTest() {
-//    Integer newValue = SMGValueFactory.getNewValue();
-//
-//    SMGObject object = new SMGRegion(SIZE8, "object");
-//    SMGEdgeHasValue hv0 = new SMGEdgeHasValue(mockType, OFFSET0, object, 0);
-//    SMGEdgeHasValue hv4 = new SMGEdgeHasValue(mockType, OFFSET4, object, 0);
-//    SMGEdgePointsTo pt = new SMGEdgePointsTo(newValue, object, 0);
-//
-//    emptySmg.addValue(newValue);
-//    emptySmg.addObject(object);
-//    emptySmg.addPointsToEdge(pt);
-//    emptySmg.addHasValueEdge(hv0);
-//    emptySmg.addHasValueEdge(hv4);
-//
-//    Assert.assertTrue(emptySmg.getObjects().contains(object));
-//    emptySmg.removeObject(object);
-//    Assert.assertFalse(emptySmg.getObjects().contains(object));
-//    Assert.assertTrue(emptySmg.getPTEdges().contains(pt));
-//
-//    Assert.assertTrue(Iterables.contains(emptySmg.getHVEdges(), hv0));
-//    Assert.assertTrue(Iterables.contains(emptySmg.getHVEdges(), hv4));
-//  }
-//
-//  @Test
-//  public final void removeObjectAndEdgesTest() {
-//    Integer newValue = SMGValueFactory.getNewValue();
-//
-//    SMGObject object = new SMGRegion(SIZE8, "object");
-//    SMGEdgeHasValue hv0 = new SMGEdgeHasValue(mockType, OFFSET0, object, 0);
-//    SMGEdgeHasValue hv4 = new SMGEdgeHasValue(mockType, OFFSET4, object, 0);
-//    SMGEdgePointsTo pt = new SMGEdgePointsTo(newValue, object, 0);
-//
-//    emptySmg.addValue(newValue);
-//    emptySmg.addObject(object);
-//    emptySmg.addPointsToEdge(pt);
-//    emptySmg.addHasValueEdge(hv0);
-//    emptySmg.addHasValueEdge(hv4);
-//
-//    Assert.assertTrue(emptySmg.getObjects().contains(object));
-//    emptySmg.removeObjectAndEdges(object);
-//    Assert.assertFalse(emptySmg.getObjects().contains(object));
-//    Assert.assertFalse(emptySmg.getPTEdges().contains(pt));
-//    Assert.assertFalse(Iterables.contains(emptySmg.getHVEdges(), hv0));
-//    Assert.assertFalse(Iterables.contains(emptySmg.getHVEdges(), hv4));
 //  }
 //
 //  @Test

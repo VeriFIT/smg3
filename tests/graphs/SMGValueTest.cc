@@ -27,7 +27,7 @@
 
 namespace smg {
 
-TEST(SMGValue, SMGValue_GetNewValue) {
+TEST(SMGValue, GetNewValue) {
   SMGValue value_1 = SMGValue::GetNewValue();
   SMGValue value_2 = SMGValue::GetNewValue();
   SMGValue value_3 = SMGValue::GetNewValue();

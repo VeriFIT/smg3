@@ -15,7 +15,7 @@ TEST(SMGRegion, TestToString) { EXPECT_FALSE(region_8.ToString().find('@') != st
 
 TEST(SMGRegion, IsAbstract) { EXPECT_FALSE(region_8.IsAbstract()); }
 
-TEST(SMGRegion, TestPropertiesEqual) {
+TEST(SMGRegion, PropertiesEqual) {
   SMGRegion one(SIZE8, "region");
   SMGRegion two(SIZE8, "region");
   SMGRegion three(SIZE10, "region");
@@ -27,6 +27,6 @@ TEST(SMGRegion, TestPropertiesEqual) {
   EXPECT_FALSE(one.PropertiesEqual(four));
 }
 
-TEST(SMGRegion, TestIsMoreGeneral) { EXPECT_FALSE(region_8.IsMoreGeneral(region_8)); }
+TEST(SMGRegion, IsMoreGeneral) { EXPECT_FALSE(region_8.IsMoreGeneral(region_8)); }
 
 }  // namespace smg

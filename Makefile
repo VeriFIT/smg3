@@ -115,7 +115,7 @@ tests: run-tests
 build-tests: dirs $(TESTS_BINS_ALL)
 
 run-tests:
-	export LD_LIBRARY_PATH=$(shell pwd)/$(BIN_DIR) ; $(foreach test,$(TESTS_BINS_ALL), $(test) || echo $$? ; )
+	export LD_LIBRARY_PATH=$(shell pwd)/$(BIN_DIR) ; $(foreach test,$(TESTS_BINS_ALL), $(test) --gtest_catch_exceptions=0 || echo $$? ; )
 
 dirs:
 	@mkdir -p $(BIN_DIR) $(OBJ_DIRS)

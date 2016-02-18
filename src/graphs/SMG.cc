@@ -1,4 +1,5 @@
 #include "SMG.hh"
+#include "exceptions/IllegalArgumentException.hh"
 
 namespace smg {
 
@@ -71,8 +72,8 @@ void SMG::RemoveObjectAndEdges(const SMGObjectPtr& object) {
 
 void SMG::SetValidity(const SMGObjectPtr& object, const bool validity) {
   if (!objects_.contains(object)) {
-    auto msg = "Object [" + object->GetLabel() + "] is not in SMG";
-    throw new std::invalid_argument(msg);
+    std::string msg = "Object [" + object->GetLabel() + "] is not in SMG";
+    throw IllegalArgumentException(msg.c_str());
   }
 
   object_validity_[object->GetId()] = validity;
@@ -80,8 +81,8 @@ void SMG::SetValidity(const SMGObjectPtr& object, const bool validity) {
 
 bool SMG::IsObjectValid(const SMGObjectPtr& object) {
   if (!objects_.contains(object)) {
-    auto msg = "Object [" + object->GetLabel() + "] is not in SMG";
-    throw new std::invalid_argument(msg);
+    std::string msg = "Object [" + object->GetLabel() + "] is not in SMG";
+    throw IllegalArgumentException(msg.c_str());
   }
 
   return object_validity_[object->GetId()];

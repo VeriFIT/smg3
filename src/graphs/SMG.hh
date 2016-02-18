@@ -3,7 +3,6 @@
 #include <set>
 #include <map>
 #include <memory>
-#include <stdexcept>
 #include "graphs/SMGEdgeHasValue.hh"
 #include "graphs/SMGEdgePointsTo.hh"
 #include "graphs/SMGValue.hh"

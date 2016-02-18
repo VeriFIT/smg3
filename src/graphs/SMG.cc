@@ -81,13 +81,13 @@ void SMG::SetValidity(const SMGObjectPtr& object, const bool validity) {
   object_validity_[object->GetId()] = validity;
 }
 
-bool SMG::IsObjectValid(const SMGObjectPtr& object) {
+bool SMG::IsObjectValid(const SMGObjectPtr& object) const {
   if (!objects_.contains(object)) {
     std::string msg = "Object [" + object->GetLabel() + "] is not in SMG";
     throw IllegalArgumentException(msg.c_str());
   }
 
-  return object_validity_[object->GetId()];
+  return object_validity_.at(object->GetId());
 }
 
 }  // namespace smg

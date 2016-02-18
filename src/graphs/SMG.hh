@@ -55,7 +55,7 @@ class SMG {
   void RemoveObjectAndEdges(const SMGObjectPtr& object);
 
   void SetValidity(const SMGObjectPtr& object, const bool validity);
-  bool IsObjectValid(const SMGObjectPtr& object);
+  bool IsObjectValid(const SMGObjectPtr& object) const;
 
   SMGObjectPtr GetNullObject() const;
   const SMGValue GetNullValue() const;

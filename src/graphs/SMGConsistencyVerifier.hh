@@ -10,6 +10,7 @@ class SMGConsistencyVerifier {
 
  private:
   static bool VerifyNullObject(const SMG& smg);
+  static bool VerifyObjectConsistency(const SMG& smg);
   SMGConsistencyVerifier();
   virtual ~SMGConsistencyVerifier();
 };

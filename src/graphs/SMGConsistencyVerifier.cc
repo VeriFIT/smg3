@@ -6,6 +6,7 @@
  */
 
 #include "SMGConsistencyVerifier.hh"
+#include "exceptions/IllegalArgumentException.hh"
 
 namespace smg {
 
@@ -30,6 +31,10 @@ bool SMGConsistencyVerifier::VerifyNullObject(const SMG& smg) {
     return false;
   }
 
+  if (smg.IsObjectValid(smg.GetNullObject())) {
+    return false;
+  }
+
   //
   //    // Verify that NULL object has no value
   //    SMGEdgeHasValueFilter filter = SMGEdgeHasValueFilter.objectFilter(pSmg.getNullObject());
@@ -39,11 +44,6 @@ bool SMGConsistencyVerifier::VerifyNullObject(const SMG& smg) {
   //      return false;
   //    }
   //
-  //    // Verify that the NULL object is invalid
-  //    if (pSmg.isObjectValid(pSmg.getNullObject())) {
-  ////      pLogger.log(Level.SEVERE, "SMG inconsistent: null object is not invalid");
-  //      return false;
-  //    }
 
   if (smg.GetNullObject()->GetSize() != 0) {
     return false;
@@ -52,44 +52,27 @@ bool SMGConsistencyVerifier::VerifyNullObject(const SMG& smg) {
   return true;
 }
 
-bool SMGConsistencyVerifier::Verify(const SMG& smg) {
-  bool to_return = true;
-  to_return = to_return && VerifyNullObject(smg);
-  return to_return;
-  //      toReturn = toReturn && verifySMGProperty(
-  //          verifyNullObject(pSmg), "null object invariants hold");
-  //      toReturn = toReturn && verifySMGProperty(
-  //          verifyInvalidRegionsHaveNoHVEdges(pSmg), "invalid regions have no outgoing edges");
-  //      toReturn = toReturn && verifySMGProperty(
-  //          verifyFieldConsistency(pSmg), "field consistency");
-  //      toReturn = toReturn && verifySMGProperty(
-  //          verifyEdgeConsistency(pSmg, pSmg.getHVEdges()), "Has Value edge consistency");
-  //      toReturn = toReturn && verifySMGProperty(
-  //          verifyEdgeConsistency(pSmg, pSmg.getPTEdges()), "Points To edge consistency");
-  //      toReturn = toReturn && verifySMGProperty(
-  //          verifyObjectConsistency(pSmg), "Validity consistency");
-  //
-  //  //    pLogger.log(Level.FINEST, "Ending consistency check of a SMG");
-  //
-  //      return toReturn;
-  //    }
+bool SMGConsistencyVerifier::VerifyObjectConsistency(const SMG& smg) {
+  auto objects = smg.GetObjects();
+  for (SMGObjectPtr obj : objects) {
+    try {
+      smg.IsObjectValid(obj);
+    } catch (IllegalArgumentException e) {
+      return false;
+    }
+
+    if (obj->GetSize() < 0) {
+      return false;
+    }
+
+    if (!smg.IsObjectValid(obj) && obj->IsAbstract()) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
-SMGConsistencyVerifier::SMGConsistencyVerifier() {}
-
-SMGConsistencyVerifier::~SMGConsistencyVerifier() {}
-//
-//  /**
-//   * A consistency checks related to the NULL object
-//   *
-//   * @param pLogger A logger to record results
-//   * @param pSmg A SMG to verify
-//   * @return True, if {@link pSmg} satisfies all consistency criteria
-//   */
-//  private static boolean verifyNullObject(final SMG pSmg) {
-
-//  }
-//
 //  /**
 //   * Verifies that invalid regions do not have any Has-Value edges, as this
 //   * is forbidden in consistent SMGs
@@ -210,31 +193,32 @@ SMGConsistencyVerifier::~SMGConsistencyVerifier() {}
 //    return true;
 //  }
 //
-//  private static boolean verifyObjectConsistency(final SMG pSmg) {
-//    for (SMGObject obj : pSmg.getObjects()) {
-//      try {
-//        pSmg.isObjectValid(obj);
-//      } catch (IllegalArgumentException e) {
-////        pLogger.log(Level.SEVERE, "SMG inconsistent: object does not have validity");
-//        return false;
-//      }
-//
-//      if (obj.getSize() < 0) {
-////        pLogger.log(Level.SEVERE, "SMG inconsistent: object with size lower than 0");
-//        return false;
-//      }
-//
-//      if ((!pSmg.isObjectValid(obj)) && obj.isAbstract()) {
-////        pLogger.log(Level.SEVERE, "SMG inconsistent: abstract object is invalid");
-////        pLogger.log(Level.SEVERE, obj);
-//        return false;
-//      }
-//    }
-//    return true;
-//  }
-//
 //  //TODO: NEQ CONSISTENCY
 //}
-//
+
+bool SMGConsistencyVerifier::Verify(const SMG& smg) {
+  bool to_return = true;
+  to_return = to_return && VerifyNullObject(smg);
+  to_return = to_return && VerifyObjectConsistency(smg);
+  return to_return;
+  //      toReturn = toReturn && verifySMGProperty(
+  //          verifyNullObject(pSmg), "null object invariants hold");
+  //      toReturn = toReturn && verifySMGProperty(
+  //          verifyInvalidRegionsHaveNoHVEdges(pSmg), "invalid regions have no outgoing edges");
+  //      toReturn = toReturn && verifySMGProperty(
+  //          verifyFieldConsistency(pSmg), "field consistency");
+  //      toReturn = toReturn && verifySMGProperty(
+  //          verifyEdgeConsistency(pSmg, pSmg.getHVEdges()), "Has Value edge consistency");
+  //      toReturn = toReturn && verifySMGProperty(
+  //          verifyEdgeConsistency(pSmg, pSmg.getPTEdges()), "Points To edge consistency");
+  //
+  //  //    pLogger.log(Level.FINEST, "Ending consistency check of a SMG");
+  //
+  //      return toReturn;
+  //    }
+}
+
+SMGConsistencyVerifier::SMGConsistencyVerifier() {}
+SMGConsistencyVerifier::~SMGConsistencyVerifier() {}
 
 }  // namespace smg

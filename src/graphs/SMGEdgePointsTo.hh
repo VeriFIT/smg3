@@ -14,7 +14,7 @@ class SMGEdgePointsTo : public SMGEdge {
  public:
   SMGEdgePointsTo(const SMGValue& value, const SMGObjectPtr& object, const int offset);
   long GetOffset() const;
-  bool IsConsistentWith(const SMGEdgePointsTo& other_edge) const;
+  bool IsConsistentWith(const SMGEdgePointsTo& other) const;
 };
 
 typedef std::shared_ptr<const SMGEdgePointsTo> SMGEdgePointsToPtr;

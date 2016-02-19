@@ -245,6 +245,47 @@ TEST_F(SMGTest, SetValidityBadCall) {
   EXPECT_THROW(smg.SetValidity(object, true), IllegalArgumentException);
 }
 
+TEST_F(SMGTest, ConsistencyViolationHVConsistency) {
+  SMGObjectPtr object_8b = std::make_shared<SMGRegion>(SIZE8, "object_8b");
+  SMGObjectPtr object_16b = std::make_shared<SMGRegion>(SIZE16, "object_16b");
+
+  SMGValue first_value = SMGValue::GetNewValue();
+  SMGValue second_value = SMGValue::GetNewValue();
+
+  // 1, 3, 4 are consistent (different offsets or object)
+  // 2 is inconsistent with 1 (same object and offset, different value)
+  SMGEdgeHasValuePtr
+      hv_edge_1 = std::make_shared<SMGEdgeHasValue>(mock_type, OFFSET0, object_8b, first_value);
+  SMGEdgeHasValuePtr
+      hv_edge_2 = std::make_shared<SMGEdgeHasValue>(mock_type, OFFSET0, object_8b, second_value);
+  SMGEdgeHasValuePtr
+      hv_edge_3 = std::make_shared<SMGEdgeHasValue>(mock_type, OFFSET4, object_8b, second_value);
+  SMGEdgeHasValuePtr
+      hv_edge_4 = std::make_shared<SMGEdgeHasValue>(mock_type, OFFSET0, object_16b, second_value);
+
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(empty_smg));
+
+  empty_smg.AddHasValueEdge(hv_edge_1);
+  EXPECT_FALSE(SMGConsistencyVerifier::Verify(empty_smg));
+  empty_smg.AddObject(object_8b);
+  EXPECT_FALSE(SMGConsistencyVerifier::Verify(empty_smg));
+  empty_smg.AddValue(first_value);
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(empty_smg));
+
+  empty_smg.AddHasValueEdge(hv_edge_3);
+  EXPECT_FALSE(SMGConsistencyVerifier::Verify(empty_smg));
+  empty_smg.AddValue(second_value);
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(empty_smg));
+
+  empty_smg.AddHasValueEdge(hv_edge_4);
+  EXPECT_FALSE(SMGConsistencyVerifier::Verify(empty_smg));
+  empty_smg.AddObject(object_16b);
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(empty_smg));
+
+  empty_smg.AddHasValueEdge(hv_edge_2);
+  EXPECT_FALSE(SMGConsistencyVerifier::Verify(empty_smg));
+}
+
 
 //
 //  @Test(expected = NoSuchElementException.class)

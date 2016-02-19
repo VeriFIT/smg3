@@ -24,8 +24,8 @@ template<class T> class SMGEntitySet {
   typename std::set<std::shared_ptr<T>>::iterator
       remove(typename std::set<std::shared_ptr<T>>::iterator position);
 
-  typename std::set<std::shared_ptr<T>>::iterator begin() noexcept;
-  typename std::set<std::shared_ptr<T>>::iterator end() noexcept;
+  typename std::set<std::shared_ptr<T>>::const_iterator begin() const noexcept;
+  typename std::set<std::shared_ptr<T>>::const_iterator end() const noexcept;
 };
 
 class SMG {
@@ -96,12 +96,13 @@ template<class T> inline bool SMGEntitySet<T>::empty() const noexcept {
 }
 
 template<class T>
-inline typename std::set<std::shared_ptr<T>>::iterator SMGEntitySet<T>::begin() noexcept {
+inline typename std::set<std::shared_ptr<T>>::const_iterator SMGEntitySet<T>::begin() const
+noexcept {
   return entity_set.begin();
 }
 
 template<class T>
-inline typename std::set<std::shared_ptr<T>>::iterator SMGEntitySet<T>::end() noexcept {
+inline typename std::set<std::shared_ptr<T>>::const_iterator SMGEntitySet<T>::end() const noexcept {
   return entity_set.end();
 }
 

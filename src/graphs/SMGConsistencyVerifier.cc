@@ -6,6 +6,7 @@
  */
 
 #include "SMGConsistencyVerifier.hh"
+#include <list>
 #include "exceptions/IllegalArgumentException.hh"
 
 namespace smg {
@@ -67,6 +68,73 @@ bool SMGConsistencyVerifier::VerifyObjectConsistency(const SMG& smg) {
 
     if (!smg.IsObjectValid(obj) && obj->IsAbstract()) {
       return false;
+    }
+  }
+
+  return true;
+}
+
+bool SMGConsistencyVerifier::VerifyGeneralEdgeConsistency(const SMG& smg, const SMGEdge& edge) {
+  // Verify that the object assigned to the edge exists in the SMG
+  if (!smg.GetObjects().contains(edge.GetObject())) {
+    return false;
+  }
+
+  // Verify that the value assigned to the edge exists in the SMG
+  if (smg.GetValues().find(edge.GetValue()) == smg.GetValues().end()) {
+    return false;
+  }
+
+  return true;
+}
+
+bool SMGConsistencyVerifier::VerifyEdgeConsistency(const SMG& smg) {
+  auto hv_edges = smg.GetHVEdges();
+  std::list<SMGEdgeHasValuePtr> to_verify_hv(hv_edges.begin(), hv_edges.end());
+
+  while (to_verify_hv.size() > 0) {
+    auto edge = to_verify_hv.front();
+    to_verify_hv.pop_front();
+    if (!VerifyGeneralEdgeConsistency(smg, *edge)) {
+      return false;
+    }
+
+    // Verify that the edge is consistent to all remaining edges
+    //  - edges of different type are inconsistent
+    //  - two Has-Value edges are inconsistent iff:
+    //    - leading from the same object AND
+    //    - have same type AND
+    //    - have same offset AND
+    //    - leading to DIFFERENT values
+    for (auto other_edge : to_verify_hv) {
+      if (!edge->IsConsistentWith(*other_edge)) {
+        return false;
+      }
+    }
+  }
+
+  auto pt_edges = smg.GetPTEdges();
+  std::list<SMGEdgePointsToPtr> to_verify_pt;
+  for (auto pt : pt_edges) {
+    to_verify_pt.push_back(pt.second);
+  }
+
+  while (to_verify_pt.size() > 0) {
+    auto edge = to_verify_pt.front();
+    to_verify_pt.pop_front();
+    if (!VerifyGeneralEdgeConsistency(smg, *edge)) {
+      return false;
+    }
+
+    // Verify that the edge is consistent to all remaining edges
+    //  - edges of different type are inconsistent
+    //  - two Points-To edges are inconsistent iff:
+    //    - different values point to same place (object, offset)
+    //    - same values do not point to the same place
+    for (auto other_edge : to_verify_pt) {
+      if (!edge->IsConsistentWith(*other_edge)) {
+        return false;
+      }
     }
   }
 
@@ -140,59 +208,6 @@ bool SMGConsistencyVerifier::VerifyObjectConsistency(const SMG& smg) {
 //    return true;
 //  }
 //
-//  /**
-//   * Verify that the edges are consistent in the SMG
-//   *
-//   * @param pLogger A logger to record results
-//   * @param pSmg A SMG to verify
-//   * @param pEdges A set of edges for consistency verification
-//   * @return True, if all edges in {@link pEdges} satisfy consistency criteria. False otherwise.
-//   */
-//  private static boolean verifyEdgeConsistency(final SMG pSmg, final Iterable<? extends SMGEdge>
-// pEdges) {
-//    ArrayList<SMGEdge> toVerify = new ArrayList<>();
-//    Iterables.addAll(toVerify, pEdges);
-//
-//    while (toVerify.size() > 0) {
-//      SMGEdge edge = toVerify.get(0);
-//      toVerify.remove(0);
-//
-//      // Verify that the object assigned to the edge exists in the SMG
-//      if (!pSmg.getObjects().contains(edge.getObject())) {
-////        pLogger.log(Level.SEVERE, "SMG inconsistent: Edge from a nonexistent object");
-////        pLogger.log(Level.SEVERE, "Edge :", edge);
-//        return false;
-//      }
-//
-//      // Verify that the value assigned to the edge exists in the SMG
-//      if (!pSmg.getValues().contains(edge.getValue())) {
-////        pLogger.log(Level.SEVERE, "SMG inconsistent: Edge to a nonexistent value");
-////        pLogger.log(Level.SEVERE, "Edge :", edge);
-//        return false;
-//      }
-//
-//      // Verify that the edge is consistent to all remaining edges
-//      //  - edges of different type are inconsistent
-//      //  - two Has-Value edges are inconsistent iff:
-//      //    - leading from the same object AND
-//      //    - have same type AND
-//      //    - have same offset AND
-//      //    - leading to DIFFERENT values
-//      //  - two Points-To edges are inconsistent iff:
-//      //    - different values point to same place (object, offset)
-//      //    - same values do not point to the same place
-//      for (SMGEdge otherOdge : toVerify) {
-//        if (!edge.isConsistentWith(otherOdge)) {
-////          pLogger.log(Level.SEVERE, "SMG inconsistent: inconsistent edges");
-////          pLogger.log(Level.SEVERE, "First edge:  ", edge);
-////          pLogger.log(Level.SEVERE, "Second edge: ", other_edge);
-//          return false;
-//        }
-//      }
-//    }
-//    return true;
-//  }
-//
 //  //TODO: NEQ CONSISTENCY
 //}
 
@@ -200,6 +215,7 @@ bool SMGConsistencyVerifier::Verify(const SMG& smg) {
   bool to_return = true;
   to_return = to_return && VerifyNullObject(smg);
   to_return = to_return && VerifyObjectConsistency(smg);
+  to_return = to_return && VerifyEdgeConsistency(smg);
   return to_return;
   //      toReturn = toReturn && verifySMGProperty(
   //          verifyNullObject(pSmg), "null object invariants hold");
@@ -218,7 +234,7 @@ bool SMGConsistencyVerifier::Verify(const SMG& smg) {
   //    }
 }
 
-SMGConsistencyVerifier::SMGConsistencyVerifier() {}
-SMGConsistencyVerifier::~SMGConsistencyVerifier() {}
+SMGConsistencyVerifier::SMGConsistencyVerifier() { }
+SMGConsistencyVerifier::~SMGConsistencyVerifier() { }
 
 }  // namespace smg

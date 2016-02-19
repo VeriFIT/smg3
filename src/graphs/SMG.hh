@@ -34,6 +34,7 @@ class SMG {
   std::set<SMGValue> values_;
   std::map<SMGValue, SMGEdgePointsToPtr> pt_edges_;
   SMGEntitySet<const SMGEdgeHasValue> hv_edges_;
+  std::map<long, bool> object_validity_;
 
   SMGObjectPtr null_object_ = SMGNullObject::GetNullObject();
   SMGValue null_value_ = SMGValue::GetNullValue();
@@ -43,6 +44,7 @@ class SMG {
   virtual ~SMG();
 
   void AddObject(const SMGObjectPtr& object);
+  void AddObject(const SMGObjectPtr& object, const bool validity);
   void AddValue(const SMGValue& value);
   void AddPointsToEdge(const SMGEdgePointsToPtr& edge);
   void AddHasValueEdge(const SMGEdgeHasValuePtr& edge);
@@ -51,6 +53,9 @@ class SMG {
   void RemovePointsToEdge(const SMGEdgePointsToPtr& edge);
   void RemoveHasValueEdge(const SMGEdgeHasValuePtr& edge);
   void RemoveObjectAndEdges(const SMGObjectPtr& object);
+
+  void SetValidity(const SMGObjectPtr& object, const bool validity);
+  bool IsObjectValid(const SMGObjectPtr& object) const;
 
   SMGObjectPtr GetNullObject() const;
   const SMGValue GetNullValue() const;
@@ -83,7 +88,7 @@ inline typename std::set<std::shared_ptr<T>>::size_type SMGEntitySet<T>::size() 
 }
 
 template<class T> inline bool SMGEntitySet<T>::contains(std::shared_ptr<T> element) const {
-  return entity_set.count(element);
+  return entity_set.find(element) != entity_set.end();
 }
 
 template<class T> inline bool SMGEntitySet<T>::empty() const noexcept {

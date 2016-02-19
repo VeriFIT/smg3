@@ -1,17 +1,24 @@
 #include "SMG.hh"
+#include "exceptions/IllegalArgumentException.hh"
 
 namespace smg {
 
 SMG::SMG() {
   SMGEdgePointsToPtr null_pointer = std::make_shared<SMGEdgePointsTo>(null_value_, null_object_, 0);
   AddObject(null_object_);
+  object_validity_[null_object_->GetId()] = false;
   AddValue(null_value_);
   AddPointsToEdge(null_pointer);
 }
 
 SMG::~SMG() { }
 
-void SMG::AddObject(const SMGObjectPtr& object) { objects_.add(object); }
+void SMG::AddObject(const SMGObjectPtr& object) { AddObject(object, true); }
+
+void SMG::AddObject(const SMGObjectPtr& object, const bool validity) {
+  objects_.add(object);
+  object_validity_[object->GetId()] = validity;
+}
 
 void SMG::AddValue(const SMGValue& value) { values_.insert(value); }
 
@@ -36,7 +43,10 @@ const SMGObjectPtr SMG::GetObjectPointedBy(const SMGValue& value) const {
   return edge->GetObject();
 }
 
-void SMG::RemoveObject(const SMGObjectPtr& object) { objects_.remove(object); }
+void SMG::RemoveObject(const SMGObjectPtr& object) {
+  objects_.remove(object);
+  object_validity_.erase(object->GetId());
+}
 
 void SMG::RemoveValue(const SMGValue& value) { values_.erase(value); }
 
@@ -60,6 +70,24 @@ void SMG::RemoveObjectAndEdges(const SMGObjectPtr& object) {
       ++pt_iter;
     }
   }
+}
+
+void SMG::SetValidity(const SMGObjectPtr& object, const bool validity) {
+  if (!objects_.contains(object)) {
+    std::string msg = "Object [" + object->GetLabel() + "] is not in SMG";
+    throw IllegalArgumentException(msg.c_str());
+  }
+
+  object_validity_[object->GetId()] = validity;
+}
+
+bool SMG::IsObjectValid(const SMGObjectPtr& object) const {
+  if (!objects_.contains(object)) {
+    std::string msg = "Object [" + object->GetLabel() + "] is not in SMG";
+    throw IllegalArgumentException(msg.c_str());
+  }
+
+  return object_validity_.at(object->GetId());
 }
 
 }  // namespace smg

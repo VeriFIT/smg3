@@ -1,4 +1,5 @@
 #include "SMG.hh"
+#include <algorithm>
 #include "exceptions/IllegalArgumentException.hh"
 
 namespace smg {
@@ -37,6 +38,16 @@ const std::set<SMGValue>& SMG::GetValues() const { return values_; }
 const std::map<SMGValue, SMGEdgePointsToPtr>& SMG::GetPTEdges() const { return pt_edges_; }
 
 const SMGEntitySet<const SMGEdgeHasValue>& SMG::GetHVEdges() const { return hv_edges_; }
+
+const SMGEntitySet<const SMGEdgeHasValue> SMG::GetHVEdges(
+    const SMGEdgeHasValueFilter& filter) const {
+  SMGEntitySet<const SMGEdgeHasValue> to_return;
+  std::copy_if(hv_edges_.begin(),
+               hv_edges_.end(),
+               std::inserter(to_return.set(), to_return.begin()),
+               filter);
+  return to_return;
+}
 
 const SMGObjectPtr SMG::GetObjectPointedBy(const SMGValue& value) const {
   SMGEdgePointsToPtr edge = pt_edges_.find(value)->second;

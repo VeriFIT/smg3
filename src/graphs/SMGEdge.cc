@@ -12,8 +12,8 @@ const SMGValue& SMGEdge::GetValue() const { return value_; }
 SMGObjectPtr SMGEdge::GetObject() const { return object_; }
 
 bool SMGEdge::IsConsistentWith(const SMGEdge& other_edge) const {
-  return other_edge.object_->GetId() == object_->GetId() &&
-         other_edge.value_.GetId() == value_.GetId();
+  return other_edge.object_->GetId() != object_->GetId() &&
+         other_edge.value_.GetId() != value_.GetId();
 }
 
 }  // namespace smg

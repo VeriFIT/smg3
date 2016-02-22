@@ -286,6 +286,49 @@ TEST_F(SMGTest, ConsistencyViolationHVConsistency) {
   EXPECT_FALSE(SMGConsistencyVerifier::Verify(empty_smg));
 }
 
+TEST_F(SMGTest, ConsistencyViolationPTConsistency) {
+  SMGObjectPtr object_8b = std::make_shared<SMGRegion>(SIZE8, "object_8b");
+  SMGObjectPtr object_16b = std::make_shared<SMGRegion>(SIZE16, "object_16b");
+
+  SMGValue first_value = SMGValue::GetNewValue();
+  SMGValue second_value = SMGValue::GetNewValue();
+  SMGValue third_value = SMGValue::GetNewValue();
+
+  SMGEdgePointsToPtr edge_1 = std::make_shared<SMGEdgePointsTo>(first_value, object_8b, OFFSET0);
+  SMGEdgePointsToPtr edge_2 = std::make_shared<SMGEdgePointsTo>(third_value, object_8b, OFFSET4);
+  SMGEdgePointsToPtr edge_3 = std::make_shared<SMGEdgePointsTo>(second_value, object_16b, OFFSET0);
+  SMGEdgePointsToPtr edge_4 = std::make_shared<SMGEdgePointsTo>(first_value, object_16b, OFFSET0);
+
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(empty_smg));
+
+  empty_smg.AddPointsToEdge(edge_1);
+  EXPECT_FALSE(SMGConsistencyVerifier::Verify(empty_smg));
+
+  empty_smg.AddValue(first_value);
+  EXPECT_FALSE(SMGConsistencyVerifier::Verify(empty_smg));
+
+  empty_smg.AddObject(object_8b);
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(empty_smg));
+
+  empty_smg.AddPointsToEdge(edge_2);
+  EXPECT_FALSE(SMGConsistencyVerifier::Verify(empty_smg));
+
+  empty_smg.AddValue(third_value);
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(empty_smg));
+
+  empty_smg.AddPointsToEdge(edge_3);
+  EXPECT_FALSE(SMGConsistencyVerifier::Verify(empty_smg));
+
+  empty_smg.AddObject(object_16b);
+  EXPECT_FALSE(SMGConsistencyVerifier::Verify(empty_smg));
+
+  empty_smg.AddValue(second_value);
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(empty_smg));
+
+  empty_smg.AddPointsToEdge(edge_4);
+  EXPECT_FALSE(SMGConsistencyVerifier::Verify(empty_smg));
+}
+
 TEST_F(SMGTest, GetHVEdgesFiltered) {
   EXPECT_EQ(0, smg.GetHVEdges(SMGEdgeHasValueFilter::ObjectFilter(obj_1)).size());
   EXPECT_EQ(2, smg.GetHVEdges(SMGEdgeHasValueFilter::ObjectFilter(obj_2)).size());
@@ -353,33 +396,6 @@ TEST_F(SMGTest, GetHVEdgesFiltered) {
 //  }
 //
 //  @Test
-//  public final void validityTest() {
-//    Assert.assertFalse(smg.isObjectValid(smg.getNullObject()));
-//    Assert.assertTrue(smg.isObjectValid(obj1));
-//    Assert.assertTrue(smg.isObjectValid(obj2));
-//
-//    SMG smgCopy = new SMG(smg);
-//    Assert.assertTrue(SMGConsistencyVerifier.verifySMG(smgCopy));
-//    Assert.assertTrue(SMGConsistencyVerifier.verifySMG(smg));
-//
-//    smg.setValidity(obj1, false);
-//    Assert.assertTrue(SMGConsistencyVerifier.verifySMG(smgCopy));
-//    Assert.assertTrue(SMGConsistencyVerifier.verifySMG(smg));
-//    Assert.assertFalse(smg.isObjectValid(smg.getNullObject()));
-//    Assert.assertFalse(smg.isObjectValid(obj1));
-//    Assert.assertTrue(smg.isObjectValid(obj2));
-//    Assert.assertFalse(smgCopy.isObjectValid(smgCopy.getNullObject()));
-//    Assert.assertTrue(smgCopy.isObjectValid(obj1));
-//    Assert.assertTrue(smgCopy.isObjectValid(obj2));
-//
-//    smg.setValidity(obj2, false);
-//    Assert.assertTrue(SMGConsistencyVerifier.verifySMG(smgCopy));
-//    Assert.assertFalse(smgCopy.isObjectValid(smgCopy.getNullObject()));
-//    Assert.assertTrue(smgCopy.isObjectValid(obj1));
-//    Assert.assertTrue(smgCopy.isObjectValid(obj2));
-//  }
-//
-//  @Test
 //  public final void consistencyViolationInvalidRegionHasValueTest() {
 //    smg.setValidity(obj1, false);
 //    Assert.assertTrue(SMGConsistencyVerifier.verifySMG(smg));
@@ -415,98 +431,6 @@ TEST_F(SMGTest, GetHVEdgesFiltered) {
 //  }
 //
 //  @Test
-//  public final void consistencyViolationHVConsistency() {
-//    SMGObject object8b = new SMGRegion(SIZE8, "object_8b");
-//    SMGObject object16b = new SMGRegion(SIZE10, "object_10b");
-//
-//    Integer firstValue = SMGValueFactory.getNewValue();
-//    Integer secondValue = SMGValueFactory.getNewValue();
-//
-//    // 1, 3, 4 are consistent (different offsets or object)
-//    // 2 is inconsistent with 1 (same object and offset, different value)
-//    SMGEdgeHasValue hvEdge1 = new SMGEdgeHasValue(mockType, OFFSET0, object8b, firstValue);
-//    SMGEdgeHasValue hvEdge2 = new SMGEdgeHasValue(mockType, OFFSET0, object8b, secondValue);
-//    SMGEdgeHasValue hvEdge3 = new SMGEdgeHasValue(mockType, OFFSET4, object8b, secondValue);
-//    SMGEdgeHasValue hvEdge4 = new SMGEdgeHasValue(mockType, OFFSET0, object16b, secondValue);
-//
-//    Assert.assertTrue(SMGConsistencyVerifier.verifySMG(emptySmg));
-//
-//    emptySmg.addHasValueEdge(hvEdge1);
-//    Assert.assertFalse(SMGConsistencyVerifier.verifySMG(emptySmg));
-//    emptySmg.addObject(object8b);
-//    Assert.assertFalse(SMGConsistencyVerifier.verifySMG(emptySmg));
-//    emptySmg.addValue(firstValue);
-//    Assert.assertTrue(SMGConsistencyVerifier.verifySMG(emptySmg));
-//
-//    emptySmg.addHasValueEdge(hvEdge3);
-//    Assert.assertFalse(SMGConsistencyVerifier.verifySMG(emptySmg));
-//    emptySmg.addValue(secondValue);
-//    Assert.assertTrue(SMGConsistencyVerifier.verifySMG(emptySmg));
-//
-//    emptySmg.addHasValueEdge(hvEdge4);
-//    Assert.assertFalse(SMGConsistencyVerifier.verifySMG(emptySmg));
-//    emptySmg.addObject(object16b);
-//    Assert.assertTrue(SMGConsistencyVerifier.verifySMG(emptySmg));
-//
-//    emptySmg.addHasValueEdge(hvEdge2);
-//    Assert.assertFalse(SMGConsistencyVerifier.verifySMG(emptySmg));
-//  }
-//
-//  @Test
-//  public final void consistencyViolationPTConsistency() {
-//    SMGObject object8b = new SMGRegion(SIZE8, "object_8b");
-//    SMGObject object16b = new SMGRegion(SIZE10, "object_10b");
-//
-//    Integer firstValue = SMGValueFactory.getNewValue();
-//    Integer secondValue = SMGValueFactory.getNewValue();
-//    Integer thirdValue = SMGValueFactory.getNewValue();
-//
-//    SMGEdgePointsTo edge1 = new SMGEdgePointsTo(firstValue, object8b, OFFSET0);
-//    SMGEdgePointsTo edge2 = new SMGEdgePointsTo(thirdValue, object8b, OFFSET4);
-//    SMGEdgePointsTo edge3 = new SMGEdgePointsTo(secondValue, object16b, OFFSET0);
-//    SMGEdgePointsTo edge4 = new SMGEdgePointsTo(firstValue, object16b, OFFSET0);
-//
-//    Assert.assertTrue(SMGConsistencyVerifier.verifySMG(emptySmg));
-//
-//    emptySmg.addPointsToEdge(edge1);
-//    Assert.assertFalse(SMGConsistencyVerifier.verifySMG(emptySmg));
-//
-//    emptySmg.addValue(firstValue);
-//    Assert.assertFalse(SMGConsistencyVerifier.verifySMG(emptySmg));
-//
-//    emptySmg.addObject(object8b);
-//    Assert.assertTrue(SMGConsistencyVerifier.verifySMG(emptySmg));
-//
-//    emptySmg.addPointsToEdge(edge2);
-//    Assert.assertFalse(SMGConsistencyVerifier.verifySMG(emptySmg));
-//
-//    emptySmg.addValue(thirdValue);
-//    Assert.assertTrue(SMGConsistencyVerifier.verifySMG(emptySmg));
-//
-//    emptySmg.addPointsToEdge(edge3);
-//    Assert.assertFalse(SMGConsistencyVerifier.verifySMG(emptySmg));
-//
-//    emptySmg.addObject(object16b);
-//    Assert.assertFalse(SMGConsistencyVerifier.verifySMG(emptySmg));
-//
-//    emptySmg.addValue(secondValue);
-//    Assert.assertTrue(SMGConsistencyVerifier.verifySMG(emptySmg));
-//
-//    emptySmg.addPointsToEdge(edge4);
-//    Assert.assertFalse(SMGConsistencyVerifier.verifySMG(emptySmg));
-//  }
-//
-//  @Test(expected = IllegalArgumentException.class)
-//  public final void isObjectValidBadCallTest() {
-//    smg.isObjectValid(new SMGRegion(SIZE24, "wee"));
-//  }
-//
-//  @Test(expected = IllegalArgumentException.class)
-//  public final void setValidityBadCallTest() {
-//    smg.setValidity(new SMGRegion(SIZE24, "wee"), true);
-//  }
-//
-//  @Test
 //  public final void getObjectsTest() {
 //    HashSet<SMGObject> set = new HashSet<>();
 //    set.add(obj1);
@@ -538,23 +462,6 @@ TEST_F(SMGTest, GetHVEdgesFiltered) {
 //    Assert.assertTrue(Iterables.contains(smg.getHVEdges(), hv2has2at0));
 //    Assert.assertTrue(Iterables.contains(smg.getHVEdges(), hv2has1at4));
 //    Assert.assertEquals(2, Iterables.size(smg.getHVEdges()));
-//  }
-//
-//  @Test
-//  public final void getHVEdgesFilteredTest() {
-//    Assert.assertEquals(0,
-// Iterables.size(smg.getHVEdges(SMGEdgeHasValueFilter.objectFilter(obj1))));
-//    Assert.assertEquals(2,
-// Iterables.size(smg.getHVEdges(SMGEdgeHasValueFilter.objectFilter(obj2))));
-//    Assert.assertTrue(Iterables.contains(smg.getHVEdges(SMGEdgeHasValueFilter.objectFilter(obj2)),
-// hv2has2at0));
-//    Assert.assertTrue(Iterables.contains(smg.getHVEdges(SMGEdgeHasValueFilter.objectFilter(obj2)),
-// hv2has1at4));
-//
-//    Assert.assertEquals(1,
-// Iterables.size(smg.getHVEdges(SMGEdgeHasValueFilter.objectFilter(obj2).filterAtOffset(0))));
-//    Assert.assertTrue(Iterables.contains(smg.getHVEdges(SMGEdgeHasValueFilter.objectFilter(obj2).
-//                                         filterAtOffset(0)), hv2has2at0));
 //  }
 //
 //  @Test

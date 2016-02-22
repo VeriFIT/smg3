@@ -286,6 +286,18 @@ TEST_F(SMGTest, ConsistencyViolationHVConsistency) {
   EXPECT_FALSE(SMGConsistencyVerifier::Verify(empty_smg));
 }
 
+TEST_F(SMGTest, GetHVEdgesFiltered) {
+  EXPECT_EQ(0, smg.GetHVEdges(SMGEdgeHasValueFilter::ObjectFilter(obj_1)).size());
+  EXPECT_EQ(2, smg.GetHVEdges(SMGEdgeHasValueFilter::ObjectFilter(obj_2)).size());
+  EXPECT_TRUE(smg.GetHVEdges(SMGEdgeHasValueFilter::ObjectFilter(obj_2)).contains(hv_2_has_2_at_0));
+  EXPECT_TRUE(smg.GetHVEdges(SMGEdgeHasValueFilter::ObjectFilter(obj_2)).contains(hv_2_has_1_at_4));
+
+  EXPECT_EQ(1, smg.GetHVEdges(SMGEdgeHasValueFilter::ObjectFilter(obj_2).
+      FilterAtOffset(OFFSET0)).size());
+  EXPECT_TRUE(smg.GetHVEdges(SMGEdgeHasValueFilter::ObjectFilter(obj_2).
+      FilterAtOffset(OFFSET0)).contains(hv_2_has_2_at_0));
+}
+
 
 //
 //  @Test(expected = NoSuchElementException.class)

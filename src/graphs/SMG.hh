@@ -4,6 +4,7 @@
 #include <map>
 #include <memory>
 #include "graphs/SMGEdgeHasValue.hh"
+#include "graphs/SMGEdgeHasValueFilter.hh"
 #include "graphs/SMGEdgePointsTo.hh"
 #include "graphs/SMGValue.hh"
 #include "objects/SMGObject.hh"
@@ -18,6 +19,7 @@ template<class T> class SMGEntitySet {
   typename std::set<std::shared_ptr<T>>::size_type size() const noexcept;
   bool contains(std::shared_ptr<T> element) const;
   bool empty() const noexcept;
+  std::set<std::shared_ptr<T>>& set();
 
   void add(const std::shared_ptr<T> element);
   void remove(const std::shared_ptr<T> element);
@@ -26,6 +28,8 @@ template<class T> class SMGEntitySet {
 
   typename std::set<std::shared_ptr<T>>::const_iterator begin() const noexcept;
   typename std::set<std::shared_ptr<T>>::const_iterator end() const noexcept;
+  typename std::set<std::shared_ptr<T>>::iterator begin() noexcept;
+  typename std::set<std::shared_ptr<T>>::iterator end() noexcept;
 };
 
 class SMG {
@@ -64,6 +68,7 @@ class SMG {
   const std::set<SMGValue>& GetValues() const;
   const std::map<SMGValue, SMGEdgePointsToPtr>& GetPTEdges() const;
   const SMGEntitySet<const SMGEdgeHasValue>& GetHVEdges() const;
+  const SMGEntitySet<const SMGEdgeHasValue> GetHVEdges(const SMGEdgeHasValueFilter& filter) const;
 
   const SMGObjectPtr GetObjectPointedBy(const SMGValue& value) const;
 };
@@ -104,6 +109,20 @@ noexcept {
 template<class T>
 inline typename std::set<std::shared_ptr<T>>::const_iterator SMGEntitySet<T>::end() const noexcept {
   return entity_set.end();
+}
+
+template<class T>
+inline typename std::set<std::shared_ptr<T>>::iterator SMGEntitySet<T>::begin() noexcept {
+  return entity_set.begin();
+}
+
+template<class T>
+inline typename std::set<std::shared_ptr<T>>::iterator SMGEntitySet<T>::end() noexcept {
+  return entity_set.end();
+}
+
+template<class T> inline std::set<std::shared_ptr<T>>& SMGEntitySet<T>::set() {
+  return entity_set;
 }
 
 }  // namespace smg

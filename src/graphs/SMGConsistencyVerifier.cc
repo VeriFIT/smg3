@@ -53,24 +53,52 @@ bool SMGConsistencyVerifier::VerifyNullObject(const SMG& smg) {
   return true;
 }
 
-bool SMGConsistencyVerifier::VerifyObjectConsistency(const SMG& smg) {
-  auto objects = smg.GetObjects();
-  for (SMGObjectPtr obj : objects) {
-    try {
-      smg.IsObjectValid(obj);
-    } catch (IllegalArgumentException e) {
-      return false;
+
+/**
+  * Verifies that invalid regions do not have any Has-Value edges, as this
+  * is forbidden in consistent SMGs
+  */
+bool SMGConsistencyVerifier::VerifyInvalidRegionsHaveNoHVEdges(const SMG& smg) {
+  for (auto obj : smg.GetObjects()) {
+    if (smg.IsObjectValid(obj)) {
+      continue;
     }
 
-    if (obj->GetSize() < 0) {
-      return false;
-    }
-
-    if (!smg.IsObjectValid(obj) && obj->IsAbstract()) {
+    SMGEdgeHasValueFilter filter = SMGEdgeHasValueFilter::ObjectFilter(obj);
+    if (smg.GetHVEdges(filter).size() > 0) {
       return false;
     }
   }
 
+  return true;
+}
+
+/**
+  * Verifies that any fields (as designated by Has-Value edges) do not
+  * exceed the boundary of the object.
+  */
+bool SMGConsistencyVerifier::CheckSingleFieldConsistency(const SMGObjectPtr& object,
+                                                         const SMG& smg) {
+  SMGEdgeHasValueFilter filter = SMGEdgeHasValueFilter::ObjectFilter(object);
+
+  for (auto hv_edge : smg.GetHVEdges(filter)) {
+    if ((hv_edge->GetOffset() + hv_edge->GetSizeInBytes()) > object->GetSize()) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
+  * Verify all objects satisfy the Field Consistency criteria
+  */
+bool SMGConsistencyVerifier::VerifyFieldConsistency(const SMG& smg) {
+  for (auto obj : smg.GetObjects()) {
+    if (!CheckSingleFieldConsistency(obj, smg)) {
+      return false;
+    }
+  }
   return true;
 }
 
@@ -141,100 +169,39 @@ bool SMGConsistencyVerifier::VerifyEdgeConsistency(const SMG& smg) {
   return true;
 }
 
-//  /**
-//   * Verifies that invalid regions do not have any Has-Value edges, as this
-//   * is forbidden in consistent SMGs
-//   *
-//   * @param pLogger A logger to record results
-//   * @param pSmg A SMG to verify
-//   * @return True, if {@link pSmg} satisfies all consistency criteria.
-//   */
-//  private static boolean verifyInvalidRegionsHaveNoHVEdges(final SMG pSmg) {
-//    for (SMGObject obj : pSmg.getObjects()) {
-//      if (pSmg.isObjectValid(obj)) {
-//        continue;
-//      }
-//      // Verify that the HasValue edge set for this invalid object is empty
-//      SMGEdgeHasValueFilter filter = SMGEdgeHasValueFilter.objectFilter(obj);
-//
-//      if (pSmg.getHVEdges(filter).iterator().hasNext()) {
-////        pLogger.log(Level.SEVERE, "SMG inconsistent: invalid object has a HVEdge");
-//        return false;
-//      }
-//    }
-//
-//    return true;
-//  }
-//
-//  /**
-//   * Verifies that any fields (as designated by Has-Value edges) do not
-//   * exceed the boundary of the object.
-//   *
-//   * @param pLogger A logger to record results
-//   * @param pObject An object to verify
-//   * @param pSmg A SMG to verify
-//   * @return True, if {@link pObject} in {@link pSmg} satisfies all consistency criteria. False
-// otherwise.
-//   */
-//  private static boolean checkSingleFieldConsistency(final SMGObject pObject, final SMG pSmg) {
-//
-//    // For all fields in the object, verify that sizeof(type)+field_offset < object_size
-//    SMGEdgeHasValueFilter filter = SMGEdgeHasValueFilter.objectFilter(pObject);
-//
-//    for (SMGEdgeHasValue hvEdge : pSmg.getHVEdges(filter)) {
-//      if ((hvEdge.getOffset() + hvEdge.getSizeInBytes()) > pObject.getSize()) {
-////        pLogger.log(Level.SEVERE, "SMG inconistent: field exceedes boundary of the object");
-////        pLogger.log(Level.SEVERE, "Object: ", pObject);
-////        pLogger.log(Level.SEVERE, "Field: ", hvEdge);
-//        return false;
-//      }
-//    }
-//    return true;
-//  }
-//
-//  /**
-//   * Verify all objects satisfy the Field Consistency criteria
-//   * @param pLogger A logger to record results
-//   * @param pSmg A SMG to verify
-//   * @return True, if {@link pSmg} satisfies all consistency criteria. False otherwise.
-//   */
-//  private static boolean verifyFieldConsistency(final SMG pSmg) {
-//    for (SMGObject obj : pSmg.getObjects()) {
-//      if (!checkSingleFieldConsistency(obj, pSmg)) {
-//        return false;
-//      }
-//    }
-//
-//    return true;
-//  }
-//
-//  //TODO: NEQ CONSISTENCY
-//}
+bool SMGConsistencyVerifier::VerifyObjectConsistency(const SMG& smg) {
+  auto objects = smg.GetObjects();
+  for (SMGObjectPtr obj : objects) {
+    try {
+      smg.IsObjectValid(obj);
+    } catch (IllegalArgumentException e) {
+      return false;
+    }
+
+    if (obj->GetSize() < 0) {
+      return false;
+    }
+
+    if (!smg.IsObjectValid(obj) && obj->IsAbstract()) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 bool SMGConsistencyVerifier::Verify(const SMG& smg) {
   bool to_return = true;
   to_return = to_return && VerifyNullObject(smg);
-  to_return = to_return && VerifyObjectConsistency(smg);
+  to_return = to_return && VerifyInvalidRegionsHaveNoHVEdges(smg);
+  to_return = to_return && VerifyFieldConsistency(smg);
   to_return = to_return && VerifyEdgeConsistency(smg);
+  to_return = to_return && VerifyObjectConsistency(smg);
   return to_return;
-  //      toReturn = toReturn && verifySMGProperty(
-  //          verifyNullObject(pSmg), "null object invariants hold");
-  //      toReturn = toReturn && verifySMGProperty(
-  //          verifyInvalidRegionsHaveNoHVEdges(pSmg), "invalid regions have no outgoing edges");
-  //      toReturn = toReturn && verifySMGProperty(
-  //          verifyFieldConsistency(pSmg), "field consistency");
-  //      toReturn = toReturn && verifySMGProperty(
-  //          verifyEdgeConsistency(pSmg, pSmg.getHVEdges()), "Has Value edge consistency");
-  //      toReturn = toReturn && verifySMGProperty(
-  //          verifyEdgeConsistency(pSmg, pSmg.getPTEdges()), "Points To edge consistency");
-  //
-  //  //    pLogger.log(Level.FINEST, "Ending consistency check of a SMG");
-  //
-  //      return toReturn;
-  //    }
 }
 
 SMGConsistencyVerifier::SMGConsistencyVerifier() { }
+
 SMGConsistencyVerifier::~SMGConsistencyVerifier() { }
 
 }  // namespace smg

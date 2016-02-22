@@ -33,12 +33,14 @@
 
 namespace smg {
 
+const int SIZE2 = 2;
 const int SIZE4 = 4;
 const int SIZE8 = 8;
 const int SIZE16 = 16;
 
 const int OFFSET0 = 0;
 const int OFFSET4 = 4;
+const int OFFSET8 = 8;
 
 const SMGCType& mock_type = SMGCType::CreateTypeWithSize(SIZE4);
 
@@ -243,6 +245,41 @@ TEST_F(SMGTest, IsObjectValidBadCall) {
 TEST_F(SMGTest, SetValidityBadCall) {
   const SMGObjectPtr object = std::make_shared<SMGRegion>(SIZE8, "object");
   EXPECT_THROW(smg.SetValidity(object, true), IllegalArgumentException);
+}
+
+TEST_F(SMGTest, ConsistencyViolationInvalidRegionHasValue) {
+  smg.SetValidity(obj_1, false);
+  EXPECT_TRUE(SMGConsistencyVerifier::Verify(smg));
+  smg.SetValidity(obj_2, false);
+  EXPECT_FALSE(SMGConsistencyVerifier::Verify(smg));
+}
+
+TEST(SMGConsistencyVerifier, ConsistencyViolationFieldConsistency) {
+  SMG smg_1;
+  SMG smg_2;
+
+  SMGObjectPtr object_2b = std::make_shared<SMGRegion>(SIZE2, "object_2b");
+  SMGObjectPtr object_4b = std::make_shared<SMGRegion>(SIZE4, "object_4b");
+  SMGValue value = SMGValue::GetNewValue();
+
+  smg_1.AddObject(object_2b);
+  smg_2.AddObject(object_4b);
+  smg_1.AddValue(value);
+  smg_2.AddValue(value);
+
+  // Read 4 bytes (sizeof(mockType)) on offset 0 of 2b object -> out of bounds
+  SMGEdgeHasValuePtr
+      invalid_hv_1 = std::make_shared<SMGEdgeHasValue>(mock_type, OFFSET0, object_2b, value);
+
+  // Read 4 bytes (sizeof(mockType)) on offset 8 of 4b object -> out of bounds
+  SMGEdgeHasValuePtr
+      invalid_hv_2 = std::make_shared<SMGEdgeHasValue>(mock_type, OFFSET8, object_4b, value);
+
+  smg_1.AddHasValueEdge(invalid_hv_1);
+  smg_2.AddHasValueEdge(invalid_hv_2);
+
+  EXPECT_FALSE(SMGConsistencyVerifier::Verify(smg_1));
+  EXPECT_FALSE(SMGConsistencyVerifier::Verify(smg_2));
 }
 
 TEST_F(SMGTest, ConsistencyViolationHVConsistency) {

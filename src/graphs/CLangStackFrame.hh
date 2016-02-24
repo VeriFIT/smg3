@@ -13,9 +13,11 @@ namespace smg {
 
 class CLangStackFrame {
  private:
+  std::string stack_function_;
   std::map<std::string, SMGRegionPtr> stack_variables_;
 
  public:
+  explicit CLangStackFrame(const std::string& function);
   void AddStackVariable(const std::string name, const SMGRegionPtr& object);
 
   const std::string ToString() const;
@@ -23,6 +25,7 @@ class CLangStackFrame {
   bool ContainsVariable(const std::string name) const;
   const std::map<std::string, SMGRegionPtr>& GetVariables() const;
   const std::set<SMGObjectPtr> GetAllObjects() const;
+  const std::string GetFunctionDeclaration() const;
 };
 
 }  // namespace smg

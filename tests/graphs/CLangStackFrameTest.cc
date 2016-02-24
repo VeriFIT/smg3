@@ -12,9 +12,11 @@ namespace smg {
 const int SIZE8 = 8;
 const int SIZE16 = 16;
 
+const std::string function_declaration = "foo";
+
 class CLangStackFrameTest : public testing::Test {
  protected:
-  CLangStackFrame sf;
+  CLangStackFrame sf = CLangStackFrame(function_declaration);
 };
 
 TEST_F(CLangStackFrameTest, Constructor) {

@@ -9,6 +9,8 @@
 
 namespace smg {
 
+CLangStackFrame::CLangStackFrame(const std::string& function) : stack_function_(function) { }
+
 void CLangStackFrame::AddStackVariable(const std::string name, const SMGRegionPtr& object) {
   if (stack_variables_.find(name) != stack_variables_.end()) {
     const std::string msg = "Stack frame already contains variable " + name;
@@ -32,7 +34,8 @@ const SMGRegionPtr CLangStackFrame::GetVariable(const std::string name) const {
     SMGRegionPtr to_return = stack_variables_.at(name);
     return to_return;
   } catch (std::out_of_range e) {
-    std::string msg = "No variable with name " + name + " in stack frame";
+    std::string msg =
+        "No variable with name " + name + " in stack frame for function '" + stack_function_ + "'";
     throw NoSuchElementException(msg.c_str());
   }
 }
@@ -55,5 +58,7 @@ const std::set<SMGObjectPtr> CLangStackFrame::GetAllObjects() const {
 //    retset.add(returnValueObject);
 //  }
 }
+
+const std::string CLangStackFrame::GetFunctionDeclaration() const { return stack_function_; }
 
 }  // namespace smg

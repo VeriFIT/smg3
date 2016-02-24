@@ -15,7 +15,7 @@ class CLangSMGConsistencyVerifier {
   static bool VerifyDisjunctHeapAndGlobal(const CLangSMG& smg);
   static bool VerifyDisjunctHeapAndStack(const CLangSMG& smg);
   static bool VerifyDisjunctGlobalAndStack(const CLangSMG& smg);
-//  static bool VerifyStackGlobalHeapUnion(const CLangSMG& smg);
+  static bool VerifyStackGlobalHeapUnion(const CLangSMG& smg);
 //  static bool VerifyNullObjectCLangProperties(const CLangSMG& smg);
 //  static bool VerifyGlobalNamespace(const CLangSMG& smg);
 //  static bool VerifyStackNamespaces(const CLangSMG& smg);

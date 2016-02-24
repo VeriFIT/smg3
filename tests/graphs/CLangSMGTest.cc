@@ -7,7 +7,7 @@
 #include "graphs/CLangSMG.hh"
 #include "graphs/CLangSMGConsistencyVerifier.hh"
 
-namespace smg{
+namespace smg {
 
 const int SIZE8 = 8;
 
@@ -36,4 +36,22 @@ TEST(CLangSMGConsistencyVerifier, ConsistencyViolationDisjunctness2) {
   EXPECT_FALSE(CLangSMGConsistencyVerifier::Verify(smg));
 }
 
+TEST(CLangSMGConsistencyVerifier, ConsistencyViolationException) {
+  CLangSMG smg;
+  EXPECT_TRUE(CLangSMGConsistencyVerifier::Verify(smg));
+  SMGRegionPtr heap_obj = std::make_shared<SMGRegion>(SIZE8, "heap_object");
+  SMGRegionPtr dummy_obj = std::make_shared<SMGRegion>(SIZE8, "dummy_object");
+
+  smg.AddStackFrame(function_declaration);
+  EXPECT_TRUE(CLangSMGConsistencyVerifier::Verify(smg));
+  smg.AddStackObject(std::make_shared<SMGRegion>(SIZE8, "stack_variable"));
+  EXPECT_TRUE(CLangSMGConsistencyVerifier::Verify(smg));
+  smg.AddGlobalObject(std::make_shared<SMGRegion>(SIZE8, "global_variable"));
+  EXPECT_TRUE(CLangSMGConsistencyVerifier::Verify(smg));
+  smg.AddHeapObject(heap_obj);
+  EXPECT_TRUE(CLangSMGConsistencyVerifier::Verify(smg));
+  smg.AddObject(dummy_obj);
+  EXPECT_FALSE(CLangSMGConsistencyVerifier::Verify(smg));
 }
+
+}  // namespace smg

@@ -10,6 +10,9 @@
 namespace smg {
 
 const int SIZE8 = 8;
+const int OFFSET0 = 0;
+
+const SMGCType mock_type = SMGCType::CreateTypeWithSize(0);
 
 const std::string function_declaration = "foo";
 
@@ -36,7 +39,7 @@ TEST(CLangSMGConsistencyVerifier, ConsistencyViolationDisjunctness2) {
   EXPECT_FALSE(CLangSMGConsistencyVerifier::Verify(smg));
 }
 
-TEST(CLangSMGConsistencyVerifier, ConsistencyViolationException) {
+TEST(CLangSMGConsistencyVerifier, ConsistencyViolationUnion) {
   CLangSMG smg;
   EXPECT_TRUE(CLangSMGConsistencyVerifier::Verify(smg));
   SMGRegionPtr heap_obj = std::make_shared<SMGRegion>(SIZE8, "heap_object");
@@ -51,6 +54,18 @@ TEST(CLangSMGConsistencyVerifier, ConsistencyViolationException) {
   smg.AddHeapObject(heap_obj);
   EXPECT_TRUE(CLangSMGConsistencyVerifier::Verify(smg));
   smg.AddObject(dummy_obj);
+  EXPECT_FALSE(CLangSMGConsistencyVerifier::Verify(smg));
+}
+
+TEST(CLangSMGConsistencyVerifier, ConsistencyViolationNull) {
+  CLangSMG smg;
+  SMGObjectPtr null_object = *(smg.GetHeapObjects().begin());
+  SMGValue value = SMGValue::GetNewValue();
+  SMGEdgeHasValuePtr
+      edge = std::make_shared<SMGEdgeHasValue>(mock_type, OFFSET0, null_object, value);
+
+  smg.AddValue(value);
+  smg.AddHasValueEdge(edge);
   EXPECT_FALSE(CLangSMGConsistencyVerifier::Verify(smg));
 }
 

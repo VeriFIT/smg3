@@ -75,4 +75,8 @@ const std::set<SMGObjectPtr> CLangSMG::GetGlobalObjects() const {
   return globals;
 }
 
+const std::map<std::string, SMGRegionPtr>& CLangSMG::GetGlobalVariables() const {
+  return global_objects_;
+}
+
 }  // namespace smg

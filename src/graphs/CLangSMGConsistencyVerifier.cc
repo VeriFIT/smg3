@@ -4,6 +4,7 @@
 
 #include "CLangSMGConsistencyVerifier.hh"
 #include <algorithm>
+#include "graphs/SMGConsistencyVerifier.hh"
 
 namespace smg {
 
@@ -78,24 +79,80 @@ bool CLangSMGConsistencyVerifier::VerifyStackGlobalHeapUnion(const CLangSMG& smg
   return difference.empty();
 }
 
-//  bool CLangSMGConsistencyVerifier::VerifyNullObjectCLangProperties(const CLangSMG& smg) {
-//    return true;
-//  }
-//
-//  bool CLangSMGConsistencyVerifier::VerifyGlobalNamespace(const CLangSMG& smg) {
-//    return true;
-//  }
-//
-//  bool CLangSMGConsistencyVerifier::VerifyStackNamespaces(const CLangSMG& smg) {
-//    return true;
-//  }
+bool CLangSMGConsistencyVerifier::VerifyNullObjectCLangProperties(const CLangSMG& smg) {
+  // Verify that there is no NULL object in global scope
+  std::set<SMGObjectPtr> globals = smg.GetGlobalObjects();
+  for (auto obj : globals) {
+    if (!obj->NotNull()) {
+      return false;
+    }
+  }
+
+  // Verify there is no more than one NULL object in the heap object set
+  SMGObjectPtr first_null = nullptr;
+  for (auto obj : smg.GetHeapObjects()) {
+    if (!obj->NotNull()) {
+      if (first_null != nullptr) {
+        return false;
+      } else {
+        first_null = obj;
+      }
+    }
+  }
+
+  // Verify there is no NULL object in the stack object set
+  for (auto frame : smg.GetStackFrames()) {
+    for (auto obj : frame.GetAllObjects()) {
+      if (!obj->NotNull()) {
+        return false;
+      }
+    }
+  }
+
+  // Verify there is at least one NULL object
+  if (first_null == nullptr) {
+    return false;
+  }
+
+  return true;
+}
+
+bool CLangSMGConsistencyVerifier::VerifyGlobalNamespace(const CLangSMG& smg) {
+  auto globals = smg.GetGlobalVariables();
+
+  for (auto var : globals) {
+    std::string global_label = globals.at(var.first)->GetLabel();
+    if (!(global_label == var.first)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool CLangSMGConsistencyVerifier::VerifyStackNamespaces(const CLangSMG& smg) {
+  std::set<SMGObjectPtr> stack_objects;
+
+  for (auto frame : smg.GetStackFrames()) {
+    for (auto obj : frame.GetAllObjects()) {
+      if (stack_objects.find(obj) != stack_objects.end()) {
+        return false;
+      }
+      stack_objects.insert(obj);
+    }
+  }
+
+  return true;
+}
 
 bool CLangSMGConsistencyVerifier::Verify(const CLangSMG& smg) {
-  bool to_return = true;
+  bool to_return = SMGConsistencyVerifier::Verify(smg);
   to_return = to_return && VerifyDisjunctHeapAndGlobal(smg);
   to_return = to_return && VerifyDisjunctHeapAndStack(smg);
   to_return = to_return && VerifyDisjunctGlobalAndStack(smg);
   to_return = to_return && VerifyStackGlobalHeapUnion(smg);
+  to_return = to_return && VerifyNullObjectCLangProperties(smg);
   return to_return;
 }
+
 }  // namespace smg

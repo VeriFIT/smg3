@@ -21,4 +21,6 @@ class SMGRegion : public SMGObject {
   SMGObjectPtr Join(const SMGObject& other) const override;
 };
 
+typedef std::shared_ptr<const SMGRegion> SMGRegionPtr;
+
 }  // namespace smg

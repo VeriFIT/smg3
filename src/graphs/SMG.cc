@@ -49,6 +49,14 @@ const SMGEntitySet<const SMGEdgeHasValue> SMG::GetHVEdges(
   return to_return;
 }
 
+const SMGEdgeHasValuePtr SMG::GetUniqueHV(const SMGEdgeHasValueFilter& filter, const bool check) {
+  auto hv_edges = GetHVEdges(filter);
+  if (check && hv_edges.size() > 1) {
+    throw IllegalArgumentException("Applying filter does not result in unique HV edge");
+  }
+  return *(hv_edges.begin());
+}
+
 const SMGObjectPtr SMG::GetObjectPointedBy(const SMGValue& value) const {
   SMGEdgePointsToPtr edge = pt_edges_.find(value)->second;
   return edge->GetObject();
@@ -100,5 +108,4 @@ bool SMG::IsObjectValid(const SMGObjectPtr& object) const {
 
   return object_validity_.at(object->GetId());
 }
-
 }  // namespace smg

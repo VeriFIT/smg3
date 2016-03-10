@@ -4,7 +4,9 @@
 
 #include "CLangSMG.hh"
 #include <algorithm>
+#include <list>
 #include "exceptions/IllegalArgumentException.hh"
+#include "exceptions/UnsupportedOperationException.hh"
 
 namespace smg {
 
@@ -58,6 +60,58 @@ void CLangSMG::DropStackFrame() {
   }
 }
 
+void CLangSMG::RemoveHeapObject(const SMGRegionPtr& object) {
+  if (IsHeapObject(object)) {
+    heap_objects_.erase(object);
+    RemoveObjectAndEdges(object);
+  } else {
+    throw IllegalArgumentException("Cannot directly remove non-heap objects");
+  }
+}
+
+SMGRegionPtr CLangSMG::AddGlobalVariable(const SMGCType& type, const std::string var_name) {
+  int size = type.GetSize();
+  SMGRegionPtr new_object = std::make_shared<SMGRegion>(size, var_name);
+  AddGlobalObject(new_object);
+  return new_object;
+}
+
+SMGRegionPtr CLangSMG::AddLocalVariable(const SMGCType& type, const std::string var_name) {
+  int size = type.GetSize();
+  SMGRegionPtr new_object = std::make_shared<SMGRegion>(size, var_name);
+  AddStackObject(new_object);
+  return new_object;
+}
+
+void CLangSMG::free(const int offset, const SMGRegionPtr& region) {
+  if (!IsHeapObject(region)) {
+    // You may not free any objects not on the heap.
+    // setInvalidFree();
+    return;
+  }
+
+  if (!(offset == 0)) {
+    // you may not invoke free on any address that you
+    // didn't get through a malloc invocation.
+    // setInvalidFree();
+    return;
+  }
+
+  if (!IsObjectValid(region)) {
+    // you may not invoke free multiple times on
+    // the same object
+    // setInvalidFree();
+    return;
+  }
+
+  SetValidity(region, false);
+  SMGEdgeHasValueFilter filter = SMGEdgeHasValueFilter::ObjectFilter(region);
+
+  for (auto edge : GetHVEdges(filter)) {
+    RemoveHasValueEdge(edge);
+  }
+}
+
 void CLangSMG::SetMemoryLeak() { has_leaks_ = true; }
 
 bool CLangSMG::HasMemoryLeaks() const { return has_leaks_; }
@@ -77,6 +131,42 @@ const std::set<SMGObjectPtr> CLangSMG::GetGlobalObjects() const {
 
 const std::map<std::string, SMGRegionPtr>& CLangSMG::GetGlobalVariables() const {
   return global_objects_;
+}
+
+SMGRegionPtr CLangSMG::GetObjectForVisibleVariable(const std::string variable_name) const {
+  // Look in the local frame
+  if (stack_objects_.size() != 0) {
+    if (stack_objects_.front().ContainsVariable(variable_name)) {
+      return stack_objects_.front().GetVariable(variable_name);
+    }
+  }
+
+  // Look in the global scope
+  if (global_objects_.find(variable_name) != global_objects_.end()) {
+    return global_objects_.at(variable_name);
+  }
+
+  std::string msg = "No object for variable name: " + variable_name;
+  throw UnsupportedOperationException(msg.c_str());
+}
+bool CLangSMG::HasLocalVariable(const std::string variable_name) const {
+  return (stack_objects_.size() > 0) && stack_objects_.front().ContainsVariable(variable_name);
+}
+
+bool CLangSMG::IsHeapObject(const SMGObjectPtr& object) const {
+  return heap_objects_.find(object) != heap_objects_.end();
+}
+
+bool CLangSMG::IsGlobalObject(const SMGObjectPtr& object) const {
+  if (object->IsAbstract()) {
+    return false;
+  }
+  auto globals = GetGlobalObjects();
+  return globals.find(object) != globals.end();
+}
+
+bool CLangSMG::ContainsValue(const SMGValue& value) const {
+  return GetValues().find(value) != GetValues().end();
 }
 
 }  // namespace smg

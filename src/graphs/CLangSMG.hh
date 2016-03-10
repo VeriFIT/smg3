@@ -37,11 +37,22 @@ class CLangSMG : public SMG {
   void AddStackObject(const SMGRegionPtr& object);
   void AddStackFrame(const std::string function_declaration);
   void DropStackFrame();
+  void RemoveHeapObject(const SMGRegionPtr& object);
+
+  SMGRegionPtr AddGlobalVariable(const SMGCType& type, const std::string var_name);
+  SMGRegionPtr AddLocalVariable(const SMGCType& type, const std::string var_name);
+  void free(const int offset, const SMGRegionPtr& region);
 
   const std::deque<CLangStackFrame>& GetStackFrames() const;
   const std::set<SMGObjectPtr>& GetHeapObjects() const;
   const std::set<SMGObjectPtr> GetGlobalObjects() const;
   const std::map<std::string, SMGRegionPtr>& GetGlobalVariables() const;
+  SMGRegionPtr GetObjectForVisibleVariable(const std::string variable_name) const;
+
+  bool HasLocalVariable(const std::string variable_name) const;
+  bool IsHeapObject(const SMGObjectPtr& object) const;
+  bool IsGlobalObject(const SMGObjectPtr& object) const;
+  bool ContainsValue(const SMGValue& value) const;
 };
 
 }  // namespace smg

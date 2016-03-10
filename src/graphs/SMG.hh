@@ -69,6 +69,7 @@ class SMG {
   const std::map<SMGValue, SMGEdgePointsToPtr>& GetPTEdges() const;
   const SMGEntitySet<const SMGEdgeHasValue>& GetHVEdges() const;
   const SMGEntitySet<const SMGEdgeHasValue> GetHVEdges(const SMGEdgeHasValueFilter& filter) const;
+  const SMGEdgeHasValuePtr GetUniqueHV(const SMGEdgeHasValueFilter& filter, const bool check);
 
   const SMGObjectPtr GetObjectPointedBy(const SMGValue& value) const;
 };

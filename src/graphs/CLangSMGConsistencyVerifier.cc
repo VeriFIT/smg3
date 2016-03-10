@@ -12,11 +12,7 @@ CLangSMGConsistencyVerifier::CLangSMGConsistencyVerifier() { }
 CLangSMGConsistencyVerifier::~CLangSMGConsistencyVerifier() { }
 
 bool CLangSMGConsistencyVerifier::VerifyDisjunctHeapAndGlobal(const CLangSMG& smg) {
-  std::set<SMGObjectPtr> globals;
-  std::transform(smg.GetGlobalObjects().begin(),
-                 smg.GetGlobalObjects().end(),
-                 std::inserter(globals, globals.end()),
-                 [](std::pair<std::string, SMGObjectPtr> obj) { return obj.second; });
+  const std::set<SMGObjectPtr> globals = smg.GetGlobalObjects();
 
   std::set<SMGObjectPtr> intersection;
   std::set_intersection(globals.begin(),
@@ -44,11 +40,7 @@ bool CLangSMGConsistencyVerifier::VerifyDisjunctHeapAndStack(const CLangSMG& smg
 }
 
 bool CLangSMGConsistencyVerifier::VerifyDisjunctGlobalAndStack(const CLangSMG& smg) {
-  std::set<SMGObjectPtr> globals;
-  std::transform(smg.GetGlobalObjects().begin(),
-                 smg.GetGlobalObjects().end(),
-                 std::inserter(globals, globals.end()),
-                 [](std::pair<std::string, SMGObjectPtr> obj) { return obj.second; });
+  std::set<SMGObjectPtr> globals = smg.GetGlobalObjects();
 
   std::set<SMGObjectPtr> stack;
   for (auto frame : smg.GetStackFrames()) {
@@ -69,11 +61,8 @@ bool CLangSMGConsistencyVerifier::VerifyStackGlobalHeapUnion(const CLangSMG& smg
   std::set<SMGObjectPtr> object_union;
 
   object_union.insert(smg.GetHeapObjects().begin(), smg.GetHeapObjects().end());
-
-  std::transform(smg.GetGlobalObjects().begin(),
-                 smg.GetGlobalObjects().end(),
-                 std::inserter(object_union, object_union.end()),
-                 [](std::pair<std::string, SMGObjectPtr> obj) { return obj.second; });
+  std::set<SMGObjectPtr> globals = smg.GetGlobalObjects();
+  object_union.insert(globals.begin(), globals.end());
 
   for (auto frame : smg.GetStackFrames()) {
     auto objects = frame.GetAllObjects();
@@ -109,5 +98,4 @@ bool CLangSMGConsistencyVerifier::Verify(const CLangSMG& smg) {
   to_return = to_return && VerifyStackGlobalHeapUnion(smg);
   return to_return;
 }
-
 }  // namespace smg

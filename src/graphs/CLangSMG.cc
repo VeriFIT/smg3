@@ -2,8 +2,9 @@
     Created by Viktor Malik on 24.2.2016.
 */
 
-#include <exceptions/IllegalArgumentException.hh>
 #include "CLangSMG.hh"
+#include <algorithm>
+#include "exceptions/IllegalArgumentException.hh"
 
 namespace smg {
 
@@ -65,8 +66,13 @@ const std::deque<CLangStackFrame>& CLangSMG::GetStackFrames() const { return sta
 
 const std::set<SMGObjectPtr>& CLangSMG::GetHeapObjects() const { return heap_objects_; }
 
-const std::map<std::string, SMGRegionPtr>& CLangSMG::GetGlobalObjects() const {
-  return global_objects_;
+const std::set<SMGObjectPtr> CLangSMG::GetGlobalObjects() const {
+  std::set<SMGObjectPtr> globals;
+  std::transform(global_objects_.begin(),
+                 global_objects_.end(),
+                 std::inserter(globals, globals.end()),
+                 [](std::pair<std::string, SMGObjectPtr> obj) { return obj.second; });
+  return globals;
 }
 
 }  // namespace smg

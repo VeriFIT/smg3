@@ -40,7 +40,7 @@ class CLangSMG : public SMG {
 
   const std::deque<CLangStackFrame>& GetStackFrames() const;
   const std::set<SMGObjectPtr>& GetHeapObjects() const;
-  const std::map<std::string, SMGRegionPtr>& GetGlobalObjects() const;
+  const std::set<SMGObjectPtr> GetGlobalObjects() const;
 };
 
 }  // namespace smg

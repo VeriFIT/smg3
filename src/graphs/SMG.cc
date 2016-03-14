@@ -1,5 +1,6 @@
 #include "SMG.hh"
 #include <algorithm>
+#include <iterator>
 #include "exceptions/IllegalArgumentException.hh"
 
 namespace smg {

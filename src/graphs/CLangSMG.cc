@@ -4,6 +4,7 @@
 
 #include "CLangSMG.hh"
 #include <algorithm>
+#include <iterator>
 #include <list>
 #include "exceptions/IllegalArgumentException.hh"
 #include "exceptions/UnsupportedOperationException.hh"

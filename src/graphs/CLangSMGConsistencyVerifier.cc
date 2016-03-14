@@ -4,6 +4,7 @@
 
 #include "CLangSMGConsistencyVerifier.hh"
 #include <algorithm>
+#include <iterator>
 #include "graphs/SMGConsistencyVerifier.hh"
 
 namespace smg {

@@ -5,7 +5,7 @@
 namespace smg {
 
 SMGEdgeHasValue::SMGEdgeHasValue(const SMGCType& type,
-                                 const int offset,
+                                 const long offset,
                                  const SMGObjectPtr& object,
                                  const SMGValue& value)
     : SMGEdge(value, object), offset_(offset), type_(type) {}

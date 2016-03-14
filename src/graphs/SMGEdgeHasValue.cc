@@ -57,6 +57,7 @@ bool SMGEdgeHasValue::IsCompatibleField(const SMGEdgeHasValue& other) const {
 }
 
 bool SMGEdgeHasValue::IsCompatibleFieldOnSameObject(const SMGEdgeHasValue& other) const {
+  //maybe replace with *GetObject() == *other.GetObject() ?
   return IsCompatibleField(other) && (GetObject()->GetId() == other.GetObject()->GetId());
 }
 

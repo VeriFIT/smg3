@@ -105,6 +105,7 @@ void CLangSMG::free(const int offset, const SMGRegionPtr& region) {
     return;
   }
 
+  //TODO: sub-optimal, could be replaced with std::set::erase and single iteration approach
   SetValidity(region, false);
   SMGEdgeHasValueFilter filter = SMGEdgeHasValueFilter::ObjectFilter(region);
 

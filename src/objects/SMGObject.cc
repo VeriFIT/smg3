@@ -15,7 +15,7 @@ SMGObject::~SMGObject() {}
 
 const std::string& SMGObject::GetLabel() const { return label_; }
 
-int SMGObject::GetSize() const { return size_; }
+ObjectSize SMGObject::GetSize() const { return size_; }
 
 long SMGObject::GetId() const { return id_; }
 

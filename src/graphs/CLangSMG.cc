@@ -171,4 +171,21 @@ bool CLangSMG::ContainsValue(const SMGValue& value) const {
   return GetValues().find(value) != GetValues().end();
 }
 
+/**
+* Get the symbolic value, that represents the address
+* pointing to the given memory with the given offset, if it exists.
+*
+* @param memory get address belonging to this memory.
+* @param offset get address with this offset relative to the beginning of the memory.
+* @return Address of the given field, or null, if such an address does not yet exist in the SMG.
+*/
+const SMGValue& CLangSMG::GetAddress(const SMGObjectPtr& memory, const long offset) const {  
+  for (auto edge : GetPTEdges()) {
+    if (*edge.second->GetObject() == *memory && edge.second->GetOffset() == offset)
+      return edge.second->GetValue();
+  }
+  //? or InvalidValue? what is the semantics - should be commented in SMGValue
+  return SMGValue::GetNullValue(); 
+}
+
 }  // namespace smg

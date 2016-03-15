@@ -53,6 +53,7 @@ class CLangSMG : public SMG {
   bool IsHeapObject(const SMGObjectPtr& object) const;
   bool IsGlobalObject(const SMGObjectPtr& object) const;
   bool ContainsValue(const SMGValue& value) const;
+  const SMGValue& GetAddress(const SMGObjectPtr& memory, const long offset) const;
 };
 
 }  // namespace smg

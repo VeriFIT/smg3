@@ -72,6 +72,8 @@ class SMG {
   const SMGEdgeHasValuePtr GetUniqueHV(const SMGEdgeHasValueFilter& filter, const bool check);
 
   const SMGObjectPtr GetObjectPointedBy(const SMGValue& value) const;
+
+  std::vector<bool> GetNullBytesForObject(const SMGObjectPtr& obj) const;
 };
 
 template<class T> inline void SMGEntitySet<T>::add(std::shared_ptr<T> element) {

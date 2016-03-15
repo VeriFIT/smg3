@@ -109,4 +109,33 @@ bool SMG::IsObjectValid(const SMGObjectPtr& object) const {
 
   return object_validity_.at(object->GetId());
 }
+
+/**
+* Obtains a bitset signifying where the object bytes are nullified.
+*
+* Constant.
+*
+* @param pObj SMGObject for which the information is to be obtained
+* @return A bitset. A bit has 1 value if the appropriate byte is guaranteed
+* to be NULL (is covered by a HasValue edge leading from an object to null value,
+* 0 otherwise.
+*/
+std::vector<bool> SMG::GetNullBytesForObject(const SMGObjectPtr& obj) const {
+  std::vector<bool> bs = std::vector<bool>(obj->GetSize(), false);
+
+  auto filt = SMGEdgeHasValueFilter::ObjectFilter(obj).FilterHavingValue(SMGValue::GetNewValue());
+
+  for (auto edge : GetHVEdges(filt)) {
+    for (
+      auto b = bs.begin() + edge->GetOffset();
+      b < bs.begin() + edge->GetOffset() + edge->GetSizeInBytes(); 
+      b++
+      ) {
+      *b = true;
+    }
+  }
+
+  return bs;
+}
+
 }  // namespace smg

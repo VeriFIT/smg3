@@ -3,6 +3,7 @@
 #include <set>
 #include <map>
 #include <memory>
+#include <vector>
 #include "graphs/SMGEdgeHasValue.hh"
 #include "graphs/SMGEdgeHasValueFilter.hh"
 #include "graphs/SMGEdgePointsTo.hh"
@@ -12,10 +13,10 @@
 namespace smg {
 
 template<class T> class SMGEntitySet {
- private:
+private:
   std::set<std::shared_ptr<T>> entity_set;
 
- public:
+public:
   typename std::set<std::shared_ptr<T>>::size_type size() const noexcept;
   bool contains(std::shared_ptr<T> element) const;
   bool empty() const noexcept;
@@ -24,7 +25,7 @@ template<class T> class SMGEntitySet {
   void add(const std::shared_ptr<T> element);
   void remove(const std::shared_ptr<T> element);
   typename std::set<std::shared_ptr<T>>::iterator
-      remove(typename std::set<std::shared_ptr<T>>::iterator position);
+    remove(typename std::set<std::shared_ptr<T>>::iterator position);
 
   typename std::set<std::shared_ptr<T>>::const_iterator begin() const noexcept;
   typename std::set<std::shared_ptr<T>>::const_iterator end() const noexcept;
@@ -33,7 +34,7 @@ template<class T> class SMGEntitySet {
 };
 
 class SMG {
- private:
+private:
   SMGEntitySet<const SMGObject> objects_;
   std::set<SMGValue> values_;
   std::map<SMGValue, SMGEdgePointsToPtr> pt_edges_;
@@ -43,7 +44,7 @@ class SMG {
   SMGObjectPtr null_object_ = SMGNullObject::GetNullObject();
   SMGValue null_value_ = SMGValue::GetNullValue();
 
- public:
+public:
   SMG();
   virtual ~SMG();
 
@@ -74,6 +75,10 @@ class SMG {
   const SMGObjectPtr GetObjectPointedBy(const SMGValue& value) const;
 
   std::vector<bool> GetNullBytesForObject(const SMGObjectPtr& obj) const;
+  bool IsCoveredByNullifiedBlocks(const SMGEdgeHasValuePtr& edge) const;
+  bool IsCoveredByNullifiedBlocks(const SMGObjectPtr& obj, long offset, const SMGCType& type)const;
+  //TODO(michal): should be private
+  bool IsCoveredByNullifiedBlocks(const SMGObjectPtr& obj, long pOffset, int size) const;
 };
 
 template<class T> inline void SMGEntitySet<T>::add(std::shared_ptr<T> element) {
@@ -86,7 +91,7 @@ template<class T> inline void SMGEntitySet<T>::remove(const std::shared_ptr<T> e
 
 template<class T>
 inline typename std::set<std::shared_ptr<T>>::iterator SMGEntitySet<T>::remove(
-    typename std::set<std::shared_ptr<T>>::iterator position) {
+  typename std::set<std::shared_ptr<T>>::iterator position) {
   return entity_set.erase(position);
 }
 

@@ -14,12 +14,12 @@ typedef std::shared_ptr<const SMGObject> SMGObjectPtr;
 class SMGObject {
  private:
   static long id_counter_;
-  int size_;
+  ObjectSize size_;
   const std::string label_;
   long id_;
 
  public:
-  SMGObject(const int size, const std::string& label);
+  SMGObject(const ObjectSize size, const std::string& label);
   virtual ~SMGObject();
 
   const std::string& GetLabel() const;

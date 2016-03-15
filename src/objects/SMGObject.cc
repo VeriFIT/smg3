@@ -7,7 +7,7 @@ const SMGObjectPtr SMGNullObject::NULL_OBJECT = SMGObjectPtr(new SMGNullObject()
 
 const SMGObjectPtr SMGNullObject::GetNullObject() { return SMGNullObject::NULL_OBJECT; }
 
-SMGObject::SMGObject(const int size, const std::string& label) : size_(size), label_(label) {
+SMGObject::SMGObject(const ObjectSize size, const std::string& label) : size_(size), label_(label) {
   id_ = SMGObject::id_counter_++;
 }
 

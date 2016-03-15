@@ -16,7 +16,7 @@
 namespace smg {
 
 class CLangSMG : public SMG {
- private:
+private:
   std::deque<CLangStackFrame> stack_objects_;
   std::set<SMGObjectPtr> heap_objects_;
   std::map<std::string, SMGRegionPtr> global_objects_;
@@ -24,7 +24,7 @@ class CLangSMG : public SMG {
   bool has_leaks_;
   static bool perform_checks_;
 
- public:
+public:
   static void SetPerformChecks(const bool setting);
   static bool PerformChecks();
   CLangSMG();

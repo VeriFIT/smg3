@@ -105,7 +105,7 @@ void CLangSMG::free(const int offset, const SMGRegionPtr& region) {
     return;
   }
 
-  //TODO: sub-optimal, could be replaced with std::set::erase and single iteration approach
+  //TODO(anyone): sub-optimal, could be replaced with std::set::erase and single iteration approach
   SetValidity(region, false);
   SMGEdgeHasValueFilter filter = SMGEdgeHasValueFilter::ObjectFilter(region);
 
@@ -124,10 +124,11 @@ const std::set<SMGObjectPtr>& CLangSMG::GetHeapObjects() const { return heap_obj
 
 const std::set<SMGObjectPtr> CLangSMG::GetGlobalObjects() const {
   std::set<SMGObjectPtr> globals;
-  std::transform(global_objects_.begin(),
-                 global_objects_.end(),
-                 std::inserter(globals, globals.end()),
-                 [](std::pair<std::string, SMGObjectPtr> obj) { return obj.second; });
+  std::transform(
+    global_objects_.begin(),
+    global_objects_.end(),
+    std::inserter(globals, globals.end()),
+    [](std::pair<std::string, SMGObjectPtr> obj) { return obj.second; });
   return globals;
 }
 
@@ -179,13 +180,13 @@ bool CLangSMG::ContainsValue(const SMGValue& value) const {
 * @param offset get address with this offset relative to the beginning of the memory.
 * @return Address of the given field, or null, if such an address does not yet exist in the SMG.
 */
-const SMGValue& CLangSMG::GetAddress(const SMGObjectPtr& memory, const long offset) const {  
+const SMGValue& CLangSMG::GetAddress(const SMGObjectPtr& memory, const long offset) const {
   for (auto edge : GetPTEdges()) {
     if (*edge.second->GetObject() == *memory && edge.second->GetOffset() == offset)
       return edge.second->GetValue();
   }
   //? or InvalidValue? what is the semantics - should be commented in SMGValue
-  return SMGValue::GetNullValue(); 
+  return SMGValue::GetNullValue();
 }
 
 }  // namespace smg

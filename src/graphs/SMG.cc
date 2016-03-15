@@ -1,6 +1,7 @@
 #include "SMG.hh"
 #include <algorithm>
 #include <iterator>
+#include <vector>
 #include "exceptions/IllegalArgumentException.hh"
 
 namespace smg {
@@ -41,12 +42,13 @@ const std::map<SMGValue, SMGEdgePointsToPtr>& SMG::GetPTEdges() const { return p
 const SMGEntitySet<const SMGEdgeHasValue>& SMG::GetHVEdges() const { return hv_edges_; }
 
 const SMGEntitySet<const SMGEdgeHasValue> SMG::GetHVEdges(
-    const SMGEdgeHasValueFilter& filter) const {
+  const SMGEdgeHasValueFilter& filter) const {
   SMGEntitySet<const SMGEdgeHasValue> to_return;
-  std::copy_if(hv_edges_.begin(),
-               hv_edges_.end(),
-               std::inserter(to_return.set(), to_return.begin()),
-               filter);
+  std::copy_if(
+    hv_edges_.begin(),
+    hv_edges_.end(),
+    std::inserter(to_return.set(), to_return.begin()),
+    filter);
   return to_return;
 }
 
@@ -113,22 +115,24 @@ bool SMG::IsObjectValid(const SMGObjectPtr& object) const {
 /**
 * Obtains a bitset signifying where the object bytes are nullified.
 *
+* WARNING! does NOT check validity of object(size must be >= 0)
+*
 * Constant.
 *
-* @param pObj SMGObject for which the information is to be obtained
+* @param obj for which the information is to be obtained
 * @return A bitset. A bit has 1 value if the appropriate byte is guaranteed
 * to be NULL (is covered by a HasValue edge leading from an object to null value,
 * 0 otherwise.
 */
 std::vector<bool> SMG::GetNullBytesForObject(const SMGObjectPtr& obj) const {
-  std::vector<bool> bs = std::vector<bool>(obj->GetSize(), false);
+  std::vector<bool> bs = std::vector<bool>(static_cast<size_t>(obj->GetSize()), false);
 
   auto filt = SMGEdgeHasValueFilter::ObjectFilter(obj).FilterHavingValue(SMGValue::GetNewValue());
 
   for (auto edge : GetHVEdges(filt)) {
     for (
       auto b = bs.begin() + edge->GetOffset();
-      b < bs.begin() + edge->GetOffset() + edge->GetSizeInBytes(); 
+      b < bs.begin() + edge->GetOffset() + edge->GetSizeInBytes();
       b++
       ) {
       *b = true;
@@ -136,6 +140,24 @@ std::vector<bool> SMG::GetNullBytesForObject(const SMGObjectPtr& obj) const {
   }
 
   return bs;
+}
+
+bool SMG::IsCoveredByNullifiedBlocks(const SMGEdgeHasValuePtr& edge) const {
+  return IsCoveredByNullifiedBlocks(edge->GetObject(), edge->GetOffset(), edge->GetSizeInBytes());
+}
+bool SMG::IsCoveredByNullifiedBlocks(const SMGObjectPtr& obj, long offset, const SMGCType& type) const {
+  return IsCoveredByNullifiedBlocks(obj, offset, type.GetSize());
+}
+//TODO(anyone): what kind of size?
+bool SMG::IsCoveredByNullifiedBlocks(const SMGObjectPtr& obj, long offset, int size) const {
+  auto bs = GetNullBytesForObject(obj);
+  //TODO(anyone): what type?
+  //min index of last NULL byte
+  long expectedMinNull = (offset + size);
+  //index of first not-guaranted-to-be-NULL in bs
+  auto firstNotNull = std::find(bs.cbegin(), bs.cend(), false) - bs.cbegin();
+
+  return (firstNotNull >= expectedMinNull);
 }
 
 }  // namespace smg

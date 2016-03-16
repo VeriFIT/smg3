@@ -105,7 +105,7 @@ void CLangSMG::free(const int offset, const SMGRegionPtr& region) {
     return;
   }
 
-  //TODO(anyone): sub-optimal, could be replaced with std::set::erase and single iteration approach
+  //TODO(anyone) sub-optimal, could be replaced with std::set::erase and single iteration approach
   SetValidity(region, false);
   SMGEdgeHasValueFilter filter = SMGEdgeHasValueFilter::ObjectFilter(region);
 
@@ -180,7 +180,7 @@ bool CLangSMG::ContainsValue(const SMGValue& value) const {
 * @param offset get address with this offset relative to the beginning of the memory.
 * @return Address of the given field, or null, if such an address does not yet exist in the SMG.
 */
-const SMGValue& CLangSMG::GetAddress(const SMGObjectPtr& memory, const long offset) const {
+const SMGValue& CLangSMG::GetAddress(const SMGObjectPtr& memory, long offset) const {
   for (auto edge : GetPTEdges()) {
     if (*edge.second->GetObject() == *memory && edge.second->GetOffset() == offset)
       return edge.second->GetValue();

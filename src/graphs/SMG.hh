@@ -77,8 +77,8 @@ public:
   std::vector<bool> GetNullBytesForObject(const SMGObjectPtr& obj) const;
   bool IsCoveredByNullifiedBlocks(const SMGEdgeHasValuePtr& edge) const;
   bool IsCoveredByNullifiedBlocks(const SMGObjectPtr& obj, long offset, const SMGCType& type)const;
-  //TODO(michal): should be private
-  bool IsCoveredByNullifiedBlocks(const SMGObjectPtr& obj, long pOffset, int size) const;
+  //TODO(michal): should really be private like in JAVA?
+  bool IsCoveredByNullifiedBlocks(const SMGObjectPtr& obj, long offset, int size) const;
 };
 
 template<class T> inline void SMGEntitySet<T>::add(std::shared_ptr<T> element) {

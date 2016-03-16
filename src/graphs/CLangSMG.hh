@@ -53,7 +53,7 @@ public:
   bool IsHeapObject(const SMGObjectPtr& object) const;
   bool IsGlobalObject(const SMGObjectPtr& object) const;
   bool ContainsValue(const SMGValue& value) const;
-  const SMGValue& GetAddress(const SMGObjectPtr& memory, const long offset) const;
+  const SMGValue& GetAddress(const SMGObjectPtr& memory, long offset) const;
   const SMGValue& ReadValue(const SMGObjectPtr& object, long offset, const SMGCType& type) const;
 };
 

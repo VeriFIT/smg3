@@ -125,6 +125,7 @@ bool SMG::IsObjectValid(const SMGObjectPtr& object) const {
 * 0 otherwise.
 */
 std::vector<bool> SMG::GetNullBytesForObject(const SMGObjectPtr& obj) const {
+  //TODO(anyone) assert on obj->GetSize() >= 0 ?
   std::vector<bool> bs = std::vector<bool>(static_cast<size_t>(obj->GetSize()), false);
 
   auto filt = SMGEdgeHasValueFilter::ObjectFilter(obj).FilterHavingValue(SMGValue::GetNewValue());
@@ -142,14 +143,21 @@ std::vector<bool> SMG::GetNullBytesForObject(const SMGObjectPtr& obj) const {
   return bs;
 }
 
-bool SMG::IsCoveredByNullifiedBlocks(const SMGEdgeHasValuePtr& edge) const {
+bool SMG::IsCoveredByNullifiedBlocks(
+  const SMGEdgeHasValuePtr& edge) const {
   return IsCoveredByNullifiedBlocks(edge->GetObject(), edge->GetOffset(), edge->GetSizeInBytes());
 }
-bool SMG::IsCoveredByNullifiedBlocks(const SMGObjectPtr& obj, long offset, const SMGCType& type) const {
+bool SMG::IsCoveredByNullifiedBlocks(
+  const SMGObjectPtr& obj,
+  long offset,
+  const SMGCType& type) const {
   return IsCoveredByNullifiedBlocks(obj, offset, type.GetSize());
 }
-//TODO(anyone): what kind of size?
-bool SMG::IsCoveredByNullifiedBlocks(const SMGObjectPtr& obj, long offset, int size) const {
+//TODO(anyone) what kind of size?
+bool SMG::IsCoveredByNullifiedBlocks(
+  const SMGObjectPtr& obj,
+  long offset,
+  int size) const {
   auto bs = GetNullBytesForObject(obj);
   //TODO(anyone): what type?
   //min index of last NULL byte

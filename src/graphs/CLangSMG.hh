@@ -53,7 +53,29 @@ public:
   bool IsHeapObject(const SMGObjectPtr& object) const;
   bool IsGlobalObject(const SMGObjectPtr& object) const;
   bool ContainsValue(const SMGValue& value) const;
+
+  /**
+  * Get the symbolic value, that represents the address
+  * pointing to the given memory with the given offset, if it exists.
+  *
+  * @param memory get address belonging to this memory.
+  * @param offset get address with this offset relative to the beginning of the memory.
+  * @return Address of the given field, or null, if such an address does not yet exist in the SMG.
+  */
   const SMGValue& GetAddress(const SMGObjectPtr& memory, long offset) const;
+  /**
+  * Read Value in field (object, type) of an Object.
+  *
+  * This method does not modify the state being read,
+  * and is therefore safe to call outside of a
+  * transfer relation context.
+  *
+  * @param pObject SMGObject representing the memory the field belongs to.
+  * @param pOffset offset of field being read.ReadValue
+  * @param pType type of field
+  * @return A Symbolic value, if found, otherwise null.
+  * @throws SMGInconsistentException
+  */
   const SMGValue& ReadValue(const SMGObjectPtr& object, long offset, const SMGCType& type) const;
 };
 

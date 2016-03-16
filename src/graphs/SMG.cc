@@ -112,18 +112,6 @@ bool SMG::IsObjectValid(const SMGObjectPtr& object) const {
   return object_validity_.at(object->GetId());
 }
 
-/**
-* Obtains a bitset signifying where the object bytes are nullified.
-*
-* WARNING! does NOT check validity of object(size must be >= 0)
-*
-* Constant.
-*
-* @param obj for which the information is to be obtained
-* @return A bitset. A bit has 1 value if the appropriate byte is guaranteed
-* to be NULL (is covered by a HasValue edge leading from an object to null value,
-* 0 otherwise.
-*/
 std::vector<bool> SMG::GetNullBytesForObject(const SMGObjectPtr& obj) const {
   //TODO(anyone) assert on obj->GetSize() >= 0 ?
   std::vector<bool> bs = std::vector<bool>(static_cast<size_t>(obj->GetSize()), false);

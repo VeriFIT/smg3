@@ -172,14 +172,6 @@ bool CLangSMG::ContainsValue(const SMGValue& value) const {
   return GetValues().find(value) != GetValues().end();
 }
 
-/**
-* Get the symbolic value, that represents the address
-* pointing to the given memory with the given offset, if it exists.
-*
-* @param memory get address belonging to this memory.
-* @param offset get address with this offset relative to the beginning of the memory.
-* @return Address of the given field, or null, if such an address does not yet exist in the SMG.
-*/
 const SMGValue& CLangSMG::GetAddress(const SMGObjectPtr& memory, long offset) const {
   for (auto edge : GetPTEdges()) {
     if (*edge.second->GetObject() == *memory && edge.second->GetOffset() == offset)
@@ -189,19 +181,6 @@ const SMGValue& CLangSMG::GetAddress(const SMGObjectPtr& memory, long offset) co
   return SMGValue::GetNullValue();
 }
 
-/**
-* Read Value in field (object, type) of an Object.
-*
-* This method does not modify the state being read,
-* and is therefore safe to call outside of a
-* transfer relation context.
-*
-* @param pObject SMGObject representing the memory the field belongs to.
-* @param pOffset offset of field being read.ReadValue
-* @param pType type of field
-* @return A Symbolic value, if found, otherwise null.
-* @throws SMGInconsistentException
-*/
 const SMGValue& CLangSMG::ReadValue(
   const SMGObjectPtr& object,
   long offset,

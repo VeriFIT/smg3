@@ -15,9 +15,12 @@ class SMGValue {
 
  public:
   static const SMGValue GetNewValue();
-  static const SMGValue& GetInvalidValue();
+
   static const SMGValue& GetNullValue();
+  static const SMGValue& GetInvalidValue();
+
   long GetId() const;
+
   bool operator<(const SMGValue& other) const;
   bool operator==(const SMGValue& other) const;
   bool operator!=(const SMGValue& other) const;

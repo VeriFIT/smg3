@@ -116,14 +116,14 @@ std::vector<bool> SMG::GetNullBytesForObject(const SMGObjectPtr& obj) const {
   //TODO(anyone) assert on obj->GetSize() >= 0 ?
   std::vector<bool> bs = std::vector<bool>(static_cast<size_t>(obj->GetSize()), false);
 
-  auto filt = SMGEdgeHasValueFilter::ObjectFilter(obj).FilterHavingValue(SMGValue::GetNewValue());
+  auto filt = SMGEdgeHasValueFilter::ObjectFilter(obj).FilterHavingValue(SMGValue::GetNullValue());
 
   for (auto edge : GetHVEdges(filt)) {
+    //TODO(anyone) is it possible to optimize? maybe boost::dynamic_bitset
     for (
       auto b = bs.begin() + edge->GetOffset();
       b < bs.begin() + edge->GetOffset() + edge->GetSizeInBytes();
-      b++
-      ) {
+      b++) {
       *b = true;
     }
   }

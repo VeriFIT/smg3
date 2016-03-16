@@ -189,4 +189,39 @@ const SMGValue& CLangSMG::GetAddress(const SMGObjectPtr& memory, const long offs
   return SMGValue::GetNullValue();
 }
 
+/**
+* Read Value in field (object, type) of an Object.
+*
+* This method does not modify the state being read,
+* and is therefore safe to call outside of a
+* transfer relation context.
+*
+* @param pObject SMGObject representing the memory the field belongs to.
+* @param pOffset offset of field being read.ReadValue
+* @param pType type of field
+* @return A Symbolic value, if found, otherwise null.
+* @throws SMGInconsistentException
+*/
+const SMGValue& CLangSMG::ReadValue(
+  const SMGObjectPtr& object,
+  long offset,
+  const SMGCType& type) const {
+  if (!IsObjectValid(object)) {
+    throw UnsupportedOperationException("No value can be read from an invalid object");
+  }
+
+  SMGEdgeHasValue test_edge(type, offset, object, SMGValue::GetNullValue());
+
+  for (auto object_edge :
+    GetHVEdges(SMGEdgeHasValueFilter::ObjectFilter(object).FilterAtOffset(offset))) {
+    if (test_edge.IsCompatibleFieldOnSameObject(*object_edge))
+      return object_edge->GetValue();
+  }
+
+  if (IsCoveredByNullifiedBlocks(object, offset, type))
+    return SMGValue::GetNullValue();
+
+  return SMGValue::GetUnknownValue();
+}
+
 }  // namespace smg

@@ -9,6 +9,7 @@ class SMGValue {
   static long id_counter_;
   static const SMGValue NULL_VALUE;
   static const SMGValue INVALID_VALUE;
+  static const SMGValue UNKNOWN_VALUE;
   long id_;
 
   explicit SMGValue(const long id);
@@ -18,6 +19,7 @@ class SMGValue {
 
   static const SMGValue& GetNullValue();
   static const SMGValue& GetInvalidValue();
+  static const SMGValue& GetUnknownValue();
 
   long GetId() const;
 

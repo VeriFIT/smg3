@@ -16,8 +16,8 @@ const int OFFSET2 = 2;
 const int OFFSET4 = 4;
 const int OFFSET6 = 6;
 
-const SMGCType MOCKTYPE4 = Type::create(1,4,32);
-const SMGCType MOCKTYPE12 = Type::create(2,12,80);
+const SMGCType MOCKTYPE4 = TypeImpl::create(1,4,32);
+const SMGCType MOCKTYPE12 = TypeImpl::create(2,12,80);
 
 TEST(SMGEdgeHasValue, Sanity) {
   const SMGObject& obj = SMGRegion(SIZE8, "object");

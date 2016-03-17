@@ -9,37 +9,36 @@
 
 namespace smg {
 
-
-std::ostream &operator << (std::ostream &s, TypeId t) {
-    return s << t.toString();
+std::ostream &operator << (std::ostream &s, Type t) {
+    return s << t.ToString();
 }
 
-void Type::add_field(unsigned o, std::string name, TypeId t) {
+void TypeImpl::add_field(size_t o, std::string name, Type t) {
     // TODO: assert( isStruct() || isUnion() )
     field_desc fld = { o, name, t };
     fields.push_back(fld);
 }
 
-// convert Type to string representation
-std::string Type::toString() const {
+// convert TypeImpl to string representation
+std::string TypeImpl::ToString() const {
     std::ostringstream s;
-    s << "Type#" << fid << " ";
+    s << "TypeImpl#" << fid << " ";
     switch(kind) {
     case INT:
-        s << "Integer" << bsize << "(sizeof=" << size() << ")";
+        s << "Integer" << bsize << "(sizeof=" << SizeOf() << ")";
         break;
     case PTR:
-        s << "Pointer(sizeof=" << size() << ") to Type#" << targetType.id();
+        s << "Pointer(sizeof=" << SizeOf() << ") to TypeImpl#" << targetType.FrontendId();
         break;
     case STRUCT:
-        s << "Struct(sizeof=" << size() << ", {\n";
+        s << "Struct(sizeof=" << SizeOf() << ", {\n";
         for(field_desc f: fields)
             s << " offset=" << f.offset << " name=" << f.name
-              << " type=#" << f.type.id() << "\n";
+              << " type=#" << f.type.FrontendId() << "\n";
         s << "})";
         break;
     case ARRAY:
-        s << "Array["<<bsize<<"](sizeof=" << size() << ") of " << targetType.toString();
+        s << "Array["<<bsize<<"](sizeof=" << SizeOf() << ") of " << targetType.ToString();
         break;
     default:
         s << "UNKNOWN";
@@ -48,6 +47,6 @@ std::string Type::toString() const {
     return s.str();
 }
 
-Type::map_t Type::m;  // definition of static member
+TypeImpl::map_t TypeImpl::m;  // definition of static member
 
 }  // namespace smg

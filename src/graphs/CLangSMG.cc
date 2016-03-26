@@ -122,6 +122,7 @@ const std::deque<CLangStackFrame>& CLangSMG::GetStackFrames() const { return sta
 
 const std::set<SMGObjectPtr>& CLangSMG::GetHeapObjects() const { return heap_objects_; }
 
+//original replaced with GetGlobalObjects
 const std::set<SMGObjectPtr> CLangSMG::GetGlobalObjects() const {
   std::set<SMGObjectPtr> globals;
   std::transform(
@@ -132,6 +133,7 @@ const std::set<SMGObjectPtr> CLangSMG::GetGlobalObjects() const {
   return globals;
 }
 
+//replacement for original GetGlobalObjects
 const std::map<std::string, SMGRegionPtr>& CLangSMG::GetGlobalVariables() const {
   return global_objects_;
 }

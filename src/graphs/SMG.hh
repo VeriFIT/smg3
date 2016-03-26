@@ -21,6 +21,7 @@ public:
   bool contains(std::shared_ptr<T> element) const;
   bool empty() const noexcept;
   std::set<std::shared_ptr<T>>& set();
+  const std::set<std::shared_ptr<T>>& cset() const;
 
   void add(const std::shared_ptr<T> element);
   void remove(const std::shared_ptr<T> element);
@@ -61,6 +62,7 @@ public:
 
   void SetValidity(const SMGObjectPtr& object, const bool validity);
   bool IsObjectValid(const SMGObjectPtr& object) const;
+  bool IsObjectValid(const SMGObject& object) const;
 
   SMGObjectPtr GetNullObject() const;
   const SMGValue GetNullValue() const;
@@ -139,7 +141,13 @@ inline typename std::set<std::shared_ptr<T>>::iterator SMGEntitySet<T>::end() no
   return entity_set.end();
 }
 
-template<class T> inline std::set<std::shared_ptr<T>>& SMGEntitySet<T>::set() {
+template<class T>
+inline std::set<std::shared_ptr<T>>& SMGEntitySet<T>::set(){
+  return entity_set;
+}
+
+template<class T>
+inline const std::set<std::shared_ptr<T>>& SMGEntitySet<T>::cset() const{
   return entity_set;
 }
 

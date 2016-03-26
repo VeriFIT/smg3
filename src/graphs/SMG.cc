@@ -112,6 +112,20 @@ bool SMG::IsObjectValid(const SMGObjectPtr& object) const {
   return object_validity_.at(object->GetId());
 }
 
+bool SMG::IsObjectValid(const SMGObject& object) const {
+  bool contains = false;
+  auto selector = [](const SMGObjectPtr& oPtr)->const SMGObject&{return *oPtr; };
+  for (const auto& optr : objects_) {
+    contains |= selector(optr) == object;
+  }
+  if (contains) {
+    std::string msg = "Object [" + object.GetLabel() + "] is not in SMG";
+    throw IllegalArgumentException(msg.c_str());
+  }
+
+  return object_validity_.at(object.GetId());
+}
+
 std::vector<bool> SMG::GetNullBytesForObject(const SMGObjectPtr& obj) const {
   //TODO(anyone) assert on obj->GetSize() >= 0 ?
   std::vector<bool> bs = std::vector<bool>(static_cast<size_t>(obj->GetSize()), false);

@@ -19,6 +19,10 @@ ObjectSize SMGObject::GetSize() const { return size_; }
 
 long SMGObject::GetId() const { return id_; }
 
+std::string SMGObject::ToString() const {
+  return "OBJECT( " + GetLabel() + ", " + std::to_string(GetSize()) + "b)";
+}
+
 // ReSharper disable once CppMemberFunctionMayBeStatic
 std::string SMGObject::GetClassName() const { return std::string("SMGObject"); }
 
@@ -28,9 +32,6 @@ bool SMGObject::operator!=(const SMGObject& other) const { return !(*this == oth
 
 bool SMGObject::NotNull() const { return true; }
 
-std::string SMGNullObject::ToString() const {
-  return "OBJECT( " + GetLabel() + ", " + std::to_string(GetSize()) + "b)";
-}
 
 bool SMGNullObject::NotNull() const { return false; }
 

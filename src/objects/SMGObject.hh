@@ -26,7 +26,7 @@ class SMGObject {
   ObjectSize GetSize() const;
   long GetId() const;
 
-  virtual std::string ToString() const = 0;
+  virtual std::string ToString() const;
   virtual std::string GetClassName() const;
   virtual bool NotNull() const;
   virtual bool IsAbstract() const = 0;
@@ -44,7 +44,6 @@ class SMGNullObject : public SMGObject {
   SMGNullObject();
 
  public:
-  virtual std::string ToString() const;
   static const SMGObjectPtr GetNullObject();
   bool IsAbstract() const override;
   void Accept(SMGObjectVisitor& visitor) const override;

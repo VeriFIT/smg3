@@ -22,13 +22,17 @@ long SMGObject::GetId() const { return id_; }
 // ReSharper disable once CppMemberFunctionMayBeStatic
 std::string SMGObject::GetClassName() const { return std::string("SMGObject"); }
 
-bool SMGObject::NotNull() const { return true; }
-
-bool SMGNullObject::NotNull() const { return false; }
-
 bool SMGObject::operator==(const SMGObject& other) const { return id_ == other.id_; }
 
 bool SMGObject::operator!=(const SMGObject& other) const { return !(*this == other); }
+
+bool SMGObject::NotNull() const { return true; }
+
+std::string SMGNullObject::ToString() const {
+  return "OBJECT( " + GetLabel() + ", " + std::to_string(GetSize()) + "b)";
+}
+
+bool SMGNullObject::NotNull() const { return false; }
 
 SMGNullObject::SMGNullObject() : SMGObject(0, "NULL") {}
 

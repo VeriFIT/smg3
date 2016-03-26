@@ -13,10 +13,10 @@
 namespace smg {
 
 template<class T> class SMGEntitySet {
-private:
+ private:
   std::set<std::shared_ptr<T>> entity_set;
 
-public:
+ public:
   typename std::set<std::shared_ptr<T>>::size_type size() const noexcept;
   bool contains(std::shared_ptr<T> element) const;
   bool empty() const noexcept;
@@ -35,7 +35,7 @@ public:
 };
 
 class SMG {
-private:
+ private:
   SMGEntitySet<const SMGObject> objects_;
   std::set<SMGValue> values_;
   std::map<SMGValue, SMGEdgePointsToPtr> pt_edges_;
@@ -45,7 +45,7 @@ private:
   SMGObjectPtr null_object_ = SMGNullObject::GetNullObject();
   SMGValue null_value_ = SMGValue::GetNullValue();
 
-public:
+ public:
   SMG();
   virtual ~SMG();
 

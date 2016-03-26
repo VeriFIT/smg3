@@ -192,7 +192,7 @@ void SMGPlotter::addGlobalObjectSubgraph(const CLangSMG & pSmg, std::stringstrea
 
 std::string SMGPlotter::newNullLabel() {
   nulls += 1;
-  return "value_null_" + nulls;
+  return "value_null_" + std::to_string(nulls);
 }
 
 std::string SMGPlotter::smgHVEdgeAsDot(const SMGEdgeHasValue & edge) {

@@ -68,7 +68,7 @@ class SMGPlotter {
 private:
   /*const*/ std::map<SMGObjectPtr, SMGObjectNode> objectIndex; //init
   static int nulls;
-  int offset = 0;
+  uint32_t offset = 0;
 
 public:
   //SMGPlotter() { } /* utility class */

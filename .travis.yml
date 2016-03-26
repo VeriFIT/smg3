@@ -20,6 +20,7 @@ matrix:
                 packages:
                     - g++-4.9
                     - libgtest-dev
+                    #- libboost-dev
         env:
             - COMPILERXX="g++-4.9"
             - COMPILERC="gcc-4.9"
@@ -33,6 +34,7 @@ matrix:
                 packages:
                     - g++-5
                     - libgtest-dev
+                    #- libboost-dev
         env:
             - COMPILERXX="g++-5"
             - COMPILERC="gcc-5"
@@ -47,6 +49,7 @@ matrix:
                 packages:
                     - clang-3.6
                     - libgtest-dev
+                    #- libboost-dev
         env:
             - COMPILERXX="clang++-3.6"
             - COMPILERC="clang-3.6"

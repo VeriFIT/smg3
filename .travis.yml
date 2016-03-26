@@ -6,9 +6,8 @@ matrix:
         language: python
         install:
             - pip install cpplint
-            - curl -o cpplint.py https://raw.githubusercontent.com/michkot/cpplint/master/cpplint.py
         script:
-            - "python3 cpplint.py --linelength=100 --extensions=cc,hh --filter=-legal,-runtime/int,-runtime/references,-whitespace/indentaccess,-whitespace/comments src/*/*"
+            - "cpplint --linelength=100 --extensions=cc,hh --filter=-legal,-runtime/int,-runtime/references src/*/*"
         cache:
 
       - compiler: gcc-4.9

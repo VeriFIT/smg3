@@ -142,12 +142,12 @@ inline typename std::set<std::shared_ptr<T>>::iterator SMGEntitySet<T>::end() no
 }
 
 template<class T>
-inline std::set<std::shared_ptr<T>>& SMGEntitySet<T>::set(){
+inline std::set<std::shared_ptr<T>>& SMGEntitySet<T>::set() {
   return entity_set;
 }
 
 template<class T>
-inline const std::set<std::shared_ptr<T>>& SMGEntitySet<T>::cset() const{
+inline const std::set<std::shared_ptr<T>>& SMGEntitySet<T>::cset() const {
   return entity_set;
 }
 

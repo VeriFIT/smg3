@@ -73,9 +73,13 @@ class SMG {
   const SMGEntitySet<const SMGEdgeHasValue>& GetHVEdges() const;
   const SMGEntitySet<const SMGEdgeHasValue> GetHVEdges(const SMGEdgeHasValueFilter& filter) const;
   const SMGEdgeHasValuePtr GetUniqueHV(const SMGEdgeHasValueFilter& filter, const bool check);
-
   const SMGObjectPtr GetObjectPointedBy(const SMGValue& value) const;
 
+  //Others to be added here!
+  //TODO(anyone) maybe change the naming convention?
+  const SMGEntitySet<const SMGEdgeHasValue> GetHVEdgesFromObject(const SMGObjectPtr & obj) const;
+  const SMGEntitySet<const SMGEdgeHasValue> GetHVEdgesToValue(const SMGValue & value) const;
+  
   /**
   * Obtains a bitset signifying where the object bytes are nullified.
   *
@@ -89,7 +93,7 @@ class SMG {
   std::vector<bool> GetNullBytesForObject(const SMGObjectPtr& obj) const;
   bool IsCoveredByNullifiedBlocks(const SMGEdgeHasValuePtr& edge) const;
   bool IsCoveredByNullifiedBlocks(const SMGObjectPtr& obj, long offset, const SMGCType& type)const;
-  //TODO(michal): should really be private like in JAVA?
+  //TODO(michal) should really be private like in JAVA?
   bool IsCoveredByNullifiedBlocks(const SMGObjectPtr& obj, long offset, int size) const;
 };
 

@@ -1,7 +1,6 @@
 #include "SMG.hh"
-#include <algorithm>
-#include <iterator>
 #include <vector>
+#include <algorithm>
 #include "exceptions/IllegalArgumentException.hh"
 
 namespace smg {
@@ -42,14 +41,9 @@ const std::map<SMGValue, SMGEdgePointsToPtr>& SMG::GetPTEdges() const { return p
 const SMGEntitySet<const SMGEdgeHasValue>& SMG::GetHVEdges() const { return hv_edges_; }
 
 const SMGEntitySet<const SMGEdgeHasValue> SMG::GetHVEdges(
-  const SMGEdgeHasValueFilter& filter) const {
-  SMGEntitySet<const SMGEdgeHasValue> to_return;
-  std::copy_if(
-    hv_edges_.begin(),
-    hv_edges_.end(),
-    std::inserter(to_return.set(), to_return.begin()),
-    filter);
-  return to_return;
+  const SMGEdgeHasValueFilter& filter
+  ) const {
+  return filter.FilterSet(hv_edges_);
 }
 
 const SMGEdgeHasValuePtr SMG::GetUniqueHV(const SMGEdgeHasValueFilter& filter, const bool check) {
@@ -63,6 +57,17 @@ const SMGEdgeHasValuePtr SMG::GetUniqueHV(const SMGEdgeHasValueFilter& filter, c
 const SMGObjectPtr SMG::GetObjectPointedBy(const SMGValue& value) const {
   SMGEdgePointsToPtr edge = pt_edges_.find(value)->second;
   return edge->GetObject();
+}
+
+const SMGEntitySet<const SMGEdgeHasValue> SMG::GetHVEdgesFromObject(
+  const SMGObjectPtr& obj
+  ) const {
+  return SMGEdgeHasValueFilter::ObjectFilter(obj).FilterSet(hv_edges_);
+}
+const SMGEntitySet<const SMGEdgeHasValue> SMG::GetHVEdgesToValue(
+  const SMGValue& value
+  ) const {
+  return SMGEdgeHasValueFilter().FilterHavingValue(value).FilterSet(hv_edges_);
 }
 
 void SMG::RemoveObject(const SMGObjectPtr& object) {

@@ -1,20 +1,16 @@
-/*
-    Created by Viktor Malik on 23.2.2016.
-*/
-
 #pragma once
 
-#include <exception>
+#include <string>
+#include <stdexcept>
 
 namespace smg {
 
-class NoSuchElementException : public std::exception {
- private:
-  char const* msg_ = nullptr;
-
+class NoSuchElementException : public std::runtime_error {
  public:
-  explicit NoSuchElementException(char const* const message) noexcept;
-  const char* what() const noexcept override;
+  explicit NoSuchElementException(const std::string& message) noexcept
+    : runtime_error(message) { } ;
+  explicit NoSuchElementException(const char* message) noexcept
+    : runtime_error(message) { } ;
 };
 
 }  // namespace smg

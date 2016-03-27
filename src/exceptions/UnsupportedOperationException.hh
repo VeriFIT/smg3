@@ -1,14 +1,16 @@
-#include <exception>
+#pragma once
+
+#include <string>
+#include <stdexcept>
 
 namespace smg {
 
-class UnsupportedOperationException : public std::exception {
- private:
-  char const* msg_ = nullptr;
-
+class UnsupportedOperationException : public std::runtime_error {
  public:
-  explicit UnsupportedOperationException(char const* const message) noexcept;
-  const char* what() const noexcept override;
+  explicit UnsupportedOperationException(const std::string& message) noexcept
+    : runtime_error(message) { } ;
+  explicit UnsupportedOperationException(const char* message) noexcept
+    : runtime_error(message) { } ;
 };
 
 }  // namespace smg

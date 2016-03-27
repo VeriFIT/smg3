@@ -79,7 +79,7 @@ class SMG {
   //TODO(anyone) maybe change the naming convention?
   const SMGEntitySet<const SMGEdgeHasValue> GetHVEdgesFromObject(const SMGObjectPtr & obj) const;
   const SMGEntitySet<const SMGEdgeHasValue> GetHVEdgesToValue(const SMGValue & value) const;
-  
+
   /**
   * Obtains a bitset signifying where the object bytes are nullified.
   *

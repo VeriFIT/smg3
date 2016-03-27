@@ -41,8 +41,7 @@ const std::map<SMGValue, SMGEdgePointsToPtr>& SMG::GetPTEdges() const { return p
 const SMGEntitySet<const SMGEdgeHasValue>& SMG::GetHVEdges() const { return hv_edges_; }
 
 const SMGEntitySet<const SMGEdgeHasValue> SMG::GetHVEdges(
-  const SMGEdgeHasValueFilter& filter
-  ) const {
+  const SMGEdgeHasValueFilter& filter) const {
   return filter.FilterSet(hv_edges_);
 }
 
@@ -60,13 +59,11 @@ const SMGObjectPtr SMG::GetObjectPointedBy(const SMGValue& value) const {
 }
 
 const SMGEntitySet<const SMGEdgeHasValue> SMG::GetHVEdgesFromObject(
-  const SMGObjectPtr& obj
-  ) const {
+  const SMGObjectPtr& obj) const {
   return SMGEdgeHasValueFilter::ObjectFilter(obj).FilterSet(hv_edges_);
 }
 const SMGEntitySet<const SMGEdgeHasValue> SMG::GetHVEdgesToValue(
-  const SMGValue& value
-  ) const {
+  const SMGValue& value) const {
   return SMGEdgeHasValueFilter().FilterHavingValue(value).FilterSet(hv_edges_);
 }
 
@@ -119,7 +116,7 @@ bool SMG::IsObjectValid(const SMGObjectPtr& object) const {
 
 bool SMG::IsObjectValid(const SMGObject& object) const {
   bool contains = false;
-  auto selector = [](const SMGObjectPtr& oPtr)->const SMGObject&{return *oPtr; };
+  auto selector = [](const SMGObjectPtr& oPtr)->const SMGObject&{return *oPtr;};
   for (const auto& optr : objects_) {
     contains |= selector(optr) == object;
   }

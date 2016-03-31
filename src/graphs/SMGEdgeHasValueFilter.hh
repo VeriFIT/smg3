@@ -11,7 +11,7 @@
 
 namespace smg {
 
-template<class T> class SMGEntitySet;
+template <class T> class SMGEntitySet;
 
 class SMGEdgeHasValueFilter {
   SMGObjectPtr object_;
@@ -25,7 +25,7 @@ class SMGEdgeHasValueFilter {
 
   SMGEdgeHasValueFilter();
 
-  //FluentApi / FluentConfig / Method chaining
+  // FluentApi / FluentConfig / Method chaining
   SMGEdgeHasValueFilter& FilterByObject(const SMGObjectPtr object);
   SMGEdgeHasValueFilter& FilterHavingValue(const SMGValue value);
   SMGEdgeHasValueFilter& FilterNotHavingValue(const SMGValue value);

@@ -3,8 +3,8 @@
 */
 
 #include <algorithm>
-#include <iterator>
 #include <functional>
+#include <iterator>
 
 #include "SMGEdgeHasValueFilter.hh"
 #include "graphs/SMG.hh"
@@ -12,9 +12,11 @@
 namespace smg {
 
 SMGEdgeHasValueFilter::SMGEdgeHasValueFilter()
-    : object_(nullptr), value_(SMGValue::GetInvalidValue()), value_complement_(false), offset_(-1),
-      type_(SMGCType::GetInvalidType()) {
-}
+    : object_(nullptr),
+      value_(SMGValue::GetInvalidValue()),
+      value_complement_(false),
+      offset_(-1),
+      type_(SMGCType::GetInvalidType()) {}
 
 SMGEdgeHasValueFilter SMGEdgeHasValueFilter::ObjectFilter(const SMGObjectPtr& object) {
   SMGEdgeHasValueFilter filter;
@@ -26,12 +28,12 @@ SMGEdgeHasValueFilter& SMGEdgeHasValueFilter::FilterByObject(const SMGObjectPtr 
   return *this;
 }
 SMGEdgeHasValueFilter& SMGEdgeHasValueFilter::FilterHavingValue(const SMGValue value) {
-  value_ = value;
+  value_            = value;
   value_complement_ = false;
   return *this;
 }
 SMGEdgeHasValueFilter& SMGEdgeHasValueFilter::FilterNotHavingValue(const SMGValue value) {
-  value_ = value;
+  value_            = value;
   value_complement_ = true;
   return *this;
 }

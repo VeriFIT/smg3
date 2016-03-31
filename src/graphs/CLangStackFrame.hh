@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include <string>
 #include <map>
 #include <set>
+#include <string>
 #include "objects/SMGRegion.hh"
 
 namespace smg {

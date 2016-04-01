@@ -4,9 +4,9 @@
 
 #pragma once
 
+#include <deque>
 #include <map>
 #include <set>
-#include <deque>
 #include <string>
 #include "graphs/CLangStackFrame.hh"
 #include "graphs/SMG.hh"
@@ -80,5 +80,3 @@ class CLangSMG : public SMG {
 };
 
 }  // namespace smg
-
-

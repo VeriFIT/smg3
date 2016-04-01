@@ -1,6 +1,6 @@
 #include "SMG.hh"
-#include <vector>
 #include <algorithm>
+#include <vector>
 #include "exceptions/IllegalArgumentException.hh"
 
 namespace smg {
@@ -41,7 +41,7 @@ const std::map<SMGValue, SMGEdgePointsToPtr>& SMG::GetPTEdges() const { return p
 const SMGEntitySet<const SMGEdgeHasValue>& SMG::GetHVEdges() const { return hv_edges_; }
 
 const SMGEntitySet<const SMGEdgeHasValue> SMG::GetHVEdges(
-  const SMGEdgeHasValueFilter& filter) const {
+    const SMGEdgeHasValueFilter& filter) const {
   return filter.FilterSet(hv_edges_);
 }
 
@@ -116,7 +116,7 @@ bool SMG::IsObjectValid(const SMGObjectPtr& object) const {
 
 bool SMG::IsObjectValid(const SMGObject& object) const {
   bool contains = false;
-  auto selector = [](const SMGObjectPtr& oPtr)->const SMGObject&{return *oPtr;};
+  auto selector = [](const SMGObjectPtr& oPtr) -> const SMGObject& { return *oPtr; };
   for (const auto& optr : objects_) {
     contains |= selector(optr) == object;
   }
@@ -129,13 +129,13 @@ bool SMG::IsObjectValid(const SMGObject& object) const {
 }
 
 std::vector<bool> SMG::GetNullBytesForObject(const SMGObjectPtr& obj) const {
-  //TODO(anyone) assert on obj->GetSize() >= 0 ?
+  // TODO(anyone) assert on obj->GetSize() >= 0 ?
   std::vector<bool> bs = std::vector<bool>(static_cast<size_t>(obj->GetSize()), false);
 
   auto filt = SMGEdgeHasValueFilter::ObjectFilter(obj).FilterHavingValue(SMGValue::GetNullValue());
 
   for (auto edge : GetHVEdges(filt)) {
-    //TODO(anyone) is it possible to optimize? maybe boost::dynamic_bitset
+    // TODO(anyone) is it possible to optimize? maybe boost::dynamic_bitset
     for (
       auto b = bs.begin() + edge->GetOffset();
       b < bs.begin() + edge->GetOffset() + edge->GetSizeInBytes();
@@ -157,16 +157,16 @@ bool SMG::IsCoveredByNullifiedBlocks(
   const SMGCType& type) const {
   return IsCoveredByNullifiedBlocks(obj, offset, type.GetSize());
 }
-//TODO(anyone) what kind of size?
+// TODO(anyone) what kind of size?
 bool SMG::IsCoveredByNullifiedBlocks(
   const SMGObjectPtr& obj,
   long offset,
   int size) const {
   auto bs = GetNullBytesForObject(obj);
-  //TODO(anyone): what type?
-  //min index of last NULL byte
+  // TODO(anyone): what type?
+  // min index of last NULL byte
   long expectedMinNull = (offset + size);
-  //index of first not-guaranted-to-be-NULL in bs
+  // index of first not-guaranted-to-be-NULL in bs
   auto firstNotNull = std::find(bs.cbegin(), bs.cend(), false) - bs.cbegin();
 
   return (firstNotNull >= expectedMinNull);

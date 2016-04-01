@@ -8,7 +8,7 @@ void SMGObjectVisitor::VisitDefault(const SMGObject& object) {
   std::string message = "This visitor cannot handle objects of class [";
   message += typeid(object).name();
   message += "]";
-  throw UnsupportedOperationException(message.c_str()); //TODO(anyone) dangling pointer
+  throw UnsupportedOperationException(message.c_str());  // TODO(anyone) dangling pointer
 }
 
 void SMGObjectVisitor::Visit(const SMGObject& object) { VisitDefault(object); }

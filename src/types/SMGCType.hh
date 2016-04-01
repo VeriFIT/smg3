@@ -4,7 +4,7 @@ namespace smg {
 
 class SMGCType {
  private:
-  static const int SIZE_INT = 4;
+  static const int SIZE_INT     = 4;
   static const int SIZE_POINTER = 8;
   static const int SIZE_INVALID = -1;
   int size_;

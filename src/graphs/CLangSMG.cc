@@ -105,7 +105,7 @@ void CLangSMG::free(const int offset, const SMGRegionPtr& region) {
     return;
   }
 
-  //TODO(anyone) sub-optimal, could be replaced with std::set::erase and single iteration approach
+  // TODO(anyone) sub-optimal, could be replaced with std::set::erase and single iteration approach
   SetValidity(region, false);
   SMGEdgeHasValueFilter filter = SMGEdgeHasValueFilter::ObjectFilter(region);
 
@@ -122,18 +122,18 @@ const std::deque<CLangStackFrame>& CLangSMG::GetStackFrames() const { return sta
 
 const std::set<SMGObjectPtr>& CLangSMG::GetHeapObjects() const { return heap_objects_; }
 
-//original replaced with GetGlobalObjects
+// original replaced with GetGlobalObjects
 const std::set<SMGObjectPtr> CLangSMG::GetGlobalObjects() const {
   std::set<SMGObjectPtr> globals;
   std::transform(
-    global_objects_.begin(),
-    global_objects_.end(),
-    std::inserter(globals, globals.end()),
-    [](std::pair<std::string, SMGObjectPtr> obj) { return obj.second; });
+      global_objects_.begin(),
+      global_objects_.end(),
+      std::inserter(globals, globals.end()),
+      [](std::pair<std::string, SMGObjectPtr> obj) { return obj.second; });
   return globals;
 }
 
-//replacement for original GetGlobalObjects
+// replacement for original GetGlobalObjects
 const std::map<std::string, SMGRegionPtr>& CLangSMG::GetGlobalVariables() const {
   return global_objects_;
 }

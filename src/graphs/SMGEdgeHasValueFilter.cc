@@ -74,7 +74,7 @@ bool SMGEdgeHasValueFilter::HoldsFor(const SMGEdgeHasValue& edge) const {
 }
 
 const SMGEntitySet<const SMGEdgeHasValue> SMGEdgeHasValueFilter::FilterSet(
-  const SMGEntitySet<const SMGEdgeHasValue>& edges) const {
+    const SMGEntitySet<const SMGEdgeHasValue>& edges) const {
   SMGEntitySet<const SMGEdgeHasValue> return_set;
   std::copy_if(
     edges.begin(),

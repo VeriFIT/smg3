@@ -121,7 +121,8 @@ class CLangSMG : public SMG {
   *
   * TODO: [SCOPES] Scope visibility vs. stack frame issues: handle cases where a variable is visible
   * but is is allowed to override (inner blocks)
-  * TODO: Consistency check (allow): different objects with same label inside a frame, but in different block
+  * TODO: Consistency check (allow): different objects with same label inside a frame, but 
+  * in different block
   * TODO: Test for this consistency check
   *
   * TODO: Shall we need an extension for putting objects to upper frames?
@@ -348,24 +349,24 @@ class CLangSMG : public SMG {
   //@Override
   //public Integer getAddress(final SMGObject pMemory, final Integer pOffset) { ...
 
-   //@Override
-   //public boolean isIdenticalTo(final ReadableSMG pOther) {
-   //  if (!(pOther instanceof CLangSMG)) {
-   //    throw new IllegalArgumentException("Cannot compare CLangSMG to non-CLangSMG");
-   //  }
+  //@Override
+  //public boolean isIdenticalTo(final ReadableSMG pOther) {
+  //  if (!(pOther instanceof CLangSMG)) {
+  //    throw new IllegalArgumentException("Cannot compare CLangSMG to non-CLangSMG");
+  //  }
 
-   //  CLangSMG other = (CLangSMG)pOther;
+  //  CLangSMG other = (CLangSMG)pOther;
 
-   //  if (!(super.isIdenticalTo(other))) {
-   //    return false;
-   //  }
+  //  if (!(super.isIdenticalTo(other))) {
+  //    return false;
+  //  }
 
-   //  boolean stackIdentical = Arrays.equals(stackObjects.toArray(), other.stackObjects.toArray());
-   //  boolean heapIdentical = heapObjects.equals(other.heapObjects);
-   //  boolean globalIdentical = globalObjects.equals(other.globalObjects);
+  //  boolean stackIdentical = Arrays.equals(stackObjects.toArray(), other.stackObjects.toArray());
+  //  boolean heapIdentical = heapObjects.equals(other.heapObjects);
+  //  boolean globalIdentical = globalObjects.equals(other.globalObjects);
 
-   //  return stackIdentical && heapIdentical && globalIdentical;
-   //}
+  //  return stackIdentical && heapIdentical && globalIdentical;
+  //}
 
   //-----------------------------------------------------------------------------------------------
   //ALSO NOT PORTED (WILL EVER BE?)

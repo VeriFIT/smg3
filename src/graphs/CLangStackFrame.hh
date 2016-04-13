@@ -61,7 +61,7 @@ class CLangStackFrame {
   * @return String representation of the stack frame
   */
   const std::string ToString() const;
-  
+
   /**
   * Getter for obtaining an object corresponding to a variable name
   *

@@ -78,7 +78,7 @@ class CLangSMG : public SMG {
   * Keeps consistency: yes
   */
   void SetMemoryLeak();
-  
+
   /**
    * Constant.
    *
@@ -121,7 +121,7 @@ class CLangSMG : public SMG {
   *
   * TODO: [SCOPES] Scope visibility vs. stack frame issues: handle cases where a variable is visible
   * but is is allowed to override (inner blocks)
-  * TODO: Consistency check (allow): different objects with same label inside a frame, but 
+  * TODO: Consistency check (allow): different objects with same label inside a frame, but
   * in different block
   * TODO: Test for this consistency check
   *
@@ -180,7 +180,7 @@ class CLangSMG : public SMG {
   * and the checks are enabled
   */
   SMGRegionPtr AddLocalVariable(const SMGCType& type, const std::string var_name);
-  
+
   /**
    * This method simulates a free invocation. It checks,
    * whether the call is valid, and invalidates the
@@ -299,7 +299,7 @@ class CLangSMG : public SMG {
   * Constant.
   *
   * @return a {@link SMGObject} for current function return value
-  */ 
+  */
   //@Override
   //  public SMGRegion getStackReturnObject(final int pUp) {
   //  return stackObjects.peek().getReturnObject();

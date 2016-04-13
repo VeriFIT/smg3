@@ -55,7 +55,7 @@ class SMGConsistencyVerifier {
   * @return True, if all edges in {@link pEdges} satisfy consistency criteria. False otherwise.
   */
   static bool VerifyEdgeConsistency(const SMG& smg);
-  
+
   //TODO(anyone) comment
   static bool VerifyGeneralEdgeConsistency(const SMG& smg, const SMGEdge& edge);
 
@@ -66,7 +66,7 @@ class SMGConsistencyVerifier {
 
   SMGConsistencyVerifier();
   virtual ~SMGConsistencyVerifier();
-  
+
  public:
    //TODO(anyone) Where is VerifySmg ??? - NOT PORTED?
 

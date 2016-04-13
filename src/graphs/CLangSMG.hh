@@ -255,6 +255,124 @@ class CLangSMG : public SMG {
   * @throws SMGInconsistentException
   */
   const SMGValue& ReadValue(const SMGObjectPtr& object, long offset, const SMGCType& type) const;
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  //NOT PORTED
+
+  /**
+  * Getter for obtaining a string representation of the CLangSMG. Constant.
+  *
+  * @return String representation of the CLangSMG
+  */
+  //@Override
+  //  public String toString() {....
+
+  /**
+  * Prune the SMG: remove all unreachable objects (heap ones: global and stack
+  * are always reachable) and values.
+  *
+  * TODO: Too large. Refactor into fewer pieces
+  *
+  * Keeps consistency: yes
+  */
+  //@Override
+  //  public void pruneUnreachable() {...
+
+  /**
+  * Returns an SMGObject tied to the variable name. The name must be visible in
+  * the current scope: it needs to be visible either in the current frame, or it
+  * is a global variable. Constant.
+  *
+  * @param pVariableName A name of the variable
+  * @return An object tied to the name, if such exists in the visible scope.
+  *
+  * TODO: [SCOPES] Test for getting visible local object hiding other local object
+  * @throws SMGInconsistentException
+  */
+  //@Override
+  //  public SMGRegion getObjectForVisibleVariable(final String pVariableName) { ...
+
+  /**
+  * Constant.
+  *
+  * @return a {@link SMGObject} for current function return value
+  */ 
+  //@Override
+  //  public SMGRegion getStackReturnObject(final int pUp) {
+  //  return stackObjects.peek().getReturnObject();
+  //}
+
+  //@Override
+  //  public String getFunctionName(final SMGRegion pObject) {
+  //  for (CLangStackFrame cLangStack : stackObjects) {
+  //    if (cLangStack.getAllObjects().contains(pObject)) {
+  //      return cLangStack.getFunctionDeclaration().getName();
+  //    }
+  //  }
+
+  //  throw new IllegalArgumentException("No function name for non-stack object");
+  //}
+
+  //@Override
+  //  public void mergeValues(final int v1, final int v2) {
+  //  super.mergeValues(v1, v2);
+  //}
+
+  /**
+  * Determine, whether the two given symbolic values are not equal.
+  * If this method does not return true, the relation of these
+  * symbolic values is unknown.
+  *
+  * @param value1 first symbolic value to be checked
+  * @param value2 second symbolic value to be checked
+  * @return true, if the symbolic values are known to be not equal, false, if it is unknown.
+  * @throws SMGInconsistentException
+  */
+  //@Override
+  //public boolean isUnequal(final int value1, final int value2) {...
+
+  /**
+  * Get the symbolic value, that represents the address
+  * pointing to the given memory with the given offset, if it exists.
+  *
+  * @param memory
+  *          get address belonging to this memory.
+  * @param offset
+  *          get address with this offset relative to the beginning of the
+  *          memory.
+  * @return Address of the given field, or null, if such an address does not
+  *         yet exist in the SMG.
+  */
+  //@Override
+  //public Integer getAddress(final SMGObject pMemory, final Integer pOffset) { ...
+
+   //@Override
+   //public boolean isIdenticalTo(final ReadableSMG pOther) {
+   //  if (!(pOther instanceof CLangSMG)) {
+   //    throw new IllegalArgumentException("Cannot compare CLangSMG to non-CLangSMG");
+   //  }
+
+   //  CLangSMG other = (CLangSMG)pOther;
+
+   //  if (!(super.isIdenticalTo(other))) {
+   //    return false;
+   //  }
+
+   //  boolean stackIdentical = Arrays.equals(stackObjects.toArray(), other.stackObjects.toArray());
+   //  boolean heapIdentical = heapObjects.equals(other.heapObjects);
+   //  boolean globalIdentical = globalObjects.equals(other.globalObjects);
+
+   //  return stackIdentical && heapIdentical && globalIdentical;
+   //}
+
+  //-----------------------------------------------------------------------------------------------
+  //ALSO NOT PORTED (WILL EVER BE?)
+
+  //SMGSymbolicValue readValue(final SMGObject pObject, final int pOffset, final CType pType)
+
+
 };
 
 }  // namespace smg

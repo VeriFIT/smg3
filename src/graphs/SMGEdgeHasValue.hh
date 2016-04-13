@@ -15,7 +15,7 @@ class SMGEdgeHasValue : public SMGEdge {
 
  public:
   SMGEdgeHasValue(const SMGCType& type,
-                  const int offset,
+                  const long offset,
                   const SMGObjectPtr& object,
                   const SMGValue& value);
 

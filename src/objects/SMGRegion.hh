@@ -11,7 +11,7 @@ class SMGRegion : public SMGObject {
  public:
   SMGRegion(const int size, const std::string& label);
 
-  std::string ToString() const;
+  std::string ToString() const override;
   bool PropertiesEqual(const SMGRegion& other) const;
 
   std::string GetClassName() const override;

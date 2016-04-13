@@ -4,6 +4,7 @@
 
 #include "CLangSMGConsistencyVerifier.hh"
 #include <algorithm>
+#include <iterator>
 #include "graphs/SMGConsistencyVerifier.hh"
 
 namespace smg {
@@ -147,6 +148,7 @@ bool CLangSMGConsistencyVerifier::VerifyStackNamespaces(const CLangSMG& smg) {
 
 bool CLangSMGConsistencyVerifier::Verify(const CLangSMG& smg) {
   bool to_return = SMGConsistencyVerifier::Verify(smg);
+
   to_return = to_return && VerifyDisjunctHeapAndGlobal(smg);
   to_return = to_return && VerifyDisjunctHeapAndStack(smg);
   to_return = to_return && VerifyDisjunctGlobalAndStack(smg);

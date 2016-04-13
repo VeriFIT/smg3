@@ -1,5 +1,6 @@
 #include "SMG.hh"
 #include <algorithm>
+#include <vector>
 #include "exceptions/IllegalArgumentException.hh"
 
 namespace smg {
@@ -41,12 +42,7 @@ const SMGEntitySet<const SMGEdgeHasValue>& SMG::GetHVEdges() const { return hv_e
 
 const SMGEntitySet<const SMGEdgeHasValue> SMG::GetHVEdges(
     const SMGEdgeHasValueFilter& filter) const {
-  SMGEntitySet<const SMGEdgeHasValue> to_return;
-  std::copy_if(hv_edges_.begin(),
-               hv_edges_.end(),
-               std::inserter(to_return.set(), to_return.begin()),
-               filter);
-  return to_return;
+  return filter.FilterSet(hv_edges_);
 }
 
 const SMGEdgeHasValuePtr SMG::GetUniqueHV(const SMGEdgeHasValueFilter& filter, const bool check) {
@@ -60,6 +56,15 @@ const SMGEdgeHasValuePtr SMG::GetUniqueHV(const SMGEdgeHasValueFilter& filter, c
 const SMGObjectPtr SMG::GetObjectPointedBy(const SMGValue& value) const {
   SMGEdgePointsToPtr edge = pt_edges_.find(value)->second;
   return edge->GetObject();
+}
+
+const SMGEntitySet<const SMGEdgeHasValue> SMG::GetHVEdgesFromObject(
+  const SMGObjectPtr& obj) const {
+  return SMGEdgeHasValueFilter::ObjectFilter(obj).FilterSet(hv_edges_);
+}
+const SMGEntitySet<const SMGEdgeHasValue> SMG::GetHVEdgesToValue(
+  const SMGValue& value) const {
+  return SMGEdgeHasValueFilter().FilterHavingValue(value).FilterSet(hv_edges_);
 }
 
 void SMG::RemoveObject(const SMGObjectPtr& object) {
@@ -108,4 +113,63 @@ bool SMG::IsObjectValid(const SMGObjectPtr& object) const {
 
   return object_validity_.at(object->GetId());
 }
+
+bool SMG::IsObjectValid(const SMGObject& object) const {
+  bool contains = false;
+  auto selector = [](const SMGObjectPtr& oPtr) -> const SMGObject& { return *oPtr; };
+  for (const auto& optr : objects_) {
+    contains |= selector(optr) == object;
+  }
+  if (contains) {
+    std::string msg = "Object [" + object.GetLabel() + "] is not in SMG";
+    throw IllegalArgumentException(msg.c_str());
+  }
+
+  return object_validity_.at(object.GetId());
+}
+
+std::vector<bool> SMG::GetNullBytesForObject(const SMGObjectPtr& obj) const {
+  // TODO(anyone) assert on obj->GetSize() >= 0 ?
+  std::vector<bool> bs = std::vector<bool>(static_cast<size_t>(obj->GetSize()), false);
+
+  auto filt = SMGEdgeHasValueFilter::ObjectFilter(obj).FilterHavingValue(SMGValue::GetNullValue());
+
+  for (auto edge : GetHVEdges(filt)) {
+    // TODO(anyone) is it possible to optimize? maybe boost::dynamic_bitset
+    for (
+      auto b = bs.begin() + edge->GetOffset();
+      b < bs.begin() + edge->GetOffset() + edge->GetSizeInBytes();
+      b++) {
+      *b = true;
+    }
+  }
+
+  return bs;
+}
+
+bool SMG::IsCoveredByNullifiedBlocks(
+  const SMGEdgeHasValuePtr& edge) const {
+  return IsCoveredByNullifiedBlocks(edge->GetObject(), edge->GetOffset(), edge->GetSizeInBytes());
+}
+bool SMG::IsCoveredByNullifiedBlocks(
+  const SMGObjectPtr& obj,
+  long offset,
+  const SMGCType& type) const {
+  return IsCoveredByNullifiedBlocks(obj, offset, type.GetSize());
+}
+// TODO(anyone) what kind of size?
+bool SMG::IsCoveredByNullifiedBlocks(
+  const SMGObjectPtr& obj,
+  long offset,
+  int size) const {
+  auto bs = GetNullBytesForObject(obj);
+  // TODO(anyone): what type?
+  // min index of last NULL byte
+  long expectedMinNull = (offset + size);
+  // index of first not-guaranted-to-be-NULL in bs
+  auto firstNotNull = std::find(bs.cbegin(), bs.cend(), false) - bs.cbegin();
+
+  return (firstNotNull >= expectedMinNull);
+}
+
 }  // namespace smg

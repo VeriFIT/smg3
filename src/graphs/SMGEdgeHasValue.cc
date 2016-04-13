@@ -5,7 +5,7 @@
 namespace smg {
 
 SMGEdgeHasValue::SMGEdgeHasValue(const SMGCType& type,
-                                 const int offset,
+                                 const long offset,
                                  const SMGObjectPtr& object,
                                  const SMGValue& value)
     : SMGEdge(value, object), offset_(offset), type_(type) {}
@@ -57,6 +57,7 @@ bool SMGEdgeHasValue::IsCompatibleField(const SMGEdgeHasValue& other) const {
 }
 
 bool SMGEdgeHasValue::IsCompatibleFieldOnSameObject(const SMGEdgeHasValue& other) const {
+  // maybe replace with *GetObject() == *other.GetObject() ?
   return IsCompatibleField(other) && (GetObject()->GetId() == other.GetObject()->GetId());
 }
 

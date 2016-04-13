@@ -2,42 +2,48 @@
     Created by Viktor Malik on 19.2.2016.
 */
 
+#include <algorithm>
+#include <functional>
+#include <iterator>
+
 #include "SMGEdgeHasValueFilter.hh"
 #include "graphs/SMG.hh"
 
 namespace smg {
 
 SMGEdgeHasValueFilter::SMGEdgeHasValueFilter()
-    : object_(nullptr), value_(SMGValue::GetInvalidValue()), value_complement_(false), offset_(-1),
-      type_(SMGCType::GetInvalidType()) {
-}
+    : object_(nullptr),
+      value_(SMGValue::GetInvalidValue()),
+      value_complement_(false),
+      offset_(-1),
+      type_(SMGCType::GetInvalidType()) {}
 
 SMGEdgeHasValueFilter SMGEdgeHasValueFilter::ObjectFilter(const SMGObjectPtr& object) {
   SMGEdgeHasValueFilter filter;
   filter.FilterByObject(object);
   return filter;
 }
-const SMGEdgeHasValueFilter& SMGEdgeHasValueFilter::FilterByObject(const SMGObjectPtr object) {
+SMGEdgeHasValueFilter& SMGEdgeHasValueFilter::FilterByObject(const SMGObjectPtr object) {
   object_ = object;
   return *this;
 }
-const SMGEdgeHasValueFilter& SMGEdgeHasValueFilter::FilterHavingValue(const SMGValue value) {
-  value_ = value;
+SMGEdgeHasValueFilter& SMGEdgeHasValueFilter::FilterHavingValue(const SMGValue value) {
+  value_            = value;
   value_complement_ = false;
   return *this;
 }
-const SMGEdgeHasValueFilter& SMGEdgeHasValueFilter::FilterNotHavingValue(const SMGValue value) {
-  value_ = value;
+SMGEdgeHasValueFilter& SMGEdgeHasValueFilter::FilterNotHavingValue(const SMGValue value) {
+  value_            = value;
   value_complement_ = true;
   return *this;
 }
 
-const SMGEdgeHasValueFilter& SMGEdgeHasValueFilter::FilterAtOffset(const long offset) {
+SMGEdgeHasValueFilter& SMGEdgeHasValueFilter::FilterAtOffset(const long offset) {
   offset_ = offset;
   return *this;
 }
 
-const SMGEdgeHasValueFilter& SMGEdgeHasValueFilter::FilterByType(const SMGCType& type) {
+SMGEdgeHasValueFilter& SMGEdgeHasValueFilter::FilterByType(const SMGCType& type) {
   type_ = type;
   return *this;
 }
@@ -50,7 +56,8 @@ bool SMGEdgeHasValueFilter::HoldsFor(const SMGEdgeHasValue& edge) const {
   if (value_ != SMGValue::GetInvalidValue()) {
     if (value_complement_ && value_ == edge.GetValue()) {
       return false;
-    } else if (!value_complement_ && value_ != edge.GetValue()) {
+    }
+    if (!value_complement_ && value_ != edge.GetValue()) {
       return false;
     }
   }
@@ -69,15 +76,15 @@ bool SMGEdgeHasValueFilter::HoldsFor(const SMGEdgeHasValue& edge) const {
 const SMGEntitySet<const SMGEdgeHasValue> SMGEdgeHasValueFilter::FilterSet(
     const SMGEntitySet<const SMGEdgeHasValue>& edges) const {
   SMGEntitySet<const SMGEdgeHasValue> return_set;
-  for (auto edge : edges) {
-    if (HoldsFor(*edge)) {
-      return_set.add(edge);
-    }
-  }
+  std::copy_if(
+    edges.begin(),
+    edges.end(),
+    std::inserter(return_set.set(), return_set.begin()),
+    *this);
   return return_set;
 }
 
-bool SMGEdgeHasValueFilter::operator()(const SMGEdgeHasValuePtr& edge) {
+bool SMGEdgeHasValueFilter::operator()(const SMGEdgeHasValuePtr& edge) const {
   return HoldsFor(*edge);
 }
 

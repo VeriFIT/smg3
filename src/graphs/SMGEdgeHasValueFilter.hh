@@ -11,7 +11,7 @@
 
 namespace smg {
 
-template<class T> class SMGEntitySet;
+template <class T> class SMGEntitySet;
 
 class SMGEdgeHasValueFilter {
   SMGObjectPtr object_;
@@ -25,15 +25,17 @@ class SMGEdgeHasValueFilter {
 
   SMGEdgeHasValueFilter();
 
-  const SMGEdgeHasValueFilter& FilterByObject(const SMGObjectPtr object);
-  const SMGEdgeHasValueFilter& FilterHavingValue(const SMGValue value);
-  const SMGEdgeHasValueFilter& FilterNotHavingValue(const SMGValue value);
-  const SMGEdgeHasValueFilter& FilterAtOffset(const long offset);
-  const SMGEdgeHasValueFilter& FilterByType(const SMGCType& type);
+  // FluentApi / FluentConfig / Method chaining
+  SMGEdgeHasValueFilter& FilterByObject(const SMGObjectPtr object);
+  SMGEdgeHasValueFilter& FilterHavingValue(const SMGValue value);
+  SMGEdgeHasValueFilter& FilterNotHavingValue(const SMGValue value);
+  SMGEdgeHasValueFilter& FilterAtOffset(const long offset);
+  SMGEdgeHasValueFilter& FilterByType(const SMGCType& type);
+
   bool HoldsFor(const SMGEdgeHasValue& edge) const;
   const SMGEntitySet<const SMGEdgeHasValue> FilterSet(
       const SMGEntitySet<const SMGEdgeHasValue>& edges) const;
-  bool operator()(const SMGEdgeHasValuePtr& edge);
+  bool operator()(const SMGEdgeHasValuePtr& edge) const;
 };
 
 }  // namespace smg

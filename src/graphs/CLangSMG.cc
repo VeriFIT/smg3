@@ -4,6 +4,7 @@
 
 #include "CLangSMG.hh"
 #include <algorithm>
+#include <iterator>
 #include <list>
 #include "exceptions/IllegalArgumentException.hh"
 #include "exceptions/UnsupportedOperationException.hh"
@@ -104,6 +105,7 @@ void CLangSMG::free(const int offset, const SMGRegionPtr& region) {
     return;
   }
 
+  // TODO(anyone) sub-optimal, could be replaced with std::set::erase and single iteration approach
   SetValidity(region, false);
   SMGEdgeHasValueFilter filter = SMGEdgeHasValueFilter::ObjectFilter(region);
 
@@ -120,15 +122,18 @@ const std::deque<CLangStackFrame>& CLangSMG::GetStackFrames() const { return sta
 
 const std::set<SMGObjectPtr>& CLangSMG::GetHeapObjects() const { return heap_objects_; }
 
+// original replaced with GetGlobalObjects
 const std::set<SMGObjectPtr> CLangSMG::GetGlobalObjects() const {
   std::set<SMGObjectPtr> globals;
-  std::transform(global_objects_.begin(),
-                 global_objects_.end(),
-                 std::inserter(globals, globals.end()),
-                 [](std::pair<std::string, SMGObjectPtr> obj) { return obj.second; });
+  std::transform(
+      global_objects_.begin(),
+      global_objects_.end(),
+      std::inserter(globals, globals.end()),
+      [](std::pair<std::string, SMGObjectPtr> obj) { return obj.second; });
   return globals;
 }
 
+// replacement for original GetGlobalObjects
 const std::map<std::string, SMGRegionPtr>& CLangSMG::GetGlobalVariables() const {
   return global_objects_;
 }
@@ -167,6 +172,37 @@ bool CLangSMG::IsGlobalObject(const SMGObjectPtr& object) const {
 
 bool CLangSMG::ContainsValue(const SMGValue& value) const {
   return GetValues().find(value) != GetValues().end();
+}
+
+const SMGValue& CLangSMG::GetAddress(const SMGObjectPtr& memory, long offset) const {
+  for (auto edge : GetPTEdges()) {
+    if (*edge.second->GetObject() == *memory && edge.second->GetOffset() == offset)
+      return edge.second->GetValue();
+  }
+  //? or InvalidValue? what is the semantics - should be commented in SMGValue
+  return SMGValue::GetNullValue();
+}
+
+const SMGValue& CLangSMG::ReadValue(
+  const SMGObjectPtr& object,
+  long offset,
+  const SMGCType& type) const {
+  if (!IsObjectValid(object)) {
+    throw UnsupportedOperationException("No value can be read from an invalid object");
+  }
+
+  SMGEdgeHasValue test_edge(type, offset, object, SMGValue::GetNullValue());
+
+  for (auto object_edge :
+    GetHVEdges(SMGEdgeHasValueFilter::ObjectFilter(object).FilterAtOffset(offset))) {
+    if (test_edge.IsCompatibleFieldOnSameObject(*object_edge))
+      return object_edge->GetValue();
+  }
+
+  if (IsCoveredByNullifiedBlocks(object, offset, type))
+    return SMGValue::GetNullValue();
+
+  return SMGValue::GetUnknownValue();
 }
 
 }  // namespace smg

@@ -377,7 +377,20 @@ TEST_F(SMGTest, GetHVEdgesFiltered) {
   EXPECT_TRUE(smg.GetHVEdges(SMGEdgeHasValueFilter::ObjectFilter(obj_2).
       FilterAtOffset(OFFSET0)).contains(hv_2_has_2_at_0));
 }
+TEST_F(SMGTest, GetNullBytesForObject) {
+  empty_smg.AddObject(obj_1);  
+  auto hv = std::make_shared<SMGEdgeHasValue>(mock_type, OFFSET4, obj_1, empty_smg.GetNullValue());
+  empty_smg.AddHasValueEdge(hv);
 
+  static const int OFFSET3 = 3;
+  static const int OFFSET7 = 7;
+
+  auto bs = empty_smg.GetNullBytesForObject(obj_1);
+  EXPECT_FALSE(bs.at(0));
+  EXPECT_FALSE(bs.at(OFFSET3));
+  EXPECT_TRUE(bs.at(OFFSET4));
+  EXPECT_TRUE(bs.at(OFFSET7));
+}
 
 //
 //  @Test(expected = NoSuchElementException.class)
@@ -405,21 +418,6 @@ TEST_F(SMGTest, GetHVEdgesFiltered) {
 //    Assert.assertNotNull(smg.getUniqueHV(filter, true));
 //  }
 //
-//  @Test
-//  public final void getNullBytesForObjectTest() {
-//    emptySmg.addObject(obj1);
-//    final int offset4 = 4;
-//    SMGEdgeHasValue hv = new SMGEdgeHasValue(mockType, offset4, obj1, emptySmg.getNullValue());
-//    emptySmg.addHasValueEdge(hv);
-//
-//    final int offset3 = 3;
-//    final int offset7 = 7;
-//    BitSet bs = emptySmg.getNullBytesForObject(obj1);
-//    Assert.assertFalse(bs.get(0));
-//    Assert.assertFalse(bs.get(offset3));
-//    Assert.assertTrue(bs.get(offset4));
-//    Assert.assertTrue(bs.get(offset7));
-//  }
 //
 //  @Test
 //  public final void replaceHVSetTest() {

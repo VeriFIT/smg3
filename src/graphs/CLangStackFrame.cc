@@ -61,4 +61,8 @@ const std::set<SMGObjectPtr> CLangStackFrame::GetAllObjects() const {
 
 const std::string CLangStackFrame::GetFunctionDeclaration() const { return stack_function_; }
 
+SMGRegionPtr CLangStackFrame::GetReturnObject() const {
+  return return_value_object_;
+}
+
 }  // namespace smg

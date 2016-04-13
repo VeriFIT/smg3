@@ -1,14 +1,14 @@
-#include <exception>
+#pragma once
+
+#include <stdexcept>
+#include <string>
 
 namespace smg {
 
-class IllegalArgumentException : public std::exception {
- private:
-  char const* msg_ = nullptr;
-
+class IllegalArgumentException : public std::runtime_error {
  public:
-  explicit IllegalArgumentException(char const* const message) noexcept;
-  const char* what() const noexcept override;
+  explicit IllegalArgumentException(const std::string& message) noexcept : runtime_error(message) {}
+  explicit IllegalArgumentException(const char* message) noexcept : runtime_error(message) {}
 };
 
 }  // namespace smg

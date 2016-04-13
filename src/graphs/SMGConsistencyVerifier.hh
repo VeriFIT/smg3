@@ -68,8 +68,7 @@ class SMGConsistencyVerifier {
   virtual ~SMGConsistencyVerifier();
 
  public:
-   //TODO(anyone) Where is VerifySmg ??? - NOT PORTED?
-
+  //TODO(anyone) Where is VerifySmg ??? - NOT PORTED?
 };
 
 }  // namespace smg

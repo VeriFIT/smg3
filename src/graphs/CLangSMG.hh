@@ -372,8 +372,6 @@ class CLangSMG : public SMG {
   //ALSO NOT PORTED (WILL EVER BE?)
 
   //SMGSymbolicValue readValue(final SMGObject pObject, final int pOffset, final CType pType)
-
-
 };
 
 }  // namespace smg

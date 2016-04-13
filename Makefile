@@ -47,12 +47,14 @@ ifeq ($(OS),Windows_NT)
 	STATIC_SUFIX=.lib
 	BINARY_SUFFIX=.exe
 	GLOBALFLAGS :=
+	SANIT_FLAGS :=
 	else
 	LIB_PREFIX=lib
 	SHARED_SUFFIX=.so
 	STATIC_SUFIX=.a
 	BINARY_SUFFIX=
 	GLOBALFLAGS := -fPIC
+	SANIT_FLAGS := -fsanitize=address -fsanitize=leak -fsanitize=undefined
 endif
 #-----------
 print-%  : ; @echo $* = $($*)
@@ -93,8 +95,8 @@ release: CXXFLAGS := $(CXXFLAGS_B) -o3
 release: build
 
 debug: NDEBUG :=
-debug: CFLAGS := $(CFLAGS_B) -g -fsanitize=address -fsanitize=leak -fsanitize=undefined
-debug: CXXFLAGS := $(CXXFLAGS_B) -g -fsanitize=address -fsanitize=leak -fsanitize=undefined
+debug: CFLAGS := $(CFLAGS_B) -g $(SANIT_FLAGS) -Werror
+debug: CXXFLAGS := $(CXXFLAGS_B) -g $(SANIT_FLAGS) -Werror
 debug: build
 
 derr: NDEBUG :=
@@ -105,8 +107,8 @@ derr: build
 build: dirs $(BINARIES_ALL) $(LIBRARIES_ALL)
 
 tests: LDFLAGS := $(LDFLAGS) -l$(library) -lgtest -lgtest_main
-tests: CFLAGS := $(CFLAGS_B) -fsanitize=address -fsanitize=leak -fsanitize=undefined
-tests: CXXFLAGS := $(CXXFLAGS_B) -fsanitize=address -fsanitize=leak -fsanitize=undefined
+tests: CFLAGS := $(CFLAGS_B) $(SANIT_FLAGS) -Werror
+tests: CXXFLAGS := $(CXXFLAGS_B) $(SANIT_FLAGS) -Werror
 tests: $(info Building tests $(TESTS_BINS_ALL))
 tests: build-tests
 tests: $(info Running tests $(TESTS_BINS_ALL))
@@ -115,7 +117,7 @@ tests: run-tests
 build-tests: dirs $(TESTS_BINS_ALL)
 
 run-tests:
-	export LD_LIBRARY_PATH=$(shell pwd)/$(BIN_DIR) ; $(foreach test,$(TESTS_BINS_ALL), $(test) || echo $$? ; )
+	export LD_LIBRARY_PATH=$(shell pwd)/$(BIN_DIR) ; $(foreach test,$(TESTS_BINS_ALL), $(test) --gtest_catch_exceptions=0 || echo $$? ; )
 
 dirs:
 	@mkdir -p $(BIN_DIR) $(OBJ_DIRS)

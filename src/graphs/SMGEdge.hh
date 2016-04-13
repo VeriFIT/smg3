@@ -6,16 +6,16 @@
 namespace smg {
 
 class SMGEdge {
-  const SMGValue& value_;
-  const SMGObject& object_;
+  const SMGValue value_;
+  const SMGObjectPtr object_;
 
  protected:
-  SMGEdge(const SMGValue& value, const SMGObject& object);
+  SMGEdge(const SMGValue& value, const SMGObjectPtr& object);
   bool IsConsistentWith(const SMGEdge& other_edge) const;
 
  public:
   const SMGValue& GetValue() const;
-  const SMGObject& GetObject() const;
+  SMGObjectPtr GetObject() const;
 };
 
 }  // namespace smg

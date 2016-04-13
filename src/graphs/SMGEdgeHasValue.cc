@@ -5,8 +5,8 @@
 namespace smg {
 
 SMGEdgeHasValue::SMGEdgeHasValue(const SMGCType& type,
-                                 const int offset,
-                                 const SMGObject& object,
+                                 const long offset,
+                                 const SMGObjectPtr& object,
                                  const SMGValue& value)
     : SMGEdge(value, object), offset_(offset), type_(type) {}
 
@@ -17,7 +17,7 @@ const SMGCType& SMGEdgeHasValue::GetType() const { return type_; }
 int SMGEdgeHasValue::GetSizeInBytes() const { return type_.GetSize(); }
 
 bool SMGEdgeHasValue::IsConsistentWith(const SMGEdgeHasValue& other) const {
-  if (GetObject().GetId() == other.GetObject().GetId() && offset_ == other.offset_ &&
+  if (GetObject()->GetId() == other.GetObject()->GetId() && offset_ == other.offset_ &&
       (&(type_) == &(other.type_))) {
     return GetValue().GetId() == other.GetValue().GetId();
   }
@@ -26,21 +26,21 @@ bool SMGEdgeHasValue::IsConsistentWith(const SMGEdgeHasValue& other) const {
 }
 
 bool SMGEdgeHasValue::OverlapsWith(const SMGEdgeHasValue& other) const {
-  if (GetObject().GetId() != other.GetObject().GetId()) {
+  if (GetObject()->GetId() != other.GetObject()->GetId()) {
     std::string message =
         "Call of overlapsWith() on Has-Value edges pair not originating from the same object";
     throw IllegalArgumentException(message.c_str());
   }
 
-  const int otStart = other.GetOffset();
-  const int otEnd = otStart + other.GetSizeInBytes();
+  const long otStart = other.GetOffset();
+  const long otEnd = otStart + other.GetSizeInBytes();
 
   return OverlapsWith(otStart, otEnd);
 }
 
-bool SMGEdgeHasValue::OverlapsWith(const int other_start, const int other_end) const {
-  int myStart = offset_;
-  int myEnd = myStart + type_.GetSize();
+bool SMGEdgeHasValue::OverlapsWith(const long other_start, const long other_end) const {
+  long myStart = offset_;
+  long myEnd = myStart + type_.GetSize();
 
   if (myStart < other_start) {
     return (myEnd > other_start);
@@ -57,7 +57,8 @@ bool SMGEdgeHasValue::IsCompatibleField(const SMGEdgeHasValue& other) const {
 }
 
 bool SMGEdgeHasValue::IsCompatibleFieldOnSameObject(const SMGEdgeHasValue& other) const {
-  return IsCompatibleField(other) && (GetObject().GetId() == other.GetObject().GetId());
+  // maybe replace with *GetObject() == *other.GetObject() ?
+  return IsCompatibleField(other) && (GetObject()->GetId() == other.GetObject()->GetId());
 }
 
 }  // namespace smg

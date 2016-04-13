@@ -38,33 +38,39 @@ static int SIZE12 = 12;
 class TestingObject : public SMGObject {
  public:
   TestingObject(const int size, const std::string label) : SMGObject(size, label) {}
-  ~TestingObject() {};
+  ~TestingObject() {}
   TestingObject(const TestingObject&) = default;
 
-  virtual bool NotNull() const { return true; }
-  virtual bool IsAbstract() const override { return false; }
+  bool NotNull() const override { return true; }
+
+  bool IsAbstract() const override { return false; }
+
   void Accept(SMGObjectVisitor& visitor) const override { (void)visitor; }
-  virtual bool IsMoreGeneral(const SMGObject&) const override {
+
+  bool IsMoreGeneral(const SMGObject&) const override {
     return false;
   };
-  virtual const SMGObject& Join(const SMGObject&) const override { return *this; }
+
+  SMGObjectPtr Join(const SMGObject&) const override {
+    return std::make_shared<TestingObject>(*this);
+  }
 };
 
 TestingObject object_8 = TestingObject(8, "label");
 TestingObject object_12 = TestingObject(12, "another label");
 
-TEST(SMGObject, GetNullObjectTest) {
-  const SMGObject& null_object = SMGObject::GetNullObject();
-  EXPECT_FALSE(null_object.NotNull());
+TEST(SMGObject, GetNullObject) {
+  const SMGObjectPtr null_object = SMGNullObject::GetNullObject();
+  EXPECT_FALSE(null_object->NotNull());
   EXPECT_TRUE(object_8.NotNull());
-  EXPECT_FALSE(null_object.IsAbstract());
-  EXPECT_FALSE(null_object.IsMoreGeneral(object_8));
-  EXPECT_FALSE(null_object.IsMoreGeneral(null_object));
-  EXPECT_EQ(&null_object, &null_object.Join(null_object));
-  EXPECT_EQ(&object_8, &null_object.Join(object_8));
+  EXPECT_FALSE(null_object->IsAbstract());
+  EXPECT_FALSE(null_object->IsMoreGeneral(object_8));
+  EXPECT_FALSE(null_object->IsMoreGeneral(*null_object));
+  EXPECT_EQ(*null_object, *(null_object->Join(*null_object)));
+  EXPECT_EQ(object_8, *(null_object->Join(object_8)));
 }
 
-//	public final void testSMGObjectIntString() {
+//  public final void testSMGObjectIntString() {
 //    Assert.assertEquals(SIZE8, object8.getSize());
 //    Assert.assertEquals("label", object8.getLabel());
 //    Assert.assertEquals(SIZE12, object12.getSize());
@@ -117,7 +123,7 @@ TEST(SMGObject, PropertySanity) {
 //  }
 //
 //  @Test
-//	public final void testVisitorOnNull() {
+//  public final void testVisitorOnNull() {
 //    SMGObject nullObject = SMGObject.getNullObject();
 //    SMGObjectVisitor visitor = new SMGObjectVisitor() {
 //      @Override

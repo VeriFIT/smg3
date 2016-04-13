@@ -12,9 +12,14 @@ class SMGEdgePointsTo : public SMGEdge {
   long offset_;
 
  public:
-  SMGEdgePointsTo(const SMGValue& value, const SMGObject& object, int offset);
+  SMGEdgePointsTo(const SMGValue& value, const SMGObjectPtr& object, const int offset);
   long GetOffset() const;
-  bool IsConsistentWith(const SMGEdgePointsTo& other_edge) const;
+  bool IsConsistentWith(const SMGEdgePointsTo& other) const;
+
+  //TODO(anyone) toString NOT PORTED
+  //TODO(anyone) hashCode and equals NOT PORTED - useful for hashset?
 };
+
+typedef std::shared_ptr<const SMGEdgePointsTo> SMGEdgePointsToPtr;
 
 }  // namespace smg

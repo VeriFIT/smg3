@@ -35,20 +35,20 @@ const int OFFSET0 = 0;
 const int OFFSET4 = 4;
 
 TEST(SMGEdgePointsTo, Sanity) {
-  SMGValue value = SMGValue::GetNewValue();
-  const SMGObject& object = SMGRegion(SIZE8, "object");
-  SMGEdgePointsTo edge = SMGEdgePointsTo(value, object, 0);
+  const SMGValue value = SMGValue::GetNewValue();
+  const SMGObjectPtr object = std::make_shared<SMGRegion>(SIZE8, "object");
+  const SMGEdgePointsTo edge = SMGEdgePointsTo(value, object, 0);
 
   EXPECT_EQ(value.GetId(), edge.GetValue().GetId());
-  EXPECT_EQ(object.GetId(), edge.GetObject().GetId());
+  EXPECT_EQ(object->GetId(), edge.GetObject()->GetId());
   EXPECT_EQ(0, edge.GetOffset());
 }
 
 TEST(SMGEdgePointsTo, IsConsistentWith) {
-  const SMGValue& val_1 = SMGValue::GetNewValue();
-  const SMGValue& val_2 = SMGValue::GetNewValue();
-  const SMGObject& obj_1 = SMGRegion(SIZE8, "object 1");
-  const SMGObject& obj_2 = SMGRegion(SIZE8, "object 2");
+  const SMGValue val_1 = SMGValue::GetNewValue();
+  const SMGValue val_2 = SMGValue::GetNewValue();
+  const SMGObjectPtr obj_1 = std::make_shared<SMGRegion>(SIZE8, "object 1");
+  const SMGObjectPtr obj_2 = std::make_shared<SMGRegion>(SIZE8, "object 2");
 
   const SMGEdgePointsTo& edge_1 = SMGEdgePointsTo(val_1, obj_1, OFFSET0);
   const SMGEdgePointsTo& edge_2 = SMGEdgePointsTo(val_2, obj_1, OFFSET0);

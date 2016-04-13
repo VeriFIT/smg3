@@ -15,17 +15,23 @@ class SMGEdgeHasValue : public SMGEdge {
 
  public:
   SMGEdgeHasValue(const SMGCType& type,
-                  const int offset,
-                  const SMGObject& object,
+                  const long offset,
+                  const SMGObjectPtr& object,
                   const SMGValue& value);
+
   long GetOffset() const;
   const SMGCType& GetType() const;
   int GetSizeInBytes() const;
   bool IsConsistentWith(const SMGEdgeHasValue& other) const;
   bool OverlapsWith(const SMGEdgeHasValue& other) const;
-  bool OverlapsWith(const int other_start, const int other_end) const;
+  bool OverlapsWith(const long other_start, const long other_end) const;
   bool IsCompatibleField(const SMGEdgeHasValue& other) const;
   bool IsCompatibleFieldOnSameObject(const SMGEdgeHasValue& other) const;
+
+  //TODO(anyone) toString NOT PORTED
+  //TODO(anyone) hashCode and equals NOT PORTED - useful for hashset?
 };
+
+typedef std::shared_ptr<const SMGEdgeHasValue> SMGEdgeHasValuePtr;
 
 }  // namespace smg

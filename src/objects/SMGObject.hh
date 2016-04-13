@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 
 namespace smg {
@@ -7,39 +8,50 @@ namespace smg {
 class SMGObjectVisitor;
 typedef int ObjectSize;
 
+class SMGObject;
+typedef std::shared_ptr<const SMGObject> SMGObjectPtr;
+
 class SMGObject {
  private:
   static long id_counter_;
-  int size_;
-  std::string label_;
+  ObjectSize size_;
+  const std::string label_;
   long id_;
 
  public:
-  SMGObject(const int size, const std::string label);
-  virtual ~SMGObject() {}
+  SMGObject(const ObjectSize size, const std::string& label);
+  virtual ~SMGObject();
 
-  static const SMGObject& GetNullObject();
-  std::string GetLabel() const;
+  const std::string& GetLabel() const;
   ObjectSize GetSize() const;
   long GetId() const;
 
+  virtual std::string ToString() const;
   virtual std::string GetClassName() const;
   virtual bool NotNull() const;
   virtual bool IsAbstract() const = 0;
   virtual void Accept(SMGObjectVisitor& visitor) const = 0;
-  virtual bool IsMoreGeneral(const SMGObject&) const = 0;
-  virtual const SMGObject& Join(const SMGObject& other) const = 0;
+  virtual bool IsMoreGeneral(const SMGObject& other) const = 0;
+  virtual SMGObjectPtr Join(const SMGObject& other) const = 0;
+  bool operator==(const SMGObject& other) const;
+  bool operator!=(const SMGObject& other) const;
 };
 
-class SMGNullObject : public SMGObject {
- public:
-  SMGNullObject() : SMGObject(0, "NULL") {}
 
+
+class SMGNullObject : public SMGObject {
+ private:
+  static const SMGObjectPtr NULL_OBJECT;
+
+  SMGNullObject();
+
+ public:
+  static const SMGObjectPtr GetNullObject();
+  bool IsAbstract() const override;
+  void Accept(SMGObjectVisitor& visitor) const override;
+  bool IsMoreGeneral(const SMGObject& other) const override;
   bool NotNull() const override;
-  bool IsAbstract() const override { return false; }
-  void Accept(SMGObjectVisitor& visitor) const override { (void)visitor; }
-  bool IsMoreGeneral(const SMGObject&) const override { return false; }
-  const SMGObject& Join(const SMGObject& other) const override { return other; }
+  SMGObjectPtr Join(const SMGObject& other) const override;
 };
 
 }  // namespace smg

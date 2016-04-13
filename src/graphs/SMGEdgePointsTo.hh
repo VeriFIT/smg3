@@ -15,6 +15,9 @@ class SMGEdgePointsTo : public SMGEdge {
   SMGEdgePointsTo(const SMGValue& value, const SMGObjectPtr& object, const int offset);
   long GetOffset() const;
   bool IsConsistentWith(const SMGEdgePointsTo& other) const;
+
+  //TODO(anyone) toString NOT PORTED
+  //TODO(anyone) hashCode and equals NOT PORTED - useful for hashset?
 };
 
 typedef std::shared_ptr<const SMGEdgePointsTo> SMGEdgePointsToPtr;

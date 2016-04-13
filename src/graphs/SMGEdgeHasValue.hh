@@ -27,6 +27,9 @@ class SMGEdgeHasValue : public SMGEdge {
   bool OverlapsWith(const long other_start, const long other_end) const;
   bool IsCompatibleField(const SMGEdgeHasValue& other) const;
   bool IsCompatibleFieldOnSameObject(const SMGEdgeHasValue& other) const;
+  
+  //TODO(anyone) toString NOT PORTED
+  //TODO(anyone) hashCode and equals NOT PORTED - useful for hashset?
 };
 
 typedef std::shared_ptr<const SMGEdgeHasValue> SMGEdgeHasValuePtr;

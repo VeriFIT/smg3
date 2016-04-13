@@ -37,6 +37,8 @@ class SMGObject {
   bool operator!=(const SMGObject& other) const;
 };
 
+
+
 class SMGNullObject : public SMGObject {
  private:
   static const SMGObjectPtr NULL_OBJECT;

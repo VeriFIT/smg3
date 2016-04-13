@@ -12,6 +12,8 @@
 
 namespace smg {
 
+//TODO(anyone) porting not complete: for example isIdenticalTo, Neq realted things, ...
+//Refer to Smg.java and ReadableSmg.java
 template <class T> class SMGEntitySet {
  private:
   std::set<std::shared_ptr<T>> entity_set;
@@ -93,9 +95,11 @@ class SMG {
   std::vector<bool> GetNullBytesForObject(const SMGObjectPtr& obj) const;
   bool IsCoveredByNullifiedBlocks(const SMGEdgeHasValuePtr& edge) const;
   bool IsCoveredByNullifiedBlocks(const SMGObjectPtr& obj, long offset, const SMGCType& type) const;
-  // TODO(michal) should really be private like in JAVA?
+  // TODO(michal) should the next one really be private like in JAVA?
   bool IsCoveredByNullifiedBlocks(const SMGObjectPtr& obj, long offset, int size) const;
 };
+
+
 
 template <class T> inline void SMGEntitySet<T>::add(std::shared_ptr<T> element) {
   entity_set.insert(element);

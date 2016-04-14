@@ -72,8 +72,8 @@ CC = cc
 INCLUDEFLAGS = $(addprefix -I,$(SRC_DIRS))
 # -fPIC
 # GLOBALFLAGS := -fPIC #moved to the top, OS-dependent
-CFLAGS_B = $(CFLAGS) $(GLOBALFLAGS) -std=c11 -Wall -pedantic -Wextra -Wconversion $(NDEBUG) $(INCLUDEFLAGS)
-CXXFLAGS_B = $(CXXFLAGS) $(GLOBALFLAGS) -std=c++11 -Wall -pedantic -Wextra -Wconversion $(NDEBUG) $(INCLUDEFLAGS)
+CFLAGS_B = $(CFLAGS) $(GLOBALFLAGS) -std=c14 -Wall -pedantic -Wextra -Wconversion $(NDEBUG) $(INCLUDEFLAGS)
+CXXFLAGS_B = $(CXXFLAGS) $(GLOBALFLAGS) -std=c++14 -Wall -pedantic -Wextra -Wconversion $(NDEBUG) $(INCLUDEFLAGS)
 LDFLAGS := -L"$(shell pwd)/$(BIN_DIR)"
 #LDFLAGS += -pthread
 #-----------

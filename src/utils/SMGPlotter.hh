@@ -26,21 +26,20 @@ public:
     : name{"node_" + pType + "_" + std::to_string(counter++)}, definition{pDefinition} {
   }
 
-  SMGObjectNode(const std::string& pName) :name{pName}, definition{ } { }
+  explicit SMGObjectNode(const std::string& pName) :name{pName}, definition{ } { }
 
   std::string getName() { return name; }
 
   std::string getDefinition() { return name + "[" + definition + "];"; }
-
 };
 
-class SMGNodeDotVisitor : SMGObjectVisitor {
+class SMGNodeDotVisitor : public SMGObjectVisitor {
 private:
   const SMG& smg;
   SMGObjectNode node;
 
 public:
-  SMGNodeDotVisitor(const SMG& pSmg) : smg{pSmg} { }
+  explicit SMGNodeDotVisitor(const SMG& pSmg) : smg{pSmg} { }
 
 private:
   std::string defaultDefinition(
@@ -50,21 +49,19 @@ private:
     const SMGObject& pObject);
 
 public:
-  virtual void Visit(const SMGObject& pObject);
-  virtual void Visit(const SMGRegion& pRegion);
+  void Visit(const SMGObject& pObject) override;
+  void Visit(const SMGRegion& pRegion) override;
   //virtual void visit(const SMGSingleLinkedList& pSll);
   //virtual void visit(const SimpleBinaryTree& pTree);
 
   SMGObjectNode getNode() {
     return node;
   }
-
 };
 
 using namespace boost::algorithm;
 
 class SMGPlotter {
-
 private:
   /*const*/ std::map<SMGObjectPtr, SMGObjectNode> objectIndex; //init
   static int nulls;
@@ -78,14 +75,15 @@ public:
   static std::string convertToValidDot(const std::string original);
 
   std::string smgAsDot(const CLangSMG& smg, const std::string name, const std::string location);
-  
-private:
 
+private:
   void addStackSubgraph(const CLangSMG& pSmg, std::stringstream& pSb);
 
-  void AddStackItemSubgraph(const CLangStackFrame& pStackFrame, std::stringstream& pSb, const size_t pIndex);
+  void AddStackItemSubgraph(
+    const CLangStackFrame& pStackFrame, std::stringstream& pSb, const size_t pIndex);
 
-  std::string smgScopeFrameAsDot(const std::map<std::string, SMGRegionPtr>& pNamespace, const std::string& pStructId);
+  std::string smgScopeFrameAsDot(
+    const std::map<std::string, SMGRegionPtr>& pNamespace, const std::string& pStructId);
 
   void addGlobalObjectSubgraph(const CLangSMG& pSmg, std::stringstream& pSb);
 

@@ -64,11 +64,13 @@ void SMGPlotter::debuggingPlot(const CLangSMG & pSmg, const std::string & pId) {
   //writer.close();
 }
 
+//TODO(anyone) not used?
 std::string SMGPlotter::convertToValidDot(const std::string original) {
   return original/*.replaceAll("[:]", "_")*/;
 }
 
-std::string SMGPlotter::smgAsDot(const CLangSMG & smg, const std::string name, const std::string location) {
+std::string SMGPlotter::smgAsDot(
+    const CLangSMG& smg, const std::string name, const std::string location) {
   std::stringstream sb;
 
   sb << "digraph gr_" << replace_all_copy(name, "-", "_") << "{\n";
@@ -80,7 +82,7 @@ std::string SMGPlotter::smgAsDot(const CLangSMG & smg, const std::string name, c
   SMGNodeDotVisitor visitor(smg);
 
   for (auto& heapObject : smg.GetHeapObjects()) {
-    if (objectIndex.find(heapObject) != objectIndex.end()) {
+    if (objectIndex.find(heapObject) == objectIndex.end()) {
       visitor.Visit(*heapObject);
       objectIndex.emplace(heapObject, visitor.getNode());
     }
@@ -133,12 +135,15 @@ void SMGPlotter::addStackSubgraph(const CLangSMG & pSmg, std::stringstream & pSb
   pSb << (newLineWithOffset("}"));
 }
 
-void SMGPlotter::AddStackItemSubgraph(const CLangStackFrame & pStackFrame, std::stringstream & pSb, const size_t pIndex) {
-  pSb << (newLineWithOffset("subgraph cluster_stack_" + pStackFrame.GetFunctionDeclaration()/*.getName()*/ + "{"));
+void SMGPlotter::AddStackItemSubgraph(
+    const CLangStackFrame & pStackFrame, std::stringstream & pSb, const size_t pIndex) {
+  pSb << newLineWithOffset(
+    "subgraph cluster_stack_" + pStackFrame.GetFunctionDeclaration()/*.getName()*/ + "{");
+
   offset += 2;
   pSb << (newLineWithOffset("fontcolor=blue;"));
-  pSb << (newLineWithOffset("label=\"#" + std::to_string(pIndex) + ": " + pStackFrame.GetFunctionDeclaration() +
-    "\";"));
+  pSb << newLineWithOffset(
+    "label=\"#" + std::to_string(pIndex) + ": " + pStackFrame.GetFunctionDeclaration() + "\";");
 
   std::map<std::string, SMGRegionPtr> toPrint(pStackFrame.GetVariables());
 
@@ -152,10 +157,10 @@ void SMGPlotter::AddStackItemSubgraph(const CLangStackFrame & pStackFrame, std::
 
   offset -= 2;
   pSb << (newLineWithOffset("}"));
-
 }
 
-std::string SMGPlotter::smgScopeFrameAsDot(const std::map<std::string, SMGRegionPtr>& pNamespace, const std::string & pStructId) {
+std::string SMGPlotter::smgScopeFrameAsDot(
+    const std::map<std::string, SMGRegionPtr>& pNamespace, const std::string & pStructId) {
   std::stringstream sb(std::ios_base::out);
   sb << "struct" << pStructId + "[shape=record,label=\" ";
 
@@ -232,11 +237,13 @@ std::string SMGPlotter::neqRelationAsDot(const SMGValue & v1, const SMGValue & v
   } else {
     targetNode = "value_" + std::to_string(v2.GetId());
   }
-  return returnString + "value_" + std::to_string(v1.GetId()) + " -> " + targetNode + "[color=\"red\", fontcolor=\"red\", label=\"neq\"]";
+  return
+    returnString + "value_" + std::to_string(v1.GetId()) +  " -> " +
+    targetNode + "[color=\"red\", fontcolor=\"red\", label=\"neq\"]";
 }
 
 std::string SMGPlotter::newLineWithOffset(const std::string & pLine) {
   return std::string(offset, ' ') + pLine + "\n";
 }
 
-}
+} // namespace smg

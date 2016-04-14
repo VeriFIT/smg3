@@ -1,9 +1,6 @@
 #include <string>
-#include <sstream>
-#include <fstream>
-#include <algorithm>
 #include <map>
-#include <boost/algorithm/string.hpp>
+#include <sstream>
 
 #include "graphs/SMG.hh"
 #include "graphs/CLangSMG.hh"
@@ -58,8 +55,6 @@ public:
     return node;
   }
 };
-
-using namespace boost::algorithm;
 
 class SMGPlotter {
 private:

@@ -1,5 +1,9 @@
 #include "SMGPlotter.hh"
 #include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <algorithm>
+#include <iterator>
 
 namespace smg {
 
@@ -72,10 +76,22 @@ std::string SMGPlotter::convertToValidDot(const std::string original) {
 std::string SMGPlotter::smgAsDot(
     const CLangSMG& smg, const std::string name, const std::string location) {
   std::stringstream sb;
+  std::ostream_iterator<char> sb_iter(sb, "");
 
-  sb << "digraph gr_" << replace_all_copy(name, "-", "_") << "{\n";
+
+  sb << "digraph gr_";
+  replace_copy(begin(name), end(name), sb_iter, '-', '_');
+  sb << "{\n";
+
   offset += 2;
-  sb << newLineWithOffset("label = \"Location: " + replace_all_copy(location, "\"", "\\\"") + "\";");
+
+  std::string new_loc = "Location: " + location;
+  std::stringstream temp;
+  temp << "label = ";
+  temp << std::quoted(new_loc);
+  temp << ";";
+
+  sb << newLineWithOffset(temp.str());
 
   addStackSubgraph(smg, sb);
 
@@ -179,7 +195,8 @@ std::string SMGPlotter::smgScopeFrameAsDot(
     nodes.push_back("<item_" + key + "> " + (*obj).ToString());
     objectIndex.emplace(obj, SMGObjectNode("struct" + pStructId + ":item_" + key));
   }
-  sb << (join(nodes, "|"));
+  std::ostream_iterator<std::string> sb_iter(sb, "|");
+  std::copy(begin(nodes), end(nodes), sb_iter);
   sb << ("\"];\n");
   return sb.str();
 }

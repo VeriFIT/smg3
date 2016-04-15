@@ -120,7 +120,7 @@ bool SMG::IsObjectValid(const SMGObject& object) const {
   for (const auto& optr : objects_) {
     contains |= selector(optr) == object;
   }
-  if (contains) {
+  if (!contains) {
     std::string msg = "Object [" + object.GetLabel() + "] is not in SMG";
     throw IllegalArgumentException(msg.c_str());
   }

@@ -26,6 +26,8 @@ BINARY_RUN := tests
 BINARIES :=
 #tests to make
 TESTS_BINS := tests
+#lib runners to make
+RUNNER_BINS := minimal_runner
 #libraries to make
 LIBRARIES := smg
 #-----------
@@ -35,6 +37,7 @@ OBJ_DIR := obj
 
 SRC_DIR := src
 SRC_TESTS_DIR := tests
+SRC_RUNNER_DIR := minimal_runner
 
 #also as include dirs
 SRC_DIRS := $(shell find $(SRC_DIR) -type d)
@@ -66,16 +69,25 @@ library_DEPFILES     := $(call SRC_DIR_TO_DEPFILES, $(SRC_DIR))
 program := tests
 program_OBJFILES     := $(call SRC_DIR_TO_OBJFILES, $(SRC_TESTS_DIR))
 program_DEPFILES     := $(call SRC_DIR_TO_DEPFILES, $(SRC_TESTS_DIR))
+
+runner := minimal_runner
+runner_OBJFILES     := $(call SRC_DIR_TO_OBJFILES, $(SRC_RUNNER_DIR))
+runner_DEPFILES     := $(call SRC_DIR_TO_DEPFILES, $(SRC_RUNNER_DIR))
 #-----------
 NDEBUG = -DNDEBUG
 CC = cc
 INCLUDEFLAGS = $(addprefix -I,$(SRC_DIRS))
 # -fPIC
 # GLOBALFLAGS := -fPIC #moved to the top, OS-dependent
-CFLAGS_B = $(CFLAGS) $(GLOBALFLAGS) -std=c11 -Wall -pedantic -Wextra -Wconversion $(NDEBUG) $(INCLUDEFLAGS)
-CXXFLAGS_B = $(CXXFLAGS) $(GLOBALFLAGS) -std=c++11 -Wall -pedantic -Wextra -Wconversion $(NDEBUG) $(INCLUDEFLAGS)
+CFLAGS_B = $(CFLAGS) $(GLOBALFLAGS) -std=c14 -Wall -pedantic -Wextra -Wconversion $(NDEBUG) $(INCLUDEFLAGS)
+CXXFLAGS_B = $(CXXFLAGS) $(GLOBALFLAGS) -std=c++14 -Wall -pedantic -Wextra -Wconversion $(NDEBUG) $(INCLUDEFLAGS)
 LDFLAGS := -L"$(shell pwd)/$(BIN_DIR)"
 #LDFLAGS += -pthread
+#ADD GTEST_HOME to linker and include flags if needed
+ifdef GTEST_HOME
+	LDFLAGS += -L"$(GTEST_HOME)" -L"$(GTEST_HOME)/bin" -L"$(GTEST_HOME)/lib"
+	INCLUDEFLAGS += -I"$(GTEST_HOME)/include"
+endif
 #-----------
 #not needed if we use "shell find"
 # - objectfiles are complete with paths, we reuse them for sourcefiles
@@ -84,6 +96,7 @@ LDFLAGS := -L"$(shell pwd)/$(BIN_DIR)"
 #-----------
 BINARIES_ALL =      $(addprefix $(BIN_DIR)/,$(addsuffix $(BINARY_SUFFIX),$(BINARIES)))
 TESTS_BINS_ALL =    $(addprefix $(BIN_DIR)/,$(addsuffix $(BINARY_SUFFIX),$(TESTS_BINS)))
+RUNNER_BINS_ALL =    $(addprefix $(BIN_DIR)/,$(addsuffix $(BINARY_SUFFIX),$(RUNNER_BINS)))
 LIBRARIES_PREFIX =  $(addprefix $(LIB_PREFIX),$(LIBRARIES))
 LIBRARIES_SHARED =  $(addprefix $(BIN_DIR)/,$(addsuffix $(SHARED_SUFFIX),$(LIBRARIES_PREFIX)))
 LIBRARIES_STATIC =  $(addprefix $(BIN_DIR)/,$(addsuffix $(STATIC_SUFIX),$(LIBRARIES_PREFIX)))
@@ -109,15 +122,25 @@ build: dirs $(BINARIES_ALL) $(LIBRARIES_ALL)
 tests: LDFLAGS := $(LDFLAGS) -l$(library) -lgtest -lgtest_main
 tests: CFLAGS := $(CFLAGS_B) $(SANIT_FLAGS) -Werror
 tests: CXXFLAGS := $(CXXFLAGS_B) $(SANIT_FLAGS) -Werror
-tests: $(info Building tests $(TESTS_BINS_ALL))
 tests: build-tests
-tests: $(info Running tests $(TESTS_BINS_ALL))
 tests: run-tests
 
 build-tests: dirs $(TESTS_BINS_ALL)
 
 run-tests:
-	export LD_LIBRARY_PATH=$(shell pwd)/$(BIN_DIR) ; $(foreach test,$(TESTS_BINS_ALL), $(test) --gtest_catch_exceptions=0 || echo $$? ; )
+	@echo Running tests $(TESTS_BINS_ALL)
+	export LD_LIBRARY_PATH=$(shell pwd)/$(BIN_DIR) ; $(foreach app,$(TESTS_BINS_ALL), $(app) --gtest_catch_exceptions=0 || echo $$? ; )
+
+runner: LDFLAGS := $(LDFLAGS) -l$(library)
+runner: CFLAGS := $(CFLAGS_B) $(SANIT_FLAGS) -Werror
+runner: CXXFLAGS := $(CXXFLAGS_B) $(SANIT_FLAGS) -Werror
+runner: build-runner
+runner: run-runner
+
+build-runner: dirs $(RUNNER_BINS_ALL)
+
+run-runner:
+	export LD_LIBRARY_PATH=$(shell pwd)/$(BIN_DIR) ; $(foreach app,$(RUNNER_BINS_ALL), $(app) || echo $$? ; )
 
 dirs:
 	@mkdir -p $(BIN_DIR) $(OBJ_DIRS)
@@ -129,8 +152,9 @@ dirs:
 $(BIN_DIR)/$(LIB_PREFIX)$(library)$(SHARED_SUFFIX): $(library_OBJFILES)
 $(BIN_DIR)/$(LIB_PREFIX)$(library)$(STATIC_SUFIX): $(library_OBJFILES)
 $(BIN_DIR)/$(program)$(BINARY_SUFFIX): $(program_OBJFILES)
+$(BIN_DIR)/$(runner)$(BINARY_SUFFIX): $(runner_OBJFILES)
 
--include $(library_DEPFILES) $(program_DEPFILES)
+-include $(library_DEPFILES) $(program_DEPFILES) $(runner_DEPFILES)
 
 #------------
 
@@ -154,8 +178,18 @@ $(OBJ_DIR)/%.o: $(SRC_TESTS_DIR)/%.cc
 
 #-----------
 
+$(OBJ_DIR)/%.o: $(SRC_RUNNER_DIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(INCLUDEFLAGS) -MM -MF $(OBJ_DIR)/$*.d -MT $@ $<
+
+$(OBJ_DIR)/%.o: $(SRC_RUNNER_DIR)/%.cc
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(INCLUDEFLAGS) -MM -MF $(OBJ_DIR)/$*.d -MT $@ $<
+
+#-----------
+
 #TODO: which flags use for linking?
-$(BINARIES_ALL) $(TESTS_BINS_ALL):
+$(BINARIES_ALL) $(TESTS_BINS_ALL) $(RUNNER_BINS_ALL):
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 #TODO: which flags use for linking?
@@ -177,7 +211,7 @@ r run:
 	$(BIN_DIR)/$(BINARY_RUN)$(BINARY_SUFFIX) || echo $$?
 
 er exportrun:
-	export LD_LIBRARY_PATH=$(shell pwd)/$(BIN_DIR) ; $(BIN_DIR)/$(BINARY_RUN)$(BINARY_SUFFIX) || echo $$?
+	export LD_LIBRARY_PATH=$(shell pwd)/$(BIN_DIR) ; ./$(BIN_DIR)/$(BINARY_RUN)$(BINARY_SUFFIX) || echo $$?
 
 clean:
 	$(RM) -rf $(BIN_DIR)/* $(OBJ_DIR)/*
@@ -186,8 +220,8 @@ cd: clean debug
 
 ce: clean derr
 
-pack: ;
-	rm -f ifj2015-xkotou04.zip && zip -r ifj2015-xkotou04.zip Makefile Doxyfile *.c *.cc *.h README README.*
+#pack: ;
+#	rm -f ifj2015-xkotou04.zip && zip -r ifj2015-xkotou04.zip Makefile Doxyfile *.c *.cc *.h *.hh  README README.*
 
 
 #----------

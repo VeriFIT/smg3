@@ -52,9 +52,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <OutDir>../bin/$(Platform)/$(Configuration)/</OutDir>
-    <IntDir>../obj/$(Platform)/$(Configuration)/</IntDir>
-    <IncludePath>../src;$(IncludePath)</IncludePath>
-    <SourcePath>../src;$(SourcePath)</SourcePath>
+    <IntDir>../obj/$(Platform)/$(Configuration)/$(ProjectName)/</IntDir>
+    <IncludePath>../tests;../src;$(IncludePath)</IncludePath>
+    <SourcePath>../tests;$(SourcePath)</SourcePath>
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup>

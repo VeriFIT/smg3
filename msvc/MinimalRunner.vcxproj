@@ -19,19 +19,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\**\*.cc" />
+    <ClCompile Include="..\minimal_runner\**\*.cc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\**\*.hh" />
+    <ClInclude Include="..\minimal_runner\**\*.hh" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="SmgLib.vcxproj">
+      <Project>{5f6c8883-417f-4dd3-ad79-6f9874ab5fbe}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{5F6C8883-417F-4DD3-AD79-6F9874AB5FBE}</ProjectGuid>
-    <RootNamespace>Main</RootNamespace>
+    <ProjectGuid>{26E2381F-992D-4059-93E6-C22FE0473A88}</ProjectGuid>
+    <RootNamespace>MinimalRunner</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup>
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
@@ -48,18 +53,19 @@
   <PropertyGroup>
     <OutDir>../bin/$(Platform)/$(Configuration)/</OutDir>
     <IntDir>../obj/$(Platform)/$(Configuration)/$(ProjectName)/</IntDir>
-    <IncludePath>../src;$(IncludePath)</IncludePath>
-    <SourcePath>../src;$(SourcePath)</SourcePath>
+    <IncludePath>../minimal_runner;../src;$(IncludePath)</IncludePath>
+    <SourcePath>../minimal_runner;$(SourcePath)</SourcePath>
+    <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <RuntimeLibrary Condition="'$(Configuration)'=='Release'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

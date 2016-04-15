@@ -59,22 +59,27 @@ void SMGNodeDotVisitor::Visit(const SMGRegion & pRegion) {
 //  node = SMGObjectNode("tree", defaultDefinition(color, shape, style, pTree));
 //}
 
-void SMGPlotter::debuggingPlot(const CLangSMG & pSmg, const std::string & pId) {
+void SMGPlotter::PlotToFile(const CLangSMG & pSmg, const std::string & processId) {
   SMGPlotter plotter = SMGPlotter();
-  //std::ofstream writer(pId + ".dot", std::ios_base::out);
-  std::ostream& writer = std::cout;
-  writer << plotter.smgAsDot(pSmg, pId, pId);
+  std::ofstream writer(processId + ".dot", std::ios_base::out);
+  writer << plotter.smgAsDot(pSmg, processId, processId);
   writer.flush();
-  //writer.close();
+  writer.close();
+}
+
+std::string SMGPlotter::PlotToString(
+    const CLangSMG& smg, const std::string& name, const std::string& location) {
+  SMGPlotter plotter = SMGPlotter();
+  return plotter.smgAsDot(smg, name, location);
 }
 
 //TODO(anyone) not used?
-std::string SMGPlotter::convertToValidDot(const std::string original) {
+std::string SMGPlotter::ConvertToValidDot(const std::string original) {
   return original/*.replaceAll("[:]", "_")*/;
 }
 
 std::string SMGPlotter::smgAsDot(
-    const CLangSMG& smg, const std::string name, const std::string location) {
+    const CLangSMG& smg, const std::string& name, const std::string& location) {
   std::stringstream sb;
   std::ostream_iterator<char> sb_iter(sb, "");
 

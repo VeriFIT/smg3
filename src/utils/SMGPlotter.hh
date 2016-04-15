@@ -62,16 +62,20 @@ private:
   static int nulls;
   uint32_t offset = 0;
 
+  //private constructor
+  SMGPlotter() = default; /* utility class */
+
 public:
-  //SMGPlotter() { } /* utility class */
+  static void PlotToFile(const CLangSMG& pSmg, const std::string& processId);
 
-  static void debuggingPlot(const CLangSMG& pSmg, const std::string& pId);
+  static std::string PlotToString(const CLangSMG& pSmg, const std::string& name, const std::string& location);
 
-  static std::string convertToValidDot(const std::string original);
-
-  std::string smgAsDot(const CLangSMG& smg, const std::string name, const std::string location);
+  // not completed
+  static std::string ConvertToValidDot(const std::string original);
 
 private:
+  std::string smgAsDot(const CLangSMG& smg, const std::string& name, const std::string& location);
+
   void addStackSubgraph(const CLangSMG& pSmg, std::stringstream& pSb);
 
   void AddStackItemSubgraph(

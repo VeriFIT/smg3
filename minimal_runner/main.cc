@@ -36,8 +36,7 @@ int main() {
   smg.AddPointsToEdge(pt);
   smg.AddHasValueEdge(hv);
 
-  SMGPlotter plotter{};
-  std::string dot = plotter.smgAsDot(smg, "Moje_smg", "moje_lokace");
+  std::string dot = SMGPlotter::PlotToString(smg, "Moje_smg", "moje_lokace");
   std::cout << dot;
 
   return 0;

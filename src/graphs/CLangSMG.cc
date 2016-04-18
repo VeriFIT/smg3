@@ -184,9 +184,9 @@ const SMGValue& CLangSMG::GetAddress(const SMGObjectPtr& memory, long offset) co
 }
 
 const SMGValue& CLangSMG::ReadValue(
-  const SMGObjectPtr& object,
-  long offset,
-  const SMGCType& type) const {
+    const SMGObjectPtr& object,
+    long offset,
+    const SMGCType& type) const {
   if (!IsObjectValid(object)) {
     throw UnsupportedOperationException("No value can be read from an invalid object");
   }

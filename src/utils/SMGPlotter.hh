@@ -68,7 +68,8 @@ private:
 public:
   static void PlotToFile(const CLangSMG& pSmg, const std::string& processId);
 
-  static std::string PlotToString(const CLangSMG& pSmg, const std::string& name, const std::string& location);
+  static std::string PlotToString(
+	  const CLangSMG& pSmg, const std::string& name, const std::string& location);
 
   // not completed
   static std::string ConvertToValidDot(const std::string original);

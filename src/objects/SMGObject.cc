@@ -2,10 +2,10 @@
 
 namespace smg {
 
-long SMGObject::id_counter_ = 1;
 const SMGObjectPtr SMGNullObject::NULL_OBJECT = SMGObjectPtr(new SMGNullObject());
 
 const SMGObjectPtr SMGNullObject::GetNullObject() { return SMGNullObject::NULL_OBJECT; }
+SMGObjectId SMGObject::id_counter_ = 1;
 
 SMGObject::SMGObject(const ObjectSize size, const std::string& label) : size_(size), label_(label) {
   id_ = SMGObject::id_counter_++;
@@ -17,7 +17,7 @@ const std::string& SMGObject::GetLabel() const { return label_; }
 
 ObjectSize SMGObject::GetSize() const { return size_; }
 
-long SMGObject::GetId() const { return id_; }
+SMGObjectId SMGObject::GetId() const { return id_; }
 
 std::string SMGObject::ToString() const {
   return "OBJECT( " + GetLabel() + ", " + std::to_string(GetSize()) + "b)";

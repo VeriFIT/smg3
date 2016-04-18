@@ -17,8 +17,9 @@ const SMGCType& SMGEdgeHasValue::GetType() const { return type_; }
 int SMGEdgeHasValue::GetSizeInBytes() const { return type_.GetSize(); }
 
 bool SMGEdgeHasValue::IsConsistentWith(const SMGEdgeHasValue& other) const {
-  if (GetObject()->GetId() == other.GetObject()->GetId() && offset_ == other.offset_ &&
-      (&(type_) == &(other.type_))) {
+  if (GetObject()->GetId() == other.GetObject()->GetId() && 
+      offset_              == other.offset_ &&
+      (&(type_)            == &(other.type_))) {
     return GetValue().GetId() == other.GetValue().GetId();
   }
 

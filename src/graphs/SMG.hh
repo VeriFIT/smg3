@@ -79,6 +79,7 @@ class SMG {
 
   // Others to be added here!
   // TODO(anyone) maybe change the naming convention?
+  const SMGEntitySet<const SMGEdgeHasValue> GetHVEdgesFromObjectWithOffset(const SMGObjectPtr& obj, long offset) const;
   const SMGEntitySet<const SMGEdgeHasValue> GetHVEdgesFromObject(const SMGObjectPtr& obj) const;
   const SMGEntitySet<const SMGEdgeHasValue> GetHVEdgesToValue(const SMGValue& value) const;
 

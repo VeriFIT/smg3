@@ -242,7 +242,7 @@ class CLangSMG : public SMG {
   * @return Address of the given field, or null, if such an address does not yet exist in the SMG.
   */
   const SMGValue& GetAddress(const SMGObjectPtr& memory, long offset) const;
-
+  
   /**
   * Read Value in field (object, type) of an Object.
   *
@@ -257,8 +257,13 @@ class CLangSMG : public SMG {
   * @throws SMGInconsistentException
   */
   const SMGValue& ReadValue(const SMGObjectPtr& object, long offset, const SMGCType& type) const;
+  const SMGValue& ReadValue(const SMGEdgePointsTo& ptEdge, const SMGCType & type) const;
 
+  //-----------------------------------------------------------------------------------------------
+  //Added for NextGen v0.1
 
+  const SMGEdgePointsTo& ClangGetTargetPtEdge(const SMGRegionPtr& tempRegion) const;
+  const SMGValue& ClangReadValue(const SMGRegionPtr& tempRegion, const SMGCType& type) const;
 
   //-----------------------------------------------------------------------------------------------
   //NOT PORTED

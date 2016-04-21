@@ -8,6 +8,7 @@
 #include <list>
 #include "exceptions/IllegalArgumentException.hh"
 #include "exceptions/UnsupportedOperationException.hh"
+#include <cassert>
 
 namespace smg {
 
@@ -183,6 +184,10 @@ const SMGValue& CLangSMG::GetAddress(const SMGObjectPtr& memory, long offset) co
   return SMGValue::GetNullValue();
 }
 
+const SMGValue& CLangSMG::ReadValue(const SMGEdgePointsTo& ptEdge, const SMGCType& type) const {
+  return ReadValue(ptEdge.GetObject(), ptEdge.GetOffset(), type);
+}
+
 const SMGValue& CLangSMG::ReadValue(
     const SMGObjectPtr& object,
     long offset,
@@ -203,6 +208,21 @@ const SMGValue& CLangSMG::ReadValue(
     return SMGValue::GetNullValue();
 
   return SMGValue::GetUnknownValue();
+}
+
+const SMGEdgePointsTo& CLangSMG::ClangGetTargetPtEdge(const SMGRegionPtr & tempRegion) const {
+  auto edgesFromTempObj = GetHVEdgesFromObject(tempRegion);
+  assert(edgesFromTempObj.size() == 1);
+  auto& hvEdgeFromTempObj = **edgesFromTempObj.begin();
+  auto& tempValue = hvEdgeFromTempObj.GetValue();
+  auto& ptEdgeToTargetObj = *GetPTEdges().find(tempValue)->second;
+  return ptEdgeToTargetObj;
+}
+
+const SMGValue& CLangSMG::ClangReadValue(const SMGRegionPtr& tempRegion, const SMGCType& type) const {  
+  auto& ptEdgeToTargetObj = ClangGetTargetPtEdge(tempRegion);
+
+  return ReadValue(ptEdgeToTargetObj.GetObject(), ptEdgeToTargetObj.GetOffset(), type);
 }
 
 }  // namespace smg

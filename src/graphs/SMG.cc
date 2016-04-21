@@ -58,6 +58,10 @@ const SMGObjectPtr SMG::GetObjectPointedBy(const SMGValue& value) const {
   return edge->GetObject();
 }
 
+const SMGEntitySet<const SMGEdgeHasValue> SMG::GetHVEdgesFromObjectWithOffset(const SMGObjectPtr & obj, long offset) const {
+  return SMGEdgeHasValueFilter::ObjectFilter(obj).FilterAtOffset(offset).FilterSet(hv_edges_);
+}
+
 const SMGEntitySet<const SMGEdgeHasValue> SMG::GetHVEdgesFromObject(
   const SMGObjectPtr& obj) const {
   return SMGEdgeHasValueFilter::ObjectFilter(obj).FilterSet(hv_edges_);

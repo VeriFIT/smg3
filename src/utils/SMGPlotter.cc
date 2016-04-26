@@ -34,7 +34,7 @@ void SMGNodeDotVisitor::Visit(const SMGRegion & pRegion) {
   std::string shape = "rectangle";
   std::string color;
   std::string style;
-  if (smg.IsObjectValid(pRegion)) {
+  if (smg.IsObjectValid(pRegion.GetId())) {
     color = "black"; style = "solid";
   } else {
     color = "red"; style = "dotted";

@@ -262,8 +262,10 @@ class CLangSMG : public SMG {
   //-----------------------------------------------------------------------------------------------
   //Added for NextGen v0.1
 
-  const SMGEdgePointsTo& ClangGetTargetPtEdge(const SMGRegionPtr& tempRegion) const;
-  const SMGValue& ClangReadValue(const SMGRegionPtr& tempRegion, const SMGCType& type) const;
+  const SMGEdgePointsTo& ClangGetTargetPtEdge(const SMGObjectPtr& tempObject) const;
+  const SMGEdgePointsTo& ClangGetTargetPtEdge(SMGObjectId tempObjectId) const;
+  const SMGValue& ClangReadValue(const SMGRegionPtr& tempObject, const SMGCType& type) const;
+  const SMGValue& ClangReadValue(SMGObjectId tempObjectId, const SMGCType & type) const;
 
   //-----------------------------------------------------------------------------------------------
   //NOT PORTED

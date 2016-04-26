@@ -220,7 +220,7 @@ TEST_F(SMGTest, Validity) {
   EXPECT_TRUE(SMGConsistencyVerifier::Verify(smg));
   EXPECT_TRUE(SMGConsistencyVerifier::Verify(smg_copy));
 
-  smg.SetValidity(obj_1, false);
+  smg.SetValidity(obj_1->GetId(), false);
   EXPECT_TRUE(SMGConsistencyVerifier::Verify(smg_copy));
   EXPECT_TRUE(SMGConsistencyVerifier::Verify(smg));
   EXPECT_FALSE(smg.IsObjectValid(smg.GetNullObject()));
@@ -230,7 +230,7 @@ TEST_F(SMGTest, Validity) {
   EXPECT_TRUE(smg_copy.IsObjectValid(obj_1));
   EXPECT_TRUE(smg_copy.IsObjectValid(obj_2));
 
-  smg.SetValidity(obj_2, false);
+  smg.SetValidity(obj_2->GetId(), false);
   EXPECT_TRUE(SMGConsistencyVerifier::Verify(smg_copy));
   EXPECT_FALSE(smg_copy.IsObjectValid(smg_copy.GetNullObject()));
   EXPECT_TRUE(smg_copy.IsObjectValid(obj_1));
@@ -244,13 +244,13 @@ TEST_F(SMGTest, IsObjectValidBadCall) {
 
 TEST_F(SMGTest, SetValidityBadCall) {
   const SMGObjectPtr object = std::make_shared<SMGRegion>(SIZE8, "object");
-  EXPECT_THROW(smg.SetValidity(object, true), IllegalArgumentException);
+  EXPECT_THROW(smg.SetValidity(object->GetId(), true), IllegalArgumentException);
 }
 
 TEST_F(SMGTest, ConsistencyViolationInvalidRegionHasValue) {
-  smg.SetValidity(obj_1, false);
+  smg.SetValidity(obj_1->GetId(), false);
   EXPECT_TRUE(SMGConsistencyVerifier::Verify(smg));
-  smg.SetValidity(obj_2, false);
+  smg.SetValidity(obj_2->GetId(), false);
   EXPECT_FALSE(SMGConsistencyVerifier::Verify(smg));
 }
 

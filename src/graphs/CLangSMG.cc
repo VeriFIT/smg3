@@ -107,7 +107,7 @@ void CLangSMG::free(const int offset, const SMGRegionPtr& region) {
   }
 
   // TODO(anyone) sub-optimal, could be replaced with std::set::erase and single iteration approach
-  SetValidity(region, false);
+  SetValidity(region->GetId(), false);
   SMGEdgeHasValueFilter filter = SMGEdgeHasValueFilter::ObjectFilter(region);
 
   for (auto edge : GetHVEdges(filter)) {
@@ -192,7 +192,7 @@ const SMGValue& CLangSMG::ReadValue(
     const SMGObjectPtr& object,
     long offset,
     const SMGCType& type) const {
-  if (!IsObjectValid(object)) {
+  if (!IsObjectValid(object->GetId())) {
     throw UnsupportedOperationException("No value can be read from an invalid object");
   }
 
@@ -210,8 +210,8 @@ const SMGValue& CLangSMG::ReadValue(
   return SMGValue::GetUnknownValue();
 }
 
-const SMGEdgePointsTo& CLangSMG::ClangGetTargetPtEdge(const SMGRegionPtr & tempRegion) const {
-  auto edgesFromTempObj = GetHVEdgesFromObject(tempRegion);
+const SMGEdgePointsTo& CLangSMG::ClangGetTargetPtEdge(const SMGObjectPtr& tempObject) const {
+  auto edgesFromTempObj = GetHVEdgesFromObject(tempObject);
   assert(edgesFromTempObj.size() == 1);
   auto& hvEdgeFromTempObj = **edgesFromTempObj.begin();
   auto& tempValue = hvEdgeFromTempObj.GetValue();
@@ -219,8 +219,25 @@ const SMGEdgePointsTo& CLangSMG::ClangGetTargetPtEdge(const SMGRegionPtr & tempR
   return ptEdgeToTargetObj;
 }
 
-const SMGValue& CLangSMG::ClangReadValue(const SMGRegionPtr& tempRegion, const SMGCType& type) const {  
-  auto& ptEdgeToTargetObj = ClangGetTargetPtEdge(tempRegion);
+const SMGEdgePointsTo& CLangSMG::ClangGetTargetPtEdge(SMGObjectId id) const {
+  // TODO(anyone): check if object is contained in SMG
+  const SMGObject& tempObject = objects_map_.at(id);
+  SMGObjectPtr tempObjectPtr;
+  for (auto objPtr : GetObjects()) {
+    if (&*objPtr == &tempObject)
+      tempObjectPtr = objPtr;
+  }
+  return ClangGetTargetPtEdge(tempObjectPtr);
+}
+
+const SMGValue& CLangSMG::ClangReadValue(const SMGRegionPtr& tempObject, const SMGCType& type) const {
+  auto& ptEdgeToTargetObj = ClangGetTargetPtEdge(tempObject);
+
+  return ReadValue(ptEdgeToTargetObj.GetObject(), ptEdgeToTargetObj.GetOffset(), type);
+}
+
+const SMGValue& CLangSMG::ClangReadValue(SMGObjectId id, const SMGCType& type) const {
+  auto& ptEdgeToTargetObj = ClangGetTargetPtEdge(id);
 
   return ReadValue(ptEdgeToTargetObj.GetObject(), ptEdgeToTargetObj.GetOffset(), type);
 }

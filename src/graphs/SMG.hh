@@ -4,6 +4,7 @@
 #include <memory>
 #include <set>
 #include <vector>
+#include <functional>
 #include "graphs/SMGEdgeHasValue.hh"
 #include "graphs/SMGEdgeHasValueFilter.hh"
 #include "graphs/SMGEdgePointsTo.hh"
@@ -37,12 +38,14 @@ template <class T> class SMGEntitySet {
 };
 
 class SMG {
+ protected:
+  std::map<SMGObjectId, std::reference_wrapper<const SMGObject>> objects_map_;
  private:
   SMGEntitySet<const SMGObject> objects_;
   std::set<SMGValue> values_;
   std::map<SMGValue, SMGEdgePointsToPtr> pt_edges_;
   SMGEntitySet<const SMGEdgeHasValue> hv_edges_;
-  std::map<long, bool> object_validity_;
+  std::map<SMGObjectId, bool> object_validity_;
 
   SMGObjectPtr null_object_ = SMGNullObject::GetNullObject();
   SMGValue null_value_      = SMGValue::GetNullValue();
@@ -62,9 +65,10 @@ class SMG {
   void RemoveHasValueEdge(const SMGEdgeHasValuePtr& edge);
   void RemoveObjectAndEdges(const SMGObjectPtr& object);
 
-  void SetValidity(const SMGObjectPtr& object, const bool validity);
+  void SetValidity(SMGObjectId id, const bool validity);
+  bool IsObjectValid(SMGObjectId id) const;
+  // deperacated
   bool IsObjectValid(const SMGObjectPtr& object) const;
-  bool IsObjectValid(const SMGObject& object) const;
 
   SMGObjectPtr GetNullObject() const;
   const SMGValue GetNullValue() const;

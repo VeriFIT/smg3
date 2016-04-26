@@ -19,6 +19,7 @@ void SMG::AddObject(const SMGObjectPtr& object) { AddObject(object, true); }
 
 void SMG::AddObject(const SMGObjectPtr& object, const bool validity) {
   objects_.add(object);
+  objects_map_.emplace(object->GetId(), *object);
   object_validity_[object->GetId()] = validity;
 }
 
@@ -73,6 +74,7 @@ const SMGEntitySet<const SMGEdgeHasValue> SMG::GetHVEdgesToValue(
 
 void SMG::RemoveObject(const SMGObjectPtr& object) {
   objects_.remove(object);
+  objects_map_.erase(object->GetId());
   object_validity_.erase(object->GetId());
 }
 
@@ -100,36 +102,30 @@ void SMG::RemoveObjectAndEdges(const SMGObjectPtr& object) {
   }
 }
 
-void SMG::SetValidity(const SMGObjectPtr& object, const bool validity) {
-  if (!objects_.contains(object)) {
-    std::string msg = "Object [" + object->GetLabel() + "] is not in SMG";
+void SMG::SetValidity(SMGObjectId id, const bool validity) {
+  auto it = objects_map_.find(id);
+  if (it != objects_map_.end()) {
+    const SMGObject& object = it->second;
+    object_validity_[object.GetId()] = validity;
+  }  else {
+    std::string msg = "Object [" + std::to_string(id) + "] is not in SMG";
     throw IllegalArgumentException(msg.c_str());
   }
-
-  object_validity_[object->GetId()] = validity;
 }
 
-bool SMG::IsObjectValid(const SMGObjectPtr& object) const {
-  if (!objects_.contains(object)) {
-    std::string msg = "Object [" + object->GetLabel() + "] is not in SMG";
+bool SMG::IsObjectValid(SMGObjectId id) const {
+  auto it = objects_map_.find(id);
+  if (it != objects_map_.end()) {
+    const SMGObject& object = it->second;
+    return object_validity_.at(object.GetId());
+  } else {
+    std::string msg = "Object [" + std::to_string(id) + "] is not in SMG";
     throw IllegalArgumentException(msg.c_str());
   }
-
-  return object_validity_.at(object->GetId());
 }
 
-bool SMG::IsObjectValid(const SMGObject& object) const {
-  bool contains = false;
-  auto selector = [](const SMGObjectPtr& oPtr) -> const SMGObject& { return *oPtr; };
-  for (const auto& optr : objects_) {
-    contains |= selector(optr) == object;
-  }
-  if (!contains) {
-    std::string msg = "Object [" + object.GetLabel() + "] is not in SMG";
-    throw IllegalArgumentException(msg.c_str());
-  }
-
-  return object_validity_.at(object.GetId());
+bool SMG::IsObjectValid(const SMGObjectPtr & object) const {
+  return IsObjectValid(object->GetId());
 }
 
 std::vector<bool> SMG::GetNullBytesForObject(const SMGObjectPtr& obj) const {
